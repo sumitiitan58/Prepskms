@@ -214,12 +214,25 @@
               </a>
             </div>
 
-            <!-- Guest Mode Indicator (for non-authenticated students) -->
-            <div id="guestModeHeaderBox" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-              <span id="guestHeaderLabel" class="max-w-[120px] sm:max-w-[180px] truncate">Guest: Aspirant (JEE)</span>
-              <button onclick="openGuestOnboardingModal()" class="text-amber-700 hover:text-amber-950 underline text-[10px] font-bold ml-0.5" title="Update your name or target exam">Edit</button>
-            </div>
+            <!-- Website Search Action Button -->
+            <button onclick="openUniversalSearchModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition-all border border-gray-200 shadow-xs" title="Search platform (Ctrl+K)">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-blue-600"></i>
+              <span class="hidden sm:inline">Search</span>
+              <kbd class="hidden md:inline-block px-1 py-0.2 text-[9px] font-mono bg-white border border-gray-200 rounded text-gray-400">⌘K</kbd>
+            </button>
+
+            <!-- Prepskm AI Study Copilot Button -->
+            <button onclick="openAiCopilotModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:opacity-95 text-white text-xs font-bold shadow-md shadow-indigo-500/20 transition-all group" title="Ask AI Study Copilot">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300 group-hover:rotate-12 transition-transform"></i>
+              <span class="hidden sm:inline">AI Copilot</span>
+              <span class="sm:hidden">AI</span>
+            </button>
+
+            <!-- Profile Avatar Logo Button (Replaced continue as banner) -->
+            <button id="headerProfileAvatarBtn" onclick="navigateView('profile')" class="relative flex items-center justify-center p-0.5 rounded-full ring-2 ring-blue-500/30 hover:ring-blue-600 transition-all bg-white hover:scale-105" title="My Profile & Settings">
+              <img id="headerProfileLogoImg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover" alt="Profile">
+              <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+            </button>
 
             <!-- Owner Badge (Strictly visible ONLY to saurav586kumar@gmail.com) -->
             <div id="superAdminOwnerHeaderBadge" class="hidden items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold shadow-xs">
@@ -234,7 +247,7 @@
               <span>Mentor Studio Active</span>
             </div>
 
-            <!-- Google Sign-in / User Profile Button -->
+            <!-- Google Sign-in / User Profile Actions -->
             <div id="authContainer" class="flex items-center gap-2">
               <button id="googleSignInBtn" onclick="handleGoogleSignIn()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-semibold shadow-sm transition-all" title="Sign in with Google to sync study streaks & mock scores">
                 <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
@@ -242,10 +255,6 @@
                 <span class="sm:hidden">Sign In</span>
               </button>
               <div id="userProfileHeader" class="hidden flex items-center gap-2">
-                <button onclick="navigateView('profile')" class="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-gray-50 hover:bg-blue-50 border border-gray-200 transition-colors text-left" title="View & Edit Profile">
-                  <img id="userAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="w-6 h-6 rounded-full object-cover" alt="User">
-                  <span id="userNameText" class="text-xs font-bold text-gray-800 max-w-[90px] truncate">Saurav</span>
-                </button>
                 <button onclick="handleSignOut()" class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50" title="Sign Out">
                   <i data-lucide="log-out" class="w-4 h-4"></i>
                 </button>
@@ -276,10 +285,15 @@
             <span>NTA Mock Engine</span>
             <span class="px-1.5 py-0.2 text-[10px] bg-red-100 text-red-700 rounded-full font-bold">CBT</span>
           </button>
+          <button onclick="navigateView('chat')" id="nav-btn-chat" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
+            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+            <span>Live Chat & Calls</span>
+            <span class="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">Direct Owner</span>
+          </button>
           <button onclick="navigateView('mentorship')" id="nav-btn-mentorship" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="users" class="w-4 h-4"></i>
             <span>1:1 Mentorship</span>
-            <span class="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">₹5/min</span>
+            <span class="px-1.5 py-0.2 text-[10px] bg-indigo-100 text-indigo-800 rounded-full font-bold">₹5/min</span>
           </button>
           <button onclick="navigateView('forum')" id="nav-btn-forum" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="messages-square" class="w-4 h-4 text-indigo-600"></i>
@@ -1631,17 +1645,35 @@
               </div>
             </div>
 
-            <!-- Companion PDF Notes / DPP Attachments -->
+            <!-- Companion File Attachments (PDFs, DPPs, Solutions - Direct File Upload) -->
             <div class="space-y-2 pt-2 border-t border-gray-200">
-              <label class="block text-xs font-bold text-gray-700 uppercase">Attach Companion PDF Notes / DPPs</label>
-              <div id="companionPdfsList" class="space-y-2">
-                <div class="flex gap-2 text-xs">
-                  <input type="text" placeholder="Companion PDF Title (e.g. DPP #1 Solutions)" class="companion-title flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded-xl" />
-                  <input type="url" placeholder="PDF Link" class="companion-link flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded-xl" />
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-bold text-gray-700 uppercase flex items-center gap-1.5">
+                  <i data-lucide="paperclip" class="w-3.5 h-3.5 text-indigo-600"></i>
+                  <span>Attach Companion Files (DPPs, Notes, Formula Sheets)</span>
+                </label>
+                <span class="text-[11px] text-gray-500 font-medium">Upload from device (.pdf, .doc, .png) or link</span>
+              </div>
+              <div id="companionPdfsList" class="space-y-2.5">
+                <div class="companion-row p-3 bg-white border border-gray-200 rounded-xl space-y-2 text-xs">
+                  <div class="flex flex-col sm:flex-row items-center gap-2">
+                    <label class="cursor-pointer w-full sm:w-auto px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 font-bold rounded-xl flex items-center justify-center gap-1.5 shrink-0 transition-colors">
+                      <i data-lucide="upload" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span class="companion-file-label">Choose Attachment File</span>
+                      <input type="file" class="companion-file-input hidden" onchange="handleCompanionFileSelected(this)" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.txt,.zip" />
+                    </label>
+                    <input type="text" placeholder="Attachment Title (e.g. DPP #1 Handwritten Solutions.pdf)" class="companion-title flex-1 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl" />
+                    <input type="url" placeholder="Or enter URL" class="companion-link flex-1 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl" />
+                  </div>
+                  <div class="companion-file-badge hidden text-[11px] text-emerald-800 font-semibold bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-lg flex items-center justify-between">
+                    <span class="truncate companion-badge-text">File ready</span>
+                    <button type="button" onclick="clearCompanionRowFile(this)" class="text-red-500 hover:text-red-700 font-bold ml-2">Clear</button>
+                  </div>
                 </div>
               </div>
-              <button onclick="addCompanionPdfRow()" class="px-3 py-1 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700">
-                + Add Another Companion Note
+              <button type="button" onclick="addCompanionPdfRow()" class="px-3 py-1.5 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl text-xs font-semibold text-gray-700 flex items-center gap-1 shadow-xs">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>+ Add Another Attachment File</span>
               </button>
             </div>
 
@@ -1791,14 +1823,43 @@
               <p class="text-xs text-gray-500">Linked directly to your Firebase Auth UID.</p>
             </div>
 
+            <!-- Avatar Upload & Photo Picker Row -->
+            <div class="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-3">
+                <img id="profileCurrentAvatarThumb" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" class="w-12 h-12 rounded-2xl object-cover border-2 border-blue-500 shadow-xs" alt="User">
+                <div>
+                  <div class="font-bold text-gray-900">Profile Photo</div>
+                  <div class="text-[11px] text-gray-500">Upload a custom image from your device or use preset.</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <label class="cursor-pointer flex-1 sm:flex-initial px-3.5 py-2 bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-xs transition-colors">
+                  <i data-lucide="upload" class="w-3.5 h-3.5 text-blue-600"></i>
+                  <span>Change Photo from File</span>
+                  <input type="file" id="profileAvatarFileInput" accept="image/*" class="hidden" onchange="handleProfileAvatarFileSelected(event)" />
+                </label>
+              </div>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label class="block font-medium text-gray-700 mb-1">Full Name *</label>
-                <input id="profileInputName" type="text" value="Saurav Kumar" oninput="updateProfileLiveCard()" class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20" />
+                <label class="block font-semibold text-gray-700 mb-1">Full Name (Editable) *</label>
+                <input id="profileInputName" type="text" value="Saurav Kumar" oninput="updateProfileLiveCard()" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500/20" />
+                <span class="text-[10px] text-gray-400 mt-0.5 block">Your public name displayed on forum, mock leaderboards & chat.</span>
               </div>
               <div>
-                <label class="block font-medium text-gray-700 mb-1">Email Address</label>
-                <input id="profileInputEmail" type="email" value="saurav586kumar@gmail.com" readonly class="w-full px-3 py-2 bg-gray-50 text-gray-500 border border-gray-200 rounded-xl cursor-not-allowed" />
+                <label class="block font-semibold text-gray-700 mb-1 flex items-center justify-between">
+                  <span>Registered Gmail ID (Locked)</span>
+                  <span class="text-[10px] text-amber-700 font-mono font-bold">PERMANENT</span>
+                </label>
+                <div class="relative">
+                  <input id="profileInputEmail" type="email" value="saurav586kumar@gmail.com" readonly class="w-full pl-8 pr-3 py-2.5 bg-gray-100 text-gray-600 font-mono text-xs border border-gray-200 rounded-xl cursor-not-allowed select-all" />
+                  <i data-lucide="lock" class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+                </div>
+                <div class="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[10px] mt-1.5 flex items-start gap-1.5 font-medium leading-relaxed">
+                  <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5"></i>
+                  <span>Gmail ID is securely tied to your Google authentication account and cannot be modified.</span>
+                </div>
               </div>
             </div>
 
@@ -2118,12 +2179,213 @@
                 <i data-lucide="send" class="w-4 h-4"></i>
                 <span>Reply</span>
               </button>
+      <!-- =================================================================== -->
+      <!-- VIEW 9: LIVE FIREBASE CHAT SUPPORT & 1:1 CALLING HUB -->
+      <!-- =================================================================== -->
+      <section id="view-chat" class="hidden space-y-6">
+        
+        <!-- Live Chat Hub Hero Banner -->
+        <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-indigo-950 rounded-2xl p-5 sm:p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5 max-w-2xl">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 text-[11px] font-bold tracking-wider uppercase bg-white/20 backdrop-blur rounded-full text-emerald-200 flex items-center gap-1.5">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-300"></i>
+                Prepskm Live Connect
+              </span>
+              <span class="px-2.5 py-0.5 text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-full font-bold flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Firestore Real-Time Synced</span>
+              </span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-white">Live Chat Support & 1:1 Calling Hub</h1>
+            <p class="text-xs text-emerald-100/90 leading-relaxed">
+              Personal direct chat with Platform Owner (@unfiltereddsumit / Saurav) with instant audio & video call support, and an active aspirant community stream.
+            </p>
+          </div>
+
+          <!-- Quick Calling Launchers -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="startCall('audio', 'Saurav Kumar (Platform Owner)')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center gap-2 backdrop-blur transition-all">
+              <i data-lucide="phone" class="w-4 h-4 text-emerald-300"></i>
+              <span>Audio Call Owner</span>
+            </button>
+            <button onclick="startCall('video', 'Saurav Kumar (Platform Owner)')" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold shadow-md flex items-center gap-2 transition-all">
+              <i data-lucide="video" class="w-4 h-4"></i>
+              <span>Video Call Owner</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Mode Navigation Switcher -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-2 shadow-sm flex items-center gap-2">
+          <button onclick="switchChatTab('owner')" id="chat-tab-btn-owner" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-xs transition-all">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+            <span>Direct Chat with Owner (@unfiltereddsumit)</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          </button>
+          <button onclick="switchChatTab('community')" id="chat-tab-btn-community" class="flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 text-gray-600 hover:bg-gray-100 transition-all">
+            <i data-lucide="users" class="w-4 h-4 text-blue-600"></i>
+            <span>Aspirant Community Chat & Doubts</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] bg-blue-100 text-blue-800 font-bold">Live Stream</span>
+          </button>
+        </div>
+
+        <!-- ----------------------------------------------------------------- -->
+        <!-- TAB 1: DIRECT PERSONAL CHAT WITH OWNER -->
+        <!-- ----------------------------------------------------------------- -->
+        <div id="chatContainer-owner" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[600px]">
+          
+          <!-- Owner Chat Header -->
+          <div class="p-4 bg-gray-50/80 border-b border-gray-200 flex items-center justify-between gap-3 shrink-0">
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" class="w-11 h-11 rounded-2xl object-cover border-2 border-emerald-500 shadow-xs" alt="Saurav Kumar">
+                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h3 class="font-bold text-sm text-gray-900">Saurav Kumar (@unfiltereddsumit)</h3>
+                  <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200" title="Verified Prepskm Platform Owner">
+                    <svg class="w-3.5 h-3.5 text-blue-600 fill-blue-600" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <span>Owner Verified</span>
+                  </span>
+                </div>
+                <div class="text-[11px] text-gray-500 flex items-center gap-2">
+                  <span class="text-emerald-700 font-semibold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Active Online
+                  </span>
+                  <span>•</span>
+                  <span>Direct Prepskm Mentorship Support</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Call Launcher Buttons Inside Chat Header -->
+            <div class="flex items-center gap-2">
+              <button onclick="startCall('audio', 'Saurav Kumar (Platform Owner)')" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 flex items-center gap-1.5 transition-colors" title="Normal Audio Call">
+                <i data-lucide="phone" class="w-4 h-4 text-emerald-600"></i>
+                <span class="hidden sm:inline">Normal Call</span>
+              </button>
+              <button onclick="startCall('video', 'Saurav Kumar (Platform Owner)')" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-bold border border-blue-200 flex items-center gap-1.5 transition-colors" title="1:1 Video Call">
+                <i data-lucide="video" class="w-4 h-4 text-blue-600"></i>
+                <span class="hidden sm:inline">Video Call</span>
+              </button>
             </div>
           </div>
 
-        </div>
-      </div>
+          <!-- Messages Stream (Scrollable) -->
+          <div id="ownerChatMessagesList" class="flex-1 p-4 overflow-y-auto space-y-3.5 bg-gray-50/30">
+            <!-- Dynamically populated messages -->
+          </div>
 
+          <!-- Selected Image Preview Chip -->
+          <div id="ownerChatImagePreviewBox" class="hidden px-4 py-2 bg-blue-50/70 border-t border-blue-100 flex items-center justify-between text-xs text-blue-900 shrink-0">
+            <div class="flex items-center gap-2">
+              <img id="ownerChatPreviewThumb" src="" class="w-10 h-10 object-cover rounded-lg border border-blue-200" alt="Preview">
+              <span id="ownerChatPreviewFileName" class="truncate font-semibold max-w-xs">image.png</span>
+            </div>
+            <button onclick="clearOwnerChatSelectedImage()" class="text-red-500 hover:text-red-700 font-bold text-xs p-1">Remove</button>
+          </div>
+
+          <!-- Chat Input Bar -->
+          <div class="p-3 bg-white border-t border-gray-200 flex items-center gap-2 shrink-0">
+            <label class="p-2.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl cursor-pointer transition-colors" title="Attach Doubt Screenshot or Image">
+              <i data-lucide="image" class="w-5 h-5"></i>
+              <input type="file" id="ownerChatFileInput" accept="image/*" class="hidden" onchange="handleOwnerChatImageSelected(event)" />
+            </label>
+            <input 
+              id="ownerChatTextInput" 
+              type="text" 
+              placeholder="Message Saurav directly (ask doubts, schedule call, or send screenshots)..." 
+              class="flex-1 px-4 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:outline-none" 
+              onkeydown="if(event.key === 'Enter') sendOwnerDirectMessage();"
+            />
+            <button onclick="sendOwnerDirectMessage()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Send</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- ----------------------------------------------------------------- -->
+        <!-- TAB 2: ASPIRANT & MENTOR COMMUNITY LIVE CHAT STREAM -->
+        <!-- ----------------------------------------------------------------- -->
+        <div id="chatContainer-community" class="hidden bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[600px]">
+          
+          <!-- Community Header -->
+          <div class="p-4 bg-gray-50/80 border-b border-gray-200 flex items-center justify-between gap-3 shrink-0">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                <i data-lucide="messages-square" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-bold text-sm text-gray-900">Prepskm Aspirant Community</h3>
+                  <span class="px-2 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 rounded-full">Public Room</span>
+                </div>
+                <div class="text-[11px] text-gray-500">Post study questions, share notes images, like solutions & reply to peers in real time.</div>
+              </div>
+            </div>
+
+            <div class="text-right text-[11px] text-gray-500 hidden sm:block">
+              <div class="font-bold text-emerald-600 flex items-center gap-1 justify-end">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>240+ Active Aspirants</span>
+              </div>
+              <div>Cloud Firestore Sync</div>
+            </div>
+          </div>
+
+          <!-- Community Messages Stream (Scrollable) -->
+          <div id="communityChatMessagesList" class="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50/30">
+            <!-- Dynamically populated community messages -->
+          </div>
+
+          <!-- Active Quote-Reply Banner (Displayed when user clicks 'Reply') -->
+          <div id="communityReplyBanner" class="hidden px-4 py-2 bg-indigo-50 border-t border-indigo-200 text-xs text-indigo-900 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2 truncate">
+              <i data-lucide="reply" class="w-4 h-4 text-indigo-600 shrink-0"></i>
+              <div class="truncate">
+                Replying to <strong id="replyAuthorTarget">Author</strong>: 
+                <span id="replySnippetTarget" class="italic text-gray-600 truncate">Message snippet...</span>
+              </div>
+            </div>
+            <button onclick="cancelCommunityReply()" class="text-indigo-700 hover:text-indigo-950 font-bold px-2 py-0.5">✕ Cancel</button>
+          </div>
+
+          <!-- Selected Image Preview Chip -->
+          <div id="communityChatImagePreviewBox" class="hidden px-4 py-2 bg-blue-50 border-t border-blue-100 flex items-center justify-between text-xs text-blue-900 shrink-0">
+            <div class="flex items-center gap-2">
+              <img id="communityChatPreviewThumb" src="" class="w-10 h-10 object-cover rounded-lg border border-blue-200" alt="Preview">
+              <span id="communityChatPreviewFileName" class="truncate font-semibold max-w-xs">image.png</span>
+            </div>
+            <button onclick="clearCommunityChatSelectedImage()" class="text-red-500 hover:text-red-700 font-bold text-xs p-1">Remove</button>
+          </div>
+
+          <!-- Community Chat Input Bar -->
+          <div class="p-3 bg-white border-t border-gray-200 flex items-center gap-2 shrink-0">
+            <label class="p-2.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl cursor-pointer transition-colors" title="Attach Image or Question Photo">
+              <i data-lucide="image" class="w-5 h-5"></i>
+              <input type="file" id="communityChatFileInput" accept="image/*" class="hidden" onchange="handleCommunityChatImageSelected(event)" />
+            </label>
+            <input 
+              id="communityChatTextInput" 
+              type="text" 
+              placeholder="Ask a question, share an update, or reply to peers..." 
+              class="flex-1 px-4 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:outline-none" 
+              onkeydown="if(event.key === 'Enter') sendCommunityChatMessage();"
+            />
+            <button onclick="sendCommunityChatMessage()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Post</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
 
     </main>
 
@@ -2340,45 +2602,362 @@
         </div>
 
         <div class="pt-2 space-y-2">
-          <button onclick="handleGoogleSignIn()" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white rounded-xl text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all">
-            <i data-lucide="log-in" class="w-4 h-4"></i>
-            <span>Sign in with Google</span>
-          </button>
-          <button onclick="closeGuestSignupReminder()" class="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold transition-all">
-            Maybe Later / Continue as Guest
+    <!-- =================================================================== -->
+    <!-- BIG THEATER VIDEO PLAYER MODAL (WITH DRM DOWNLOAD PRIVACY PROTECTION) -->
+    <!-- =================================================================== -->
+    <div id="bigVideoPlayerModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
+      <div class="bg-gray-950 text-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col border border-gray-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        
+        <!-- Big Video Player Top Bar -->
+        <div class="px-5 py-3.5 border-b border-gray-800 flex items-center justify-between gap-3 bg-gray-900/90 shrink-0">
+          <div class="flex items-center gap-2.5 truncate">
+            <span class="p-1.5 bg-red-600/20 text-red-400 rounded-lg shrink-0">
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            </span>
+            <div class="truncate">
+              <h2 id="bigVideoTitle" class="text-sm sm:text-base font-extrabold text-white truncate">Lecture Title</h2>
+              <div class="text-[11px] text-gray-400 flex items-center gap-2 truncate">
+                <span id="bigVideoSubjectExam" class="text-blue-400 font-semibold">Physics • JEE Main</span>
+                <span>•</span>
+                <span class="text-emerald-400 flex items-center gap-1 font-mono text-[10px]">
+                  <i data-lucide="shield" class="w-3 h-3"></i>
+                  <span>Protected Stream</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <button onclick="closeBigVideoPlayer()" class="p-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors" title="Close Player">
+            <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
+
+        <!-- Player Workspace with Right-Click / Download Prevention Layer -->
+        <div class="relative bg-black aspect-video flex items-center justify-center overflow-hidden shrink-0 select-none" oncontextmenu="return false;">
+          
+          <!-- Protected HTML5 Video Player -->
+          <video 
+            id="bigVideoPlayerElement" 
+            controls 
+            controlsList="nodownload nofullscreen" 
+            disablePictureInPicture 
+            oncontextmenu="return false;" 
+            class="w-full h-full object-contain bg-black"
+          ></video>
+
+          <!-- Fallback Embed Iframe for YouTube/Drive -->
+          <iframe 
+            id="bigVideoIframeElement" 
+            class="w-full h-full border-0 hidden" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+          ></iframe>
+
+          <!-- Floating DRM Security Watermark (Prevents unauthorized recording & download) -->
+          <div class="absolute top-3 right-3 bg-black/75 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-[10px] text-white/90 font-mono pointer-events-none select-none flex items-center gap-1.5 shadow-lg">
+            <i data-lucide="lock" class="w-3 h-3 text-emerald-400"></i>
+            <span>Prepskm DRM Stream • @unfiltereddsumit</span>
+          </div>
+        </div>
+
+        <!-- Video Info & Companion Attachments Section (Scrollable) -->
+        <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-gray-900/60">
+          
+          <!-- Mentor Profile & Action Row -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-800 pb-4">
+            <div class="flex items-center gap-3">
+              <img id="bigVideoMentorAvatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" class="w-11 h-11 rounded-full object-cover border-2 border-blue-500" alt="Mentor">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span id="bigVideoMentorName" class="font-bold text-sm text-white">Sumit Kumar (@unfiltereddsumit)</span>
+                  <!-- Mentor Verified Blue Tick -->
+                  <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30" title="Verified Prepskm Mentor">
+                    <svg class="w-3.5 h-3.5 text-blue-400 fill-blue-400" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <span>Verified Mentor</span>
+                  </span>
+                </div>
+                <div class="text-[11px] text-gray-400">Head of JEE & NEET Physics Mentorship • AIR Ranker Faculty</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="askAiAboutCurrentVideo()" class="px-3.5 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/40 text-purple-200 border border-purple-500/30 text-xs font-bold flex items-center gap-1.5 transition-all">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
+                <span>Ask AI About Lecture</span>
+              </button>
+              <button onclick="discussCurrentVideoInChat()" class="px-3.5 py-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/40 text-emerald-200 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition-all">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-300"></i>
+                <span>Discuss in Chat</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Companion Attachments List (PDFs, DPPs, Notes uploaded from file) -->
+          <div class="space-y-2">
+            <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="paperclip" class="w-4 h-4 text-blue-400"></i>
+              <span>Companion Notes, DPPs & File Attachments</span>
+            </h3>
+
+            <div id="bigVideoAttachmentsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <!-- Dynamically populated files with view/download buttons -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
 
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 flex justify-around py-2 z-40 shadow-lg text-[10px] font-semibold text-gray-500">
-      <button onclick="navigateView('home')" id="mob-btn-home" class="flex flex-col items-center gap-0.5 text-blue-600">
+    <!-- =================================================================== -->
+    <!-- INTERACTIVE 1:1 NORMAL AUDIO & HD VIDEO CALLING MODAL -->
+    <!-- =================================================================== -->
+    <div id="callInterfaceModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 select-none">
+      <div class="bg-gray-900 rounded-3xl max-w-2xl w-full border border-gray-800 shadow-2xl flex flex-col overflow-hidden text-white relative">
+        
+        <!-- Call Header -->
+        <div class="px-5 py-3.5 bg-gray-950/80 border-b border-gray-800 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+              <i id="callHeaderTypeIcon" data-lucide="video" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 id="callParticipantNameDisplay" class="font-bold text-sm text-white">Saurav Kumar</h3>
+                <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                  <svg class="w-3 h-3 text-blue-400 fill-blue-400" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  Verified
+                </span>
+              </div>
+              <div class="text-[11px] text-gray-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="callStatusLabel">Encrypted HD Audio & Video Active</span>
+                <span>•</span>
+                <span id="callTimerDisplay" class="font-mono font-bold text-emerald-400">00:00</span>
+              </div>
+            </div>
+          </div>
+          <button onclick="endActiveCall()" class="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white" title="Minimize / Hang Up">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Call Center Screen Stage -->
+        <div class="relative bg-gradient-to-b from-gray-950 to-gray-900 aspect-video flex items-center justify-center overflow-hidden">
+          
+          <!-- Remote Display: Animated Caller Stage -->
+          <div id="callRemoteVideoStage" class="flex flex-col items-center justify-center space-y-4 p-6 text-center">
+            
+            <div class="relative">
+              <!-- Pulsing Frequency Soundwave Rings -->
+              <div class="absolute -inset-4 rounded-full bg-emerald-500/20 animate-ping pointer-events-none"></div>
+              <div class="absolute -inset-8 rounded-full bg-blue-500/10 animate-pulse pointer-events-none"></div>
+              
+              <img id="callRemoteAvatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&auto=format&fit=crop&q=80" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-emerald-500 shadow-2xl relative z-10" alt="Remote Caller">
+            </div>
+
+            <div class="space-y-1 relative z-10">
+              <h4 id="callRemoteNameSubtitle" class="font-extrabold text-base sm:text-lg text-white">Saurav Kumar (@unfiltereddsumit)</h4>
+              <p class="text-xs text-gray-400">1:1 Direct Consultation • High Fidelity WebRTC Stream</p>
+              
+              <!-- Frequency Bars Visualizer Simulation -->
+              <div class="flex items-center justify-center gap-1 pt-2 h-6">
+                <span class="w-1 bg-emerald-400 rounded-full animate-pulse h-3"></span>
+                <span class="w-1 bg-emerald-400 rounded-full animate-pulse h-5 delay-75"></span>
+                <span class="w-1 bg-emerald-400 rounded-full animate-pulse h-4 delay-100"></span>
+                <span class="w-1 bg-emerald-400 rounded-full animate-pulse h-6 delay-150"></span>
+                <span class="w-1 bg-emerald-400 rounded-full animate-pulse h-2 delay-200"></span>
+                <span class="w-1 bg-emerald-400 rounded-full animate-pulse h-5 delay-300"></span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Self Camera Feed (PIP Box) -->
+          <div id="callSelfVideoContainer" class="absolute bottom-4 right-4 z-20 w-28 h-20 sm:w-40 sm:h-28 rounded-2xl overflow-hidden border-2 border-emerald-500/70 shadow-2xl bg-black">
+            <video id="callSelfVideoFeed" autoplay playsinline muted class="w-full h-full object-cover"></video>
+            <div class="absolute bottom-1 left-2 text-[9px] bg-black/60 px-1.5 rounded font-mono text-white">You</div>
+          </div>
+
+        </div>
+
+        <!-- Call Action Controls Toolbar -->
+        <div class="p-4 bg-gray-950 border-t border-gray-800 flex items-center justify-center gap-3 sm:gap-4">
+          
+          <!-- Mute Microphone -->
+          <button id="callToggleMicBtn" onclick="toggleCallMicrophone()" class="p-3.5 rounded-2xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-md" title="Mute/Unmute Mic">
+            <i id="callMicIcon" data-lucide="mic" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Toggle Camera -->
+          <button id="callToggleCameraBtn" onclick="toggleCallCamera()" class="p-3.5 rounded-2xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-md" title="Camera On/Off">
+            <i id="callCameraIcon" data-lucide="video" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Switch Mode (Audio <-> Video) -->
+          <button id="callSwitchModeBtn" onclick="switchActiveCallMode()" class="px-4 py-3 rounded-2xl bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 text-xs font-bold flex items-center gap-1.5 transition-all">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span id="callSwitchModeLabel">Audio Mode</span>
+          </button>
+
+          <!-- Hang Up / End Call (Red) -->
+          <button onclick="endActiveCall()" class="px-6 py-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs font-black shadow-lg shadow-red-600/30 flex items-center gap-2 transition-all hover:scale-105">
+            <i data-lucide="phone-off" class="w-5 h-5"></i>
+            <span>End Call</span>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- PREPSKM AI STUDY COPILOT & DOUBT SOLVER EXPANSIVE MODAL -->
+    <!-- =================================================================== -->
+    <div id="aiCopilotModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+      <div class="bg-white rounded-3xl max-w-4xl w-full h-[88vh] flex flex-col border border-gray-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        
+        <!-- AI Header -->
+        <div class="p-4 bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 text-white flex items-center justify-between gap-3 shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur text-amber-300 flex items-center justify-center shadow-sm">
+              <i data-lucide="sparkles" class="w-6 h-6 animate-pulse"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-extrabold text-base text-white">Prepskm AI Study Copilot</h3>
+                <span class="px-2 py-0.5 text-[10px] bg-white/20 text-white rounded-full font-mono font-bold">Gemini Powered</span>
+              </div>
+              <p class="text-xs text-purple-100">Step-by-step JEE & NEET doubt solver, formula derivations, and mock error diagnostics.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="clearAiChatConversation()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium flex items-center gap-1" title="Clear Chat">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Clear</span>
+            </button>
+            <button onclick="closeAiCopilotModal()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Prompt Quick-Launch Chips Bar -->
+        <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-200 flex items-center gap-2 overflow-x-auto shrink-0 text-xs">
+          <span class="text-gray-400 font-bold uppercase text-[10px] shrink-0">Quick Doubts:</span>
+          <button onclick="sendQuickAiPrompt('Solve step-by-step: A solid cylinder rolls down an incline of angle θ. Calculate the acceleration and static friction magnitude.')" class="px-3 py-1 rounded-xl bg-white border border-gray-200 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 shrink-0 transition-colors">
+            ⚡ Rotational Rolling Friction
+          </button>
+          <button onclick="sendQuickAiPrompt('Explain SN1 vs SN2 reaction mechanisms with stereochemical inversion, solvent choice, and rate laws.')" class="px-3 py-1 rounded-xl bg-white border border-gray-200 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 shrink-0 transition-colors">
+            🧪 SN1 vs SN2 Mechanisms
+          </button>
+          <button onclick="sendQuickAiPrompt('Provide the King\'s Property shortcut for definite integrals of symmetric trigonometric functions with proof.')" class="px-3 py-1 rounded-xl bg-white border border-gray-200 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 shrink-0 transition-colors">
+            📐 Integration Shortcuts
+          </button>
+          <button onclick="sendQuickAiPrompt('List top 10 highest-yield NCERT Biology chapters for 360/360 in NEET UG.')" class="px-3 py-1 rounded-xl bg-white border border-gray-200 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 shrink-0 transition-colors">
+            🧬 High Yield NEET Biology
+          </button>
+        </div>
+
+        <!-- AI Messages Stream (Scrollable) -->
+        <div id="aiChatMessagesStream" class="flex-1 p-5 overflow-y-auto space-y-4 bg-gray-50/50">
+          <!-- Dynamically populated AI conversation -->
+        </div>
+
+        <!-- Selected Question Doubt Image Preview -->
+        <div id="aiDoubtImagePreviewChip" class="hidden px-4 py-2 bg-purple-50 border-t border-purple-200 text-xs text-purple-900 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2">
+            <img id="aiDoubtPreviewImg" src="" class="w-10 h-10 object-cover rounded-lg border border-purple-300" alt="Doubt Preview">
+            <div>
+              <div class="font-bold">Attached Doubt Image</div>
+              <div id="aiDoubtImageName" class="text-[10px] text-gray-500 truncate max-w-xs">question_screenshot.png</div>
+            </div>
+          </div>
+          <button onclick="clearAiDoubtImage()" class="text-red-500 hover:text-red-700 font-bold p-1">Remove</button>
+        </div>
+
+        <!-- AI Input Bar -->
+        <div class="p-3 bg-white border-t border-gray-200 flex items-center gap-2 shrink-0">
+          <label class="p-2.5 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-xl cursor-pointer transition-colors" title="Upload Question Photo or Formula Screenshot">
+            <i data-lucide="camera" class="w-5 h-5"></i>
+            <input type="file" id="aiDoubtImageFileInput" accept="image/*" class="hidden" onchange="handleAiDoubtImageSelected(event)" />
+          </label>
+          <textarea 
+            id="aiChatInputText" 
+            rows="1" 
+            placeholder="Ask any JEE or NEET doubt, request concept explanation, or upload a question photo..." 
+            class="flex-1 px-4 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:outline-none resize-none max-h-24"
+            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendAiChatMessage(); }"
+          ></textarea>
+          <button onclick="sendAiChatMessage()" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition-all">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Ask AI</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- UNIVERSAL FULL-SCREEN SEARCH MODAL (WEBSITE SEARCH INTEGRATION) -->
+    <!-- =================================================================== -->
+    <div id="universalSearchModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center p-4 pt-16">
+      <div class="bg-white rounded-3xl max-w-2xl w-full border border-gray-200 shadow-2xl p-5 space-y-4">
+        
+        <div class="flex items-center gap-2 border-b border-gray-200 pb-3">
+          <i data-lucide="search" class="w-5 h-5 text-blue-600"></i>
+          <input 
+            id="modalSearchInput" 
+            type="text" 
+            placeholder="Search PYQs, formula sheets, mock tests, lectures, or mentors..." 
+            class="w-full text-sm font-semibold bg-transparent focus:outline-none placeholder-gray-400"
+            oninput="handleModalSearchQuery(this.value)"
+          />
+          <button onclick="closeUniversalSearchModal()" class="text-gray-400 hover:text-gray-600 p-1">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div id="modalSearchResultsContainer" class="max-h-80 overflow-y-auto space-y-1.5 text-xs">
+          <div class="p-4 text-center text-gray-400">Type a keyword like "Kinematics", "Organic", "Mock Test", or "Formula" to search.</div>
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] text-gray-400 pt-2 border-t border-gray-100">
+          <span>Search across 500+ PYQs, Video Lectures & Formula Sheets</span>
+          <kbd class="px-1.5 py-0.5 font-mono bg-gray-100 rounded text-gray-500">ESC to close</kbd>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Enhanced Modern Icon Navigation) -->
+    <nav class="fixed bottom-0 left-0 right-0 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 flex justify-around items-center py-2 z-40 shadow-xl text-[10px] font-semibold text-gray-500 px-1">
+      <button onclick="navigateView('home')" id="mob-btn-home" class="flex flex-col items-center gap-0.5 text-blue-600 transition-colors">
         <i data-lucide="home" class="w-4 h-4"></i>
         <span>Home</span>
       </button>
-      <button onclick="navigateView('materials')" id="mob-btn-materials" class="flex flex-col items-center gap-0.5 hover:text-gray-900">
+      <button onclick="navigateView('materials')" id="mob-btn-materials" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
         <i data-lucide="book-open" class="w-4 h-4"></i>
         <span>Notes</span>
       </button>
-      <button onclick="navigateView('mock-test')" id="mob-btn-mock-test" class="flex flex-col items-center gap-0.5 hover:text-gray-900">
+      <button onclick="navigateView('mock-test')" id="mob-btn-mock-test" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
         <i data-lucide="timer" class="w-4 h-4"></i>
-        <span>CBT</span>
+        <span>CBT Mock</span>
       </button>
-      <button onclick="navigateView('forum')" id="mob-btn-forum" class="flex flex-col items-center gap-0.5 hover:text-gray-900">
-        <i data-lucide="messages-square" class="w-4 h-4"></i>
-        <span>Forum</span>
+      <button onclick="navigateView('chat')" id="mob-btn-chat" class="relative flex flex-col items-center gap-0.5 hover:text-emerald-700 transition-colors">
+        <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+        <span>Live Chat</span>
+        <span class="absolute top-0 right-1 w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
       </button>
-      <button onclick="navigateView('mentorship')" id="mob-btn-mentorship" class="flex flex-col items-center gap-0.5 hover:text-gray-900">
-        <i data-lucide="ticket" class="w-4 h-4"></i>
-        <span>Mentor</span>
+      <button onclick="navigateView('mentorship')" id="mob-btn-mentorship" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
+        <i data-lucide="phone-call" class="w-4 h-4 text-indigo-600"></i>
+        <span>Mentors</span>
       </button>
-      <button onclick="navigateView('profile')" id="mob-btn-profile" class="flex flex-col items-center gap-0.5 hover:text-gray-900">
-        <i data-lucide="user-circle" class="w-4 h-4"></i>
+      <button onclick="navigateView('profile')" id="mob-btn-profile" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
+        <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
         <span>Profile</span>
       </button>
-      <button onclick="navigateView('admin')" id="mob-btn-admin" class="hidden flex flex-col items-center gap-0.5 hover:text-gray-900">
-        <i data-lucide="shield" class="w-4 h-4"></i>
+      <button onclick="navigateView('admin')" id="mob-btn-admin" class="hidden flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
+        <i data-lucide="shield" class="w-4 h-4 text-purple-600"></i>
         <span>Admin</span>
       </button>
     </nav>
@@ -2666,18 +3245,65 @@
           }
         ],
         mockResults: [],
-        mentorshipTokens: [
+        ownerDirectChats: [
           {
-            tokenCode: 'PSKM-JEE-84920',
-            studentName: 'Aman Verma',
-            studentEmail: 'aman@example.com',
-            studentTelegram: '@aman_jee',
-            mentorName: 'Sumit Kumar (@unfiltereddsumit)',
-            durationMinutes: 30,
-            amountPaid: 150,
-            targetExam: 'JEE 2027',
-            status: 'AUTHENTIC',
-            createdAt: '2026-11-03T09:30:00Z'
+            id: "msg-owner-welcome",
+            senderId: "uid-mentor-sumit",
+            senderName: "Saurav Kumar (@unfiltereddsumit)",
+            senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+            text: "Namaste Aspirant! Welcome to Prepskm. I am Saurav (@unfiltereddsumit). You can directly chat with me here, ask any JEE/NEET physics doubt, send question photos, or tap the Call buttons above for a 1:1 Normal Audio or Video consultation!",
+            imageUrl: null,
+            isOwner: true,
+            timestamp: new Date(Date.now() - 3600000).toISOString()
+          }
+        ],
+        communityMessages: [
+          {
+            id: "cmsg-1",
+            senderId: "uid-mentor-sumit",
+            senderName: "Sumit Kumar (@unfiltereddsumit)",
+            senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+            isMentor: true,
+            text: "Daily Tip for JEE Main 2027: Solve at least 15 Numerical NAT questions under timed 3-minute intervals. Do NOT guess in NAT to protect your +4 marks!",
+            imageUrl: null,
+            likes: ["uid-saurav586", "user-101", "user-102"],
+            replyTo: null,
+            timestamp: new Date(Date.now() - 7200000).toISOString()
+          },
+          {
+            id: "cmsg-2",
+            senderId: "user-103",
+            senderName: "Rohan Verma",
+            senderAvatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+            isMentor: false,
+            text: "Sir, what is the best order of subjects in the CBT mock? Should I start with Chemistry or Physics?",
+            imageUrl: null,
+            likes: ["uid-saurav586"],
+            replyTo: null,
+            timestamp: new Date(Date.now() - 3600000).toISOString()
+          },
+          {
+            id: "cmsg-3",
+            senderId: "uid-mentor-sumit",
+            senderName: "Sumit Kumar (@unfiltereddsumit)",
+            senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+            isMentor: true,
+            text: "Always Chemistry first! Spend 35-40 min to secure 70-80 marks quickly, then 55 min on Physics, and remaining time on Mathematics.",
+            imageUrl: null,
+            likes: ["user-103", "uid-saurav586", "user-104"],
+            replyTo: {
+              authorName: "Rohan Verma",
+              snippet: "Sir, what is the best order of subjects in the CBT mock? Should I start with Chemistry or Physics?"
+            },
+            timestamp: new Date(Date.now() - 1800000).toISOString()
+          }
+        ],
+        aiChatHistory: [
+          {
+            role: "ai",
+            text: "Hello! I am your **Prepskm AI Study Copilot** trained on official NTA JEE & NEET syllabi. Ask me any doubt in Physics, Chemistry, Mathematics, or Biology, or attach a question image for a step-by-step breakdown!",
+            imageUrl: null,
+            timestamp: new Date().toISOString()
           }
         ]
       };
@@ -3064,7 +3690,7 @@
           viewName = 'home';
         }
 
-        const views = ['home', 'materials', 'mock-test', 'mentorship', 'mentor-studio', 'admin', 'profile', 'forum'];
+        const views = ['home', 'materials', 'mock-test', 'mentorship', 'mentor-studio', 'admin', 'profile', 'forum', 'chat'];
         views.forEach(v => {
           const sec = document.getElementById(`view-${v}`);
           if (sec) sec.classList.add('hidden');
@@ -3074,7 +3700,7 @@
             navBtn.classList.add('hover:text-gray-900', 'hover:bg-gray-100');
           }
           const mobBtn = document.getElementById(`mob-btn-${v}`);
-          if (mobBtn) mobBtn.classList.remove('text-blue-600');
+          if (mobBtn) mobBtn.classList.remove('text-blue-600', 'text-emerald-700');
         });
 
         const activeSec = document.getElementById(`view-${viewName}`);
@@ -3087,7 +3713,10 @@
         }
 
         const activeMob = document.getElementById(`mob-btn-${viewName}`);
-        if (activeMob) activeMob.classList.add('text-blue-600');
+        if (activeMob) {
+          if (viewName === 'chat') activeMob.classList.add('text-emerald-700', 'font-bold');
+          else activeMob.classList.add('text-blue-600');
+        }
 
         if (viewName === 'admin' && subTab) {
           switchAdminTab(subTab);
@@ -3100,6 +3729,7 @@
         if (viewName === 'admin') renderAdminView();
         if (viewName === 'profile') renderUserProfileView();
         if (viewName === 'forum') renderForumView();
+        if (viewName === 'chat') renderChatView();
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
         lucide.createIcons();
@@ -4984,7 +5614,13 @@
               <div class="flex items-center gap-3">
                 <img src="${m.avatar}" class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-xs" alt="${m.fullName}">
                 <div>
-                  <h3 class="font-bold text-sm text-gray-900">${m.fullName}</h3>
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-sm text-gray-900">${m.fullName}</h3>
+                    <!-- Verified Blue Tick -->
+                    <span class="inline-flex items-center text-blue-600" title="Verified Prepskm Mentor">
+                      <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </span>
+                  </div>
                   <div class="text-[11px] text-blue-600 font-semibold">${m.telegram}</div>
                 </div>
               </div>
@@ -4992,17 +5628,39 @@
                 ${m.categories.map(c => `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100">${c}</span>`).join('')}
               </div>
               <p class="text-xs text-gray-600 leading-relaxed">${m.bio}</p>
-              <div class="text-[11px] text-gray-500 font-medium">
+              <div class="text-[11px] text-gray-500 font-medium space-y-0.5">
                 <div>🏆 <strong>Track Record:</strong> ${m.experience}</div>
                 <div>✨ <strong>Highlights:</strong> ${m.achievements}</div>
               </div>
             </div>
 
-            <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <span class="text-xs font-extrabold text-emerald-700">₹5 / min</span>
-              <button onclick="bookSpecificMentor('${m.fullName}')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs">
-                Book 1:1 Call
-              </button>
+            <div class="pt-3 border-t border-gray-100 space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-extrabold text-emerald-700">₹5 / min Consultation</span>
+                <span class="text-gray-400 text-[11px]">Instant Pass</span>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="startCall('audio', '${m.fullName.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold border border-emerald-200 flex items-center justify-center gap-1 transition-colors">
+                  <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  <span>Audio Call</span>
+                </button>
+                <button onclick="startCall('video', '${m.fullName.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-xl text-xs font-bold border border-blue-200 flex items-center justify-center gap-1 transition-colors">
+                  <i data-lucide="video" class="w-3.5 h-3.5 text-blue-600"></i>
+                  <span>Video Call</span>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button onclick="navigateView('chat'); switchChatTab('owner');" class="flex-1 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-colors">
+                  <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                  <span>Direct Chat</span>
+                </button>
+                <button onclick="bookSpecificMentor('${m.fullName.replace(/'/g, "\\'")}')" class="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1 transition-colors">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                  <span>Book Pass</span>
+                </button>
+              </div>
             </div>
           </div>
         `).join('');
@@ -5064,6 +5722,85 @@
         list.appendChild(div);
       }
 
+      function renderVerifiedBadge(label = 'Verified Mentor') {
+        return `
+          <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200" title="${label}">
+            <svg class="w-3.5 h-3.5 text-blue-600 fill-blue-600" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span class="font-bold">${label}</span>
+          </span>
+        `;
+      }
+
+      function handleCompanionFileSelected(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const row = input.closest('.companion-row');
+        if (!row) return;
+
+        const label = row.querySelector('.companion-file-label');
+        const badge = row.querySelector('.companion-file-badge');
+        const badgeText = row.querySelector('.companion-badge-text');
+        const titleInp = row.querySelector('.companion-title');
+
+        const sizeStr = (file.size / 1024).toFixed(0) + ' KB';
+        if (label) label.innerText = file.name.substring(0, 18) + '...';
+        if (badge) badge.classList.remove('hidden');
+        if (badgeText) badgeText.innerText = `Selected File: ${file.name} (${sizeStr})`;
+        if (titleInp && !titleInp.value) {
+          titleInp.value = file.name;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          row._attachedFileData = {
+            name: file.name,
+            size: sizeStr,
+            type: file.type || 'application/pdf',
+            dataUrl: e.target.result
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function clearCompanionRowFile(btn) {
+        const row = btn.closest('.companion-row');
+        if (!row) return;
+        row._attachedFileData = null;
+        const input = row.querySelector('.companion-file-input');
+        if (input) input.value = '';
+        const badge = row.querySelector('.companion-file-badge');
+        if (badge) badge.classList.add('hidden');
+        const label = row.querySelector('.companion-file-label');
+        if (label) label.innerText = 'Choose Attachment File';
+      }
+
+      function addCompanionPdfRow() {
+        const list = document.getElementById('companionPdfsList');
+        if (!list) return;
+        const div = document.createElement('div');
+        div.className = "companion-row p-3 bg-white border border-gray-200 rounded-xl space-y-2 text-xs";
+        div.innerHTML = `
+          <div class="flex flex-col sm:flex-row items-center gap-2">
+            <label class="cursor-pointer w-full sm:w-auto px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 font-bold rounded-xl flex items-center justify-center gap-1.5 shrink-0 transition-colors">
+              <i data-lucide="upload" class="w-3.5 h-3.5 text-indigo-600"></i>
+              <span class="companion-file-label">Choose Attachment File</span>
+              <input type="file" class="companion-file-input hidden" onchange="handleCompanionFileSelected(this)" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.txt,.zip" />
+            </label>
+            <input type="text" placeholder="Attachment Title (e.g. DPP #2 Solutions.pdf)" class="companion-title flex-1 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl" />
+            <input type="url" placeholder="Or enter URL" class="companion-link flex-1 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl" />
+            <button type="button" onclick="this.closest('.companion-row').remove()" class="p-2 text-gray-400 hover:text-red-600">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="companion-file-badge hidden text-[11px] text-emerald-800 font-semibold bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-lg flex items-center justify-between">
+            <span class="truncate companion-badge-text">File ready</span>
+            <button type="button" onclick="clearCompanionRowFile(this)" class="text-red-500 hover:text-red-700 font-bold ml-2">Clear</button>
+          </div>
+        `;
+        list.appendChild(div);
+        lucide.createIcons();
+      }
+
       function submitNewVideoLecture() {
         const title = document.getElementById('videoUploadTitle').value.trim();
         const mentorId = document.getElementById('videoUploadMentorSelect').value;
@@ -5079,15 +5816,22 @@
         }
 
         const mentor = state.mentors.find(m => m.id === mentorId);
-        const titles = document.querySelectorAll('.companion-title');
-        const links = document.querySelectorAll('.companion-link');
+        const rows = document.querySelectorAll('#companionPdfsList .companion-row');
         const companions = [];
 
-        titles.forEach((t, i) => {
-          const val = t.value.trim();
-          const link = links[i]?.value.trim();
-          if (val && link) {
-            companions.push({ title: val, url: link });
+        rows.forEach(r => {
+          const t = r.querySelector('.companion-title')?.value.trim();
+          const link = r.querySelector('.companion-link')?.value.trim();
+          const fileData = r._attachedFileData || null;
+
+          if (t || fileData || link) {
+            companions.push({
+              title: t || (fileData ? fileData.name : 'Companion File'),
+              url: fileData ? fileData.dataUrl : (link || '#'),
+              fileName: fileData ? fileData.name : null,
+              fileSize: fileData ? fileData.size : null,
+              isFile: !!fileData
+            });
           }
         });
 
@@ -5095,13 +5839,14 @@
           id: 'v-' + Date.now(),
           title,
           mentorId,
-          mentorName: mentor ? mentor.fullName : 'Mentor',
+          mentorName: mentor ? mentor.fullName : 'Sumit Kumar (@unfiltereddsumit)',
           videoUrl,
           subject: 'Physics',
           exam: 'JEE',
           isFileUpload: !!selectedVideoFile,
           fileName: selectedVideoFile ? selectedVideoFile.name : null,
-          companionPdfs: companions
+          companionPdfs: companions,
+          createdAt: new Date().toISOString()
         };
 
         state.videos.unshift(newVid);
@@ -5112,41 +5857,192 @@
         document.getElementById('videoUploadUrl').value = '';
         clearSelectedVideoFile();
         renderFeaturedVideos();
-        showAppToast(`Video Lecture "${title}" published in video file format!`, 'success');
+        showAppToast(`Video Lecture "${title}" published and accessible to everyone!`, 'success');
+      }
+
+      let activeVideoForModal = null;
+      function openBigVideoPlayer(videoId) {
+        const video = state.videos.find(v => v.id === videoId) || state.videos[0];
+        if (!video) return;
+        activeVideoForModal = video;
+
+        const modal = document.getElementById('bigVideoPlayerModal');
+        const titleEl = document.getElementById('bigVideoTitle');
+        const subExamEl = document.getElementById('bigVideoSubjectExam');
+        const mentorNameEl = document.getElementById('bigVideoMentorName');
+        const mentorAvatarEl = document.getElementById('bigVideoMentorAvatar');
+        const playerEl = document.getElementById('bigVideoPlayerElement');
+        const iframeEl = document.getElementById('bigVideoIframeElement');
+        const attachmentsContainer = document.getElementById('bigVideoAttachmentsList');
+
+        if (titleEl) titleEl.innerText = video.title;
+        if (subExamEl) subExamEl.innerText = `${video.subject || 'Physics'} • ${video.exam || 'JEE Main'}`;
+        if (mentorNameEl) mentorNameEl.innerText = video.mentorName;
+
+        const mentor = state.mentors.find(m => m.id === video.mentorId);
+        if (mentorAvatarEl) {
+          mentorAvatarEl.src = mentor ? mentor.avatar : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80";
+        }
+
+        const isDirect = video.isFileUpload || video.videoUrl.startsWith('blob:') || video.videoUrl.startsWith('data:') || video.videoUrl.endsWith('.mp4') || video.videoUrl.endsWith('.webm');
+        
+        if (isDirect) {
+          playerEl.classList.remove('hidden');
+          iframeEl.classList.add('hidden');
+          iframeEl.src = '';
+          playerEl.src = video.videoUrl;
+          playerEl.load();
+          playerEl.play().catch(() => {});
+        } else {
+          playerEl.classList.add('hidden');
+          playerEl.pause();
+          iframeEl.classList.remove('hidden');
+          iframeEl.src = video.videoUrl;
+        }
+
+        if (attachmentsContainer) {
+          if (!video.companionPdfs || video.companionPdfs.length === 0) {
+            attachmentsContainer.innerHTML = `
+              <div class="col-span-2 p-3 rounded-xl bg-gray-800/50 border border-gray-700/50 text-gray-400 text-xs flex items-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 text-blue-400"></i>
+                <span>No companion DPPs attached to this lecture yet. Check back soon!</span>
+              </div>
+            `;
+          } else {
+            attachmentsContainer.innerHTML = video.companionPdfs.map(att => `
+              <div class="p-3 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2.5 truncate">
+                  <div class="p-2 rounded-lg bg-blue-500/20 text-blue-400 shrink-0">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                  </div>
+                  <div class="truncate">
+                    <div class="font-bold text-white truncate">${att.title}</div>
+                    <div class="text-[10px] text-gray-400">${att.fileSize ? `Size: ${att.fileSize}` : 'Verified Companion Note'}</div>
+                  </div>
+                </div>
+                <a href="${att.url}" download="${att.fileName || att.title}" target="_blank" rel="noopener" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold flex items-center gap-1 shrink-0 transition-colors">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>Open File</span>
+                </a>
+              </div>
+            `).join('');
+          }
+        }
+
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+      }
+
+      function closeBigVideoPlayer() {
+        const modal = document.getElementById('bigVideoPlayerModal');
+        const playerEl = document.getElementById('bigVideoPlayerElement');
+        const iframeEl = document.getElementById('bigVideoIframeElement');
+        if (playerEl) playerEl.pause();
+        if (iframeEl) iframeEl.src = '';
+        if (modal) modal.classList.add('hidden');
+      }
+
+      function askAiAboutCurrentVideo() {
+        closeBigVideoPlayer();
+        openAiCopilotModal();
+        if (activeVideoForModal) {
+          sendQuickAiPrompt(`Explain the core theoretical principles, key formulas, and must-solve problem types covered in the lecture: "${activeVideoForModal.title}".`);
+        }
+      }
+
+      function discussCurrentVideoInChat() {
+        closeBigVideoPlayer();
+        navigateView('chat');
+        switchChatTab('community');
+        const chatInput = document.getElementById('communityChatTextInput');
+        if (chatInput && activeVideoForModal) {
+          chatInput.value = `Discussing lecture: "${activeVideoForModal.title}" - `;
+          chatInput.focus();
+        }
+      }
+
+      let activeVideoSubjectFilter = 'ALL';
+      function filterVideosBySubject(subject) {
+        activeVideoSubjectFilter = subject;
+        renderFeaturedVideos();
       }
 
       function renderFeaturedVideos() {
         const container = document.getElementById('featuredVideosGrid');
         if (!container) return;
 
-        container.innerHTML = state.videos.slice(0, 3).map(v => {
-          const isDirectVideo = v.isFileUpload || v.videoUrl.startsWith('blob:') || v.videoUrl.startsWith('data:') || v.videoUrl.endsWith('.mp4') || v.videoUrl.endsWith('.webm');
-          const playerHtml = isDirectVideo 
-            ? `<video src="${v.videoUrl}" controls class="w-full h-full object-contain rounded-xl bg-black"></video>`
-            : `<iframe src="${v.videoUrl}" title="${v.title}" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        let videos = state.videos || [];
+        if (activeVideoSubjectFilter !== 'ALL') {
+          videos = videos.filter(v => (v.subject || 'Physics').toLowerCase() === activeVideoSubjectFilter.toLowerCase());
+        }
 
+        if (videos.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-3 p-8 text-center text-gray-400 bg-gray-50 rounded-2xl border border-gray-200">
+              No video lectures found for "${activeVideoSubjectFilter}".
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = videos.map(v => {
+          const mentor = state.mentors.find(m => m.id === v.mentorId) || state.mentors[0];
           return `
-            <div class="bg-gray-50 rounded-2xl border border-gray-200 p-4 space-y-3 flex flex-col justify-between">
-              <div class="space-y-2">
-                <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative">
-                  ${playerHtml}
+            <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3 flex flex-col justify-between shadow-xs hover:shadow-md transition-shadow">
+              
+              <!-- Clickable Video Preview Card with Protected Play Overlay -->
+              <div onclick="openBigVideoPlayer('${v.id}')" class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative cursor-pointer group shadow-sm">
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-300" alt="${v.title}">
+                
+                <!-- Play Button Overlay -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3 text-center">
+                  <div class="w-12 h-12 rounded-full bg-blue-600/90 group-hover:bg-blue-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+                  </div>
+                  <span class="text-[11px] font-bold text-white bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-xs">Watch Protected HD</span>
                 </div>
-                <h4 class="font-bold text-xs text-gray-900 leading-snug">${v.title}</h4>
-                <div class="text-[11px] text-gray-500">Mentor: <strong class="text-gray-800">${v.mentorName}</strong></div>
+
+                <!-- Subject & DRM Badge -->
+                <div class="absolute top-2 left-2 flex items-center gap-1">
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-blue-600 text-white shadow-xs">${v.subject || 'Physics'}</span>
+                </div>
+                <div class="absolute top-2 right-2">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-black/70 text-emerald-400 flex items-center gap-1">
+                    <i data-lucide="lock" class="w-2.5 h-2.5"></i>
+                    <span>Protected</span>
+                  </span>
+                </div>
               </div>
 
-              <!-- Companion PDFs -->
-              ${v.companionPdfs && v.companionPdfs.length > 0 ? `
-                <div class="pt-2 border-t border-gray-200 space-y-1">
-                  <div class="text-[10px] uppercase font-bold text-gray-400">Companion Notes / DPPs:</div>
-                  ${v.companionPdfs.map(p => `
-                    <a href="${p.url}" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-xs text-blue-600 hover:underline">
-                      <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-                      <span class="truncate">${p.title}</span>
-                    </a>
-                  `).join('')}
+              <!-- Title & Mentor with Verified Blue Tick -->
+              <div class="space-y-1.5">
+                <h4 onclick="openBigVideoPlayer('${v.id}')" class="font-bold text-xs sm:text-sm text-gray-900 leading-snug line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors">
+                  ${v.title}
+                </h4>
+                
+                <div class="flex items-center gap-2 pt-1 border-t border-gray-100">
+                  <img src="${mentor ? mentor.avatar : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80'}" class="w-6 h-6 rounded-full object-cover border border-gray-200" alt="Mentor">
+                  <div class="flex items-center gap-1 truncate text-[11px]">
+                    <span class="font-bold text-gray-800 truncate">${v.mentorName}</span>
+                    <!-- Verified Blue Tick -->
+                    <span class="inline-flex items-center text-blue-600" title="Verified Prepskm Mentor">
+                      <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </span>
+                  </div>
                 </div>
-              ` : ''}
+              </div>
+
+              <!-- Companion Files Summary & Big Player Trigger -->
+              <div class="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
+                <span class="text-[11px] text-gray-500 font-medium flex items-center gap-1">
+                  <i data-lucide="paperclip" class="w-3 h-3 text-gray-400"></i>
+                  <span>${v.companionPdfs ? v.companionPdfs.length : 0} Attached DPPs</span>
+                </span>
+                <button onclick="openBigVideoPlayer('${v.id}')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-bold transition-colors">
+                  Open Lecture
+                </button>
+              </div>
+
             </div>
           `;
         }).join('');
@@ -5935,7 +6831,981 @@
       }
 
       function saveMentorStudioProfile() {
-        alert("Mentor Studio Profile changes updated and synced to Firestore!");
+        showAppToast("Mentor Studio Profile changes updated and synced to Firestore!", "success");
+      }
+
+      // =====================================================================
+      // 11. PROFILE AVATAR FILE UPLOADER & EDITABLE PROFILE ENGINE
+      // =====================================================================
+      function handleProfileAvatarFileSelected(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+          showAppToast("Please choose a valid image file (.png, .jpg, .webp).", "error");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target.result;
+          currentUser.photoURL = dataUrl;
+          if (state.userProfile) state.userProfile.photoURL = dataUrl;
+          persistState();
+
+          const logoImg = document.getElementById('headerProfileLogoImg');
+          if (logoImg) logoImg.src = dataUrl;
+          const currentThumb = document.getElementById('profileCurrentAvatarThumb');
+          if (currentThumb) currentThumb.src = dataUrl;
+          const cardAvatar = document.getElementById('cardAvatarPreview');
+          if (cardAvatar) cardAvatar.src = dataUrl;
+          const userAvatar = document.getElementById('userAvatarImg');
+          if (userAvatar) userAvatar.src = dataUrl;
+
+          if (db && currentUser.uid) {
+            db.collection('users').doc(currentUser.uid).set({ photoURL: dataUrl }, { merge: true }).catch(err => console.warn(err));
+          }
+          showAppToast("Profile photo updated from file successfully!", "success");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // =====================================================================
+      // 12. UNIVERSAL WEBSITE SEARCH MODAL ENGINE
+      // =====================================================================
+      function openUniversalSearchModal() {
+        const modal = document.getElementById('universalSearchModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          const input = document.getElementById('modalSearchInput');
+          if (input) {
+            input.value = '';
+            input.focus();
+          }
+          handleModalSearchQuery('');
+        }
+      }
+
+      function closeUniversalSearchModal() {
+        const modal = document.getElementById('universalSearchModal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      // Universal Keyboard Shortcuts (Cmd/Ctrl + K to Search, Escape to Close Modals)
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          openUniversalSearchModal();
+        } else if (e.key === 'Escape') {
+          closeUniversalSearchModal();
+          closeBigVideoPlayer();
+          closeAiCopilotModal();
+        }
+      });
+
+      function handleModalSearchQuery(query) {
+        const container = document.getElementById('modalSearchResultsContainer');
+        if (!container) return;
+        const q = (query || '').trim().toLowerCase();
+
+        if (!q) {
+          container.innerHTML = `
+            <div class="p-6 text-center text-gray-400 space-y-3">
+              <p class="font-medium text-xs">Search across all PYQs, formula sheets, video lectures, mock tests, and verified mentors.</p>
+              <div class="flex flex-wrap justify-center gap-1.5">
+                <button onclick="document.getElementById('modalSearchInput').value='Physics'; handleModalSearchQuery('Physics')" class="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-[11px] font-semibold transition-colors">⚡ Physics</button>
+                <button onclick="document.getElementById('modalSearchInput').value='Rotational'; handleModalSearchQuery('Rotational')" class="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-[11px] font-semibold transition-colors">🔄 Rotational Dynamics</button>
+                <button onclick="document.getElementById('modalSearchInput').value='Organic'; handleModalSearchQuery('Organic')" class="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-[11px] font-semibold transition-colors">🧪 Organic Chemistry</button>
+                <button onclick="document.getElementById('modalSearchInput').value='Biology'; handleModalSearchQuery('Biology')" class="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-[11px] font-semibold transition-colors">🧬 NEET Biology</button>
+                <button onclick="document.getElementById('modalSearchInput').value='Mock Test'; handleModalSearchQuery('Mock Test')" class="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-[11px] font-semibold transition-colors">⏱️ CBT Mock</button>
+              </div>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        const matchedVideos = (state.videos || []).filter(v => 
+          (v.title || '').toLowerCase().includes(q) || 
+          (v.subject || '').toLowerCase().includes(q) || 
+          (v.mentorName || '').toLowerCase().includes(q)
+        );
+
+        const matchedMaterials = (state.materials || []).filter(m => 
+          (m.title || '').toLowerCase().includes(q) || 
+          (m.subject || '').toLowerCase().includes(q) || 
+          (m.sectionName || '').toLowerCase().includes(q)
+        );
+
+        const matchedMentors = (state.mentors || []).filter(men => 
+          (men.fullName || '').toLowerCase().includes(q) || 
+          (men.bio || '').toLowerCase().includes(q) || 
+          men.categories.some(c => c.toLowerCase().includes(q))
+        );
+
+        const totalResults = matchedVideos.length + matchedMaterials.length + matchedMentors.length;
+
+        if (totalResults === 0) {
+          container.innerHTML = `
+            <div class="p-6 text-center text-gray-400 space-y-2">
+              <p class="font-bold text-gray-700">No direct results found for "${query}"</p>
+              <p class="text-[11px]">Ask our Prepskm AI Study Copilot for instant step-by-step doubt resolution.</p>
+              <button onclick="closeUniversalSearchModal(); openAiCopilotModal(); sendQuickAiPrompt('Can you explain and solve: ' + '${query.replace(/'/g, "\\'")}')" class="mt-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-xs shadow-md">
+                Ask AI Copilot
+              </button>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        let html = '';
+
+        if (matchedVideos.length > 0) {
+          html += `<div class="font-bold text-[10px] text-gray-400 uppercase tracking-wider px-2 py-1">Video Lectures (${matchedVideos.length})</div>`;
+          html += matchedVideos.map(v => `
+            <div onclick="closeUniversalSearchModal(); openBigVideoPlayer('${v.id}')" class="p-2.5 bg-gray-50 hover:bg-blue-50 rounded-xl cursor-pointer flex items-center justify-between transition-colors">
+              <div class="flex items-center gap-2.5 truncate">
+                <div class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                  <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                </div>
+                <div class="truncate">
+                  <div class="font-bold text-gray-900 truncate">${v.title}</div>
+                  <div class="text-[10px] text-gray-500">${v.subject} • ${v.mentorName}</div>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 shrink-0">Watch Protected</span>
+            </div>
+          `).join('');
+        }
+
+        if (matchedMaterials.length > 0) {
+          html += `<div class="font-bold text-[10px] text-gray-400 uppercase tracking-wider px-2 py-1 mt-2">Study Materials & Notes (${matchedMaterials.length})</div>`;
+          html += matchedMaterials.map(m => `
+            <div onclick="closeUniversalSearchModal(); navigateView('materials'); selectMaterialSection('${m.sectionId}')" class="p-2.5 bg-gray-50 hover:bg-blue-50 rounded-xl cursor-pointer flex items-center justify-between transition-colors">
+              <div class="flex items-center gap-2.5 truncate">
+                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                  <i data-lucide="file-text" class="w-4 h-4"></i>
+                </div>
+                <div class="truncate">
+                  <div class="font-bold text-gray-900 truncate">${m.title}</div>
+                  <div class="text-[10px] text-gray-500">${m.sectionName} • ${m.subject}</div>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-200 text-gray-700 shrink-0">PDF File</span>
+            </div>
+          `).join('');
+        }
+
+        if (matchedMentors.length > 0) {
+          html += `<div class="font-bold text-[10px] text-gray-400 uppercase tracking-wider px-2 py-1 mt-2">Mentors (${matchedMentors.length})</div>`;
+          html += matchedMentors.map(men => `
+            <div onclick="closeUniversalSearchModal(); navigateView('mentorship'); bookSpecificMentor('${men.fullName}')" class="p-2.5 bg-gray-50 hover:bg-blue-50 rounded-xl cursor-pointer flex items-center justify-between transition-colors">
+              <div class="flex items-center gap-2.5 truncate">
+                <img src="${men.avatar}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200">
+                <div class="truncate">
+                  <div class="font-bold text-gray-900 flex items-center gap-1">
+                    <span>${men.fullName}</span>
+                    <svg class="w-3.5 h-3.5 text-blue-600 fill-blue-600" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  </div>
+                  <div class="text-[10px] text-gray-500">${men.categories.join(', ')}</div>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-800 shrink-0">Book Call</span>
+            </div>
+          `).join('');
+        }
+
+        container.innerHTML = html;
+        lucide.createIcons();
+      }
+
+      // =====================================================================
+      // 13. IN-APP 1:1 NORMAL AUDIO & HD VIDEO CALLING ENGINE
+      // =====================================================================
+      let activeCallData = {
+        active: false,
+        callType: 'video', // 'audio' | 'video'
+        targetName: 'Saurav Kumar (Platform Owner)',
+        timerInterval: null,
+        secondsElapsed: 0,
+        micMuted: false,
+        cameraOff: false,
+        localStream: null
+      };
+
+      function playCallSound(soundType) {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          if (soundType === 'ring') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            osc.frequency.setValueAtTime(480, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.45);
+          } else if (soundType === 'connect') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+            osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+          } else if (soundType === 'end') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.setValueAtTime(260, ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+          }
+        } catch (e) {
+          console.warn("Web Audio chime notice:", e);
+        }
+      }
+
+      async function startCall(callType = 'video', targetName = 'Saurav Kumar (Platform Owner)') {
+        activeCallData.active = true;
+        activeCallData.callType = callType;
+        activeCallData.targetName = targetName;
+        activeCallData.secondsElapsed = 0;
+        activeCallData.micMuted = false;
+        activeCallData.cameraOff = (callType === 'audio');
+
+        const modal = document.getElementById('callInterfaceModal');
+        const nameDisplay = document.getElementById('callParticipantNameDisplay');
+        const subtitleName = document.getElementById('callRemoteNameSubtitle');
+        const timerDisplay = document.getElementById('callTimerDisplay');
+        const statusLabel = document.getElementById('callStatusLabel');
+        const switchLabel = document.getElementById('callSwitchModeLabel');
+        const typeIcon = document.getElementById('callHeaderTypeIcon');
+        const selfFeedContainer = document.getElementById('callSelfVideoContainer');
+        const selfFeed = document.getElementById('callSelfVideoFeed');
+
+        if (nameDisplay) nameDisplay.innerText = targetName;
+        if (subtitleName) subtitleName.innerText = targetName;
+        if (timerDisplay) timerDisplay.innerText = '00:00';
+        if (statusLabel) statusLabel.innerText = callType === 'video' ? 'Connecting HD Video Call...' : 'Connecting Encrypted Audio Call...';
+        if (switchLabel) switchLabel.innerText = callType === 'video' ? 'Audio Mode' : 'Video Mode';
+        if (typeIcon) typeIcon.setAttribute('data-lucide', callType === 'video' ? 'video' : 'phone');
+
+        modal.classList.remove('hidden');
+        playCallSound('ring');
+
+        // Request camera feed if video call
+        if (callType === 'video' && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            activeCallData.localStream = stream;
+            if (selfFeed) {
+              selfFeed.srcObject = stream;
+              selfFeed.play().catch(() => {});
+            }
+            if (selfFeedContainer) selfFeedContainer.classList.remove('hidden');
+          } catch (err) {
+            console.warn("Camera permission not provided, continuing with simulated visualizer:", err);
+            if (selfFeedContainer) selfFeedContainer.classList.add('hidden');
+          }
+        } else {
+          if (selfFeedContainer) selfFeedContainer.classList.add('hidden');
+        }
+
+        setTimeout(() => {
+          playCallSound('connect');
+          if (statusLabel) statusLabel.innerText = callType === 'video' ? 'HD Video & Audio Connected' : 'Encrypted Audio Call Active';
+        }, 1200);
+
+        if (activeCallData.timerInterval) clearInterval(activeCallData.timerInterval);
+        activeCallData.timerInterval = setInterval(() => {
+          activeCallData.secondsElapsed++;
+          const mins = Math.floor(activeCallData.secondsElapsed / 60).toString().padStart(2, '0');
+          const secs = (activeCallData.secondsElapsed % 60).toString().padStart(2, '0');
+          if (timerDisplay) timerDisplay.innerText = `${mins}:${secs}`;
+        }, 1000);
+
+        updateCallControlButtonsUI();
+        lucide.createIcons();
+        showAppToast(`Started ${callType.toUpperCase()} Call with ${targetName}`, 'success');
+      }
+
+      function updateCallControlButtonsUI() {
+        const micBtn = document.getElementById('callToggleMicBtn');
+        const camBtn = document.getElementById('callToggleCameraBtn');
+        const micIcon = document.getElementById('callMicIcon');
+        const camIcon = document.getElementById('callCameraIcon');
+
+        if (micBtn && micIcon) {
+          if (activeCallData.micMuted) {
+            micBtn.className = "p-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white transition-all shadow-md";
+            micIcon.setAttribute('data-lucide', 'mic-off');
+          } else {
+            micBtn.className = "p-3.5 rounded-2xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-md";
+            micIcon.setAttribute('data-lucide', 'mic');
+          }
+        }
+
+        if (camBtn && camIcon) {
+          if (activeCallData.cameraOff) {
+            camBtn.className = "p-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white transition-all shadow-md";
+            camIcon.setAttribute('data-lucide', 'video-off');
+          } else {
+            camBtn.className = "p-3.5 rounded-2xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-md";
+            camIcon.setAttribute('data-lucide', 'video');
+          }
+        }
+
+        lucide.createIcons();
+      }
+
+      function toggleCallMicrophone() {
+        activeCallData.micMuted = !activeCallData.micMuted;
+        if (activeCallData.localStream) {
+          activeCallData.localStream.getAudioTracks().forEach(track => {
+            track.enabled = !activeCallData.micMuted;
+          });
+        }
+        updateCallControlButtonsUI();
+        showAppToast(activeCallData.micMuted ? "Microphone muted" : "Microphone unmuted", "info");
+      }
+
+      function toggleCallCamera() {
+        activeCallData.cameraOff = !activeCallData.cameraOff;
+        const selfFeedContainer = document.getElementById('callSelfVideoContainer');
+        if (activeCallData.localStream) {
+          activeCallData.localStream.getVideoTracks().forEach(track => {
+            track.enabled = !activeCallData.cameraOff;
+          });
+        }
+        if (selfFeedContainer) {
+          if (activeCallData.cameraOff) selfFeedContainer.classList.add('hidden');
+          else selfFeedContainer.classList.remove('hidden');
+        }
+        updateCallControlButtonsUI();
+        showAppToast(activeCallData.cameraOff ? "Camera turned off" : "Camera turned on", "info");
+      }
+
+      function switchActiveCallMode() {
+        const newType = (activeCallData.callType === 'video') ? 'audio' : 'video';
+        activeCallData.callType = newType;
+        const switchLabel = document.getElementById('callSwitchModeLabel');
+        const typeIcon = document.getElementById('callHeaderTypeIcon');
+        const statusLabel = document.getElementById('callStatusLabel');
+        const selfFeedContainer = document.getElementById('callSelfVideoContainer');
+
+        if (switchLabel) switchLabel.innerText = newType === 'video' ? 'Audio Mode' : 'Video Mode';
+        if (typeIcon) typeIcon.setAttribute('data-lucide', newType === 'video' ? 'video' : 'phone');
+        if (statusLabel) statusLabel.innerText = newType === 'video' ? 'Switched to HD Video Call' : 'Switched to Encrypted Audio Call';
+
+        if (newType === 'audio') {
+          activeCallData.cameraOff = true;
+          if (selfFeedContainer) selfFeedContainer.classList.add('hidden');
+        } else {
+          activeCallData.cameraOff = false;
+          if (selfFeedContainer) selfFeedContainer.classList.remove('hidden');
+        }
+
+        updateCallControlButtonsUI();
+        lucide.createIcons();
+      }
+
+      function endActiveCall() {
+        if (activeCallData.timerInterval) clearInterval(activeCallData.timerInterval);
+        if (activeCallData.localStream) {
+          activeCallData.localStream.getTracks().forEach(t => t.stop());
+          activeCallData.localStream = null;
+        }
+        playCallSound('end');
+        activeCallData.active = false;
+        const modal = document.getElementById('callInterfaceModal');
+        if (modal) modal.classList.add('hidden');
+        showAppToast(`Call with ${activeCallData.targetName} ended (${document.getElementById('callTimerDisplay')?.innerText || '00:00'})`, 'info');
+      }
+
+      // =====================================================================
+      // 14. LIVE FIREBASE CHAT SUPPORT (DIRECT TO OWNER & COMMUNITY CHAT)
+      // =====================================================================
+      let activeChatTab = 'owner';
+      let selectedOwnerChatImage = null;
+      let selectedCommunityChatImage = null;
+      let activeCommunityReplyTarget = null;
+      let hasInitChatListeners = false;
+
+      function renderChatView() {
+        initChatRealtimeListeners();
+        switchChatTab(activeChatTab);
+      }
+
+      function switchChatTab(tab) {
+        activeChatTab = tab;
+        const ownerBtn = document.getElementById('chat-tab-btn-owner');
+        const commBtn = document.getElementById('chat-tab-btn-community');
+        const ownerContainer = document.getElementById('chatContainer-owner');
+        const commContainer = document.getElementById('chatContainer-community');
+
+        if (tab === 'owner') {
+          if (ownerBtn) ownerBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-xs transition-all";
+          if (commBtn) commBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 text-gray-600 hover:bg-gray-100 transition-all";
+          if (ownerContainer) ownerContainer.classList.remove('hidden');
+          if (commContainer) commContainer.classList.add('hidden');
+          renderOwnerDirectChat();
+        } else {
+          if (ownerBtn) ownerBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 text-gray-600 hover:bg-gray-100 transition-all";
+          if (commBtn) commBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 bg-blue-50 text-blue-900 border border-blue-200 shadow-xs transition-all";
+          if (ownerContainer) ownerContainer.classList.add('hidden');
+          if (commContainer) commContainer.classList.remove('hidden');
+          renderCommunityChat();
+        }
+        lucide.createIcons();
+      }
+
+      function initChatRealtimeListeners() {
+        if (hasInitChatListeners || !db) return;
+        hasInitChatListeners = true;
+
+        try {
+          db.collection('communityChat').orderBy('timestamp', 'asc').limit(100).onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const msgs = [];
+              snapshot.forEach(doc => {
+                msgs.push({ id: doc.id, ...doc.data() });
+              });
+              if (msgs.length > 0) {
+                state.communityMessages = msgs;
+                persistState();
+                if (activeChatTab === 'community') renderCommunityChat();
+              }
+            }
+          }, err => console.warn("Community chat stream notice:", err));
+
+          const chatRoomId = currentUser.uid || 'guest-chat';
+          db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const msgs = [];
+              snapshot.forEach(doc => {
+                msgs.push({ id: doc.id, ...doc.data() });
+              });
+              if (msgs.length > 0) {
+                state.ownerDirectChats = msgs;
+                persistState();
+                if (activeChatTab === 'owner') renderOwnerDirectChat();
+              }
+            }
+          }, err => console.warn("Owner chat stream notice:", err));
+        } catch (e) {
+          console.warn("Realtime chat listeners fallback:", e);
+        }
+      }
+
+      // Owner Direct Chat Functions
+      function renderOwnerDirectChat() {
+        const container = document.getElementById('ownerChatMessagesList');
+        if (!container) return;
+
+        const msgs = state.ownerDirectChats || [];
+        container.innerHTML = msgs.map(m => {
+          const isMe = (m.senderId === currentUser.uid || (!m.isOwner && m.senderId !== 'uid-mentor-sumit'));
+          return `
+            <div class="flex items-start gap-2.5 ${isMe ? 'flex-row-reverse' : ''}">
+              <img src="${m.senderAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=80'}" class="w-8 h-8 rounded-xl object-cover border border-gray-200 shrink-0" alt="Avatar">
+              <div class="max-w-[80%] sm:max-w-md space-y-1 ${isMe ? 'items-end text-right' : ''}">
+                <div class="flex items-center gap-1.5 text-[11px] ${isMe ? 'justify-end' : ''}">
+                  <span class="font-bold text-gray-800">${m.senderName}</span>
+                  ${m.isOwner ? `
+                    <span class="inline-flex items-center text-blue-600" title="Verified Owner">
+                      <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </span>
+                    <span class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-100 text-blue-800">Owner</span>
+                  ` : ''}
+                  <span class="text-gray-400 text-[10px]">• ${formatRelativeTime(m.timestamp)}</span>
+                </div>
+
+                <div class="p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs text-left ${
+                  isMe 
+                    ? 'bg-emerald-600 text-white rounded-tr-none' 
+                    : 'bg-white text-gray-800 border border-gray-200 rounded-tl-none'
+                }">
+                  ${m.text ? `<p class="whitespace-pre-wrap">${m.text}</p>` : ''}
+                  ${m.imageUrl ? `
+                    <div class="mt-2 rounded-xl overflow-hidden border ${isMe ? 'border-emerald-400' : 'border-gray-200'}">
+                      <img src="${m.imageUrl}" class="max-w-full max-h-60 object-contain rounded-lg cursor-pointer" onclick="window.open('${m.imageUrl}', '_blank')" alt="Attachment">
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.scrollTop = container.scrollHeight;
+        lucide.createIcons();
+      }
+
+      function handleOwnerChatImageSelected(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          selectedOwnerChatImage = {
+            name: file.name,
+            dataUrl: e.target.result
+          };
+          const box = document.getElementById('ownerChatImagePreviewBox');
+          const thumb = document.getElementById('ownerChatPreviewThumb');
+          const label = document.getElementById('ownerChatPreviewFileName');
+          if (box) box.classList.remove('hidden');
+          if (thumb) thumb.src = e.target.result;
+          if (label) label.innerText = file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function clearOwnerChatSelectedImage() {
+        selectedOwnerChatImage = null;
+        const input = document.getElementById('ownerChatFileInput');
+        if (input) input.value = '';
+        const box = document.getElementById('ownerChatImagePreviewBox');
+        if (box) box.classList.add('hidden');
+      }
+
+      function sendOwnerDirectMessage() {
+        const input = document.getElementById('ownerChatTextInput');
+        const text = input ? input.value.trim() : '';
+
+        if (!text && !selectedOwnerChatImage) {
+          showAppToast("Please enter a message or select an image.", "info");
+          return;
+        }
+
+        const newMsg = {
+          id: "msg-" + Date.now(),
+          senderId: currentUser.uid || 'guest-user',
+          senderName: currentUser.displayName || 'Aspirant',
+          senderAvatar: currentUser.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+          text: text,
+          imageUrl: selectedOwnerChatImage ? selectedOwnerChatImage.dataUrl : null,
+          isOwner: (currentUser.role === 'superadmin' || currentUser.email === SUPER_ADMIN_EMAIL),
+          timestamp: new Date().toISOString()
+        };
+
+        state.ownerDirectChats.push(newMsg);
+        persistState();
+
+        if (input) input.value = '';
+        clearOwnerChatSelectedImage();
+        renderOwnerDirectChat();
+
+        if (db) {
+          const chatRoomId = currentUser.uid || 'guest-chat';
+          db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').doc(newMsg.id).set(newMsg).catch(err => console.warn(err));
+        }
+
+        // Automatic response simulation from Owner Saurav Kumar
+        if (currentUser.role !== 'superadmin' && !newMsg.isOwner) {
+          setTimeout(() => {
+            const ownerReply = {
+              id: "msg-" + Date.now(),
+              senderId: "uid-mentor-sumit",
+              senderName: "Saurav Kumar (@unfiltereddsumit)",
+              senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+              text: "Namaste! Message received. I am actively reviewing your question. Keep up the high-focus revision today! If you need urgent 1:1 problem solving, tap the Normal Call or Video Call buttons above.",
+              imageUrl: null,
+              isOwner: true,
+              timestamp: new Date().toISOString()
+            };
+            state.ownerDirectChats.push(ownerReply);
+            persistState();
+            renderOwnerDirectChat();
+            if (db) {
+              const chatRoomId = currentUser.uid || 'guest-chat';
+              db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').doc(ownerReply.id).set(ownerReply).catch(err => console.warn(err));
+            }
+          }, 1400);
+        }
+      }
+
+      // Community Chat Functions
+      function renderCommunityChat() {
+        const container = document.getElementById('communityChatMessagesList');
+        if (!container) return;
+
+        const msgs = state.communityMessages || [];
+        container.innerHTML = msgs.map(m => {
+          const hasLiked = (m.likes || []).includes(currentUser.uid);
+          const likesCount = (m.likes || []).length;
+
+          return `
+            <div id="cmsg-${m.id}" class="bg-white border border-gray-200 rounded-2xl p-4 shadow-xs space-y-2.5">
+              
+              <!-- Author Row with Verified Blue Tick -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <img src="${m.senderAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=80'}" class="w-8 h-8 rounded-full object-cover border border-gray-200" alt="Author">
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-bold text-xs text-gray-900">${m.senderName}</span>
+                      ${m.isMentor ? `
+                        <span class="inline-flex items-center text-blue-600" title="Verified Prepskm Mentor">
+                          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        </span>
+                        <span class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-100 text-blue-800">Mentor</span>
+                      ` : ''}
+                    </div>
+                    <div class="text-[10px] text-gray-400">${formatRelativeTime(m.timestamp)}</div>
+                  </div>
+                </div>
+
+                <!-- Quick Reply Button -->
+                <button onclick="prepareCommunityReply('${m.id}', '${m.senderName.replace(/'/g, "\\'")}', '${(m.text || 'Image Attachment').substring(0, 45).replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-lg bg-gray-50 hover:bg-indigo-50 text-gray-600 hover:text-indigo-700 text-xs font-semibold flex items-center gap-1 transition-colors">
+                  <i data-lucide="reply" class="w-3.5 h-3.5"></i>
+                  <span>Reply</span>
+                </button>
+              </div>
+
+              <!-- Replied Quote Bubble -->
+              ${m.replyTo ? `
+                <div class="p-2.5 rounded-xl bg-gray-50 border-l-4 border-indigo-500 text-xs text-gray-700">
+                  <div class="font-bold text-indigo-700 text-[11px] flex items-center gap-1">
+                    <i data-lucide="corner-down-right" class="w-3 h-3"></i>
+                    <span>Replying to ${m.replyTo.authorName}:</span>
+                  </div>
+                  <div class="italic text-gray-600 line-clamp-1 mt-0.5">"${m.replyTo.snippet}"</div>
+                </div>
+              ` : ''}
+
+              <!-- Message Body Text -->
+              ${m.text ? `<p class="text-xs text-gray-800 leading-relaxed font-sans whitespace-pre-wrap">${m.text}</p>` : ''}
+
+              <!-- Uploaded Image Attachment -->
+              ${m.imageUrl ? `
+                <div class="rounded-xl overflow-hidden border border-gray-200 bg-gray-900/5 max-w-sm">
+                  <img src="${m.imageUrl}" class="w-full max-h-72 object-contain cursor-pointer" onclick="window.open('${m.imageUrl}', '_blank')" alt="Community Doubt Image">
+                </div>
+              ` : ''}
+
+              <!-- Like / Heart & Social Stats Bar -->
+              <div class="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
+                <button onclick="handleCommunityMessageLike('${m.id}')" class="px-3 py-1 rounded-lg flex items-center gap-1.5 transition-colors ${
+                  hasLiked ? 'bg-red-50 text-red-600 font-bold' : 'text-gray-500 hover:bg-gray-100'
+                }">
+                  <i data-lucide="heart" class="w-3.5 h-3.5 ${hasLiked ? 'fill-current' : ''}"></i>
+                  <span>${likesCount} ${likesCount === 1 ? 'Like' : 'Likes'}</span>
+                </button>
+
+                <span class="text-[10px] text-gray-400">Prepskm Public Room</span>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+
+        container.scrollTop = container.scrollHeight;
+        lucide.createIcons();
+      }
+
+      function handleCommunityMessageLike(msgId) {
+        const msg = (state.communityMessages || []).find(m => m.id === msgId);
+        if (!msg) return;
+
+        if (!msg.likes) msg.likes = [];
+        const uid = currentUser.uid || 'guest-uid';
+
+        if (msg.likes.includes(uid)) {
+          msg.likes = msg.likes.filter(id => id !== uid);
+        } else {
+          msg.likes.push(uid);
+        }
+
+        persistState();
+        renderCommunityChat();
+
+        if (db) {
+          db.collection('communityChat').doc(msgId).update({ likes: msg.likes }).catch(err => console.warn(err));
+        }
+      }
+
+      function prepareCommunityReply(msgId, authorName, snippet) {
+        activeCommunityReplyTarget = { authorName, snippet };
+        const banner = document.getElementById('communityReplyBanner');
+        const targetAuthor = document.getElementById('replyAuthorTarget');
+        const targetSnippet = document.getElementById('replySnippetTarget');
+        const input = document.getElementById('communityChatTextInput');
+
+        if (targetAuthor) targetAuthor.innerText = authorName;
+        if (targetSnippet) targetSnippet.innerText = snippet + '...';
+        if (banner) banner.classList.remove('hidden');
+        if (input) {
+          input.focus();
+          input.placeholder = `Write reply to ${authorName}...`;
+        }
+      }
+
+      function cancelCommunityReply() {
+        activeCommunityReplyTarget = null;
+        const banner = document.getElementById('communityReplyBanner');
+        const input = document.getElementById('communityChatTextInput');
+        if (banner) banner.classList.add('hidden');
+        if (input) input.placeholder = "Ask a question, share an update, or reply to peers...";
+      }
+
+      function handleCommunityChatImageSelected(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          selectedCommunityChatImage = {
+            name: file.name,
+            dataUrl: e.target.result
+          };
+          const box = document.getElementById('communityChatImagePreviewBox');
+          const thumb = document.getElementById('communityChatPreviewThumb');
+          const label = document.getElementById('communityChatPreviewFileName');
+          if (box) box.classList.remove('hidden');
+          if (thumb) thumb.src = e.target.result;
+          if (label) label.innerText = file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function clearCommunityChatSelectedImage() {
+        selectedCommunityChatImage = null;
+        const input = document.getElementById('communityChatFileInput');
+        if (input) input.value = '';
+        const box = document.getElementById('communityChatImagePreviewBox');
+        if (box) box.classList.add('hidden');
+      }
+
+      function sendCommunityChatMessage() {
+        const input = document.getElementById('communityChatTextInput');
+        const text = input ? input.value.trim() : '';
+
+        if (!text && !selectedCommunityChatImage) {
+          showAppToast("Please type a message or select an image.", "info");
+          return;
+        }
+
+        const isMentorRole = (currentUser.role === 'mentor' || currentUser.role === 'superadmin' || currentUser.email === SUPER_ADMIN_EMAIL);
+
+        const newMsg = {
+          id: "cmsg-" + Date.now(),
+          senderId: currentUser.uid || 'guest-uid',
+          senderName: currentUser.displayName || 'Aspirant',
+          senderAvatar: currentUser.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+          isMentor: isMentorRole,
+          text: text,
+          imageUrl: selectedCommunityChatImage ? selectedCommunityChatImage.dataUrl : null,
+          likes: [currentUser.uid || 'guest-uid'],
+          replyTo: activeCommunityReplyTarget ? { ...activeCommunityReplyTarget } : null,
+          timestamp: new Date().toISOString()
+        };
+
+        state.communityMessages.push(newMsg);
+        persistState();
+
+        if (input) input.value = '';
+        clearCommunityChatSelectedImage();
+        cancelCommunityReply();
+        renderCommunityChat();
+
+        if (db) {
+          db.collection('communityChat').doc(newMsg.id).set(newMsg).catch(err => console.warn(err));
+        }
+
+        showAppToast("Message posted to Community Stream!", "success");
+      }
+
+      // =====================================================================
+      // 15. PREPSKM AI STUDY COPILOT & DOUBT SOLVER
+      // =====================================================================
+      let selectedAiDoubtImage = null;
+
+      function openAiCopilotModal() {
+        const modal = document.getElementById('aiCopilotModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          renderAiChatStream();
+          const input = document.getElementById('aiChatInputText');
+          if (input) input.focus();
+        }
+      }
+
+      function closeAiCopilotModal() {
+        const modal = document.getElementById('aiCopilotModal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      function clearAiChatConversation() {
+        state.aiChatHistory = [
+          {
+            role: "ai",
+            text: "Hello! Conversation reset. I am your **Prepskm AI Study Copilot**. Ask me any doubt or upload a question photo!",
+            imageUrl: null,
+            timestamp: new Date().toISOString()
+          }
+        ];
+        persistState();
+        renderAiChatStream();
+        showAppToast("AI conversation cleared.", "info");
+      }
+
+      function renderAiChatStream() {
+        const container = document.getElementById('aiChatMessagesStream');
+        if (!container) return;
+
+        const history = state.aiChatHistory || [];
+        container.innerHTML = history.map(item => {
+          const isAi = (item.role === 'ai');
+          return `
+            <div class="flex items-start gap-3 ${isAi ? '' : 'flex-row-reverse'}">
+              <div class="w-8 h-8 rounded-xl ${isAi ? 'bg-gradient-to-tr from-purple-600 to-indigo-600 text-amber-300' : 'bg-blue-600 text-white'} flex items-center justify-center shrink-0 shadow-xs">
+                <i data-lucide="${isAi ? 'sparkles' : 'user'}" class="w-4 h-4"></i>
+              </div>
+              <div class="max-w-[85%] space-y-1.5 ${isAi ? '' : 'items-end text-right'}">
+                <div class="text-[11px] font-bold ${isAi ? 'text-purple-900' : 'text-gray-700'}">
+                  ${isAi ? 'Prepskm AI Copilot' : (currentUser.displayName || 'You')}
+                </div>
+                <div class="p-4 rounded-2xl text-xs leading-relaxed shadow-xs text-left ${
+                  isAi 
+                    ? 'bg-white border border-gray-200 text-gray-800 rounded-tl-none font-sans' 
+                    : 'bg-purple-600 text-white rounded-tr-none'
+                }">
+                  ${item.imageUrl ? `
+                    <div class="mb-2 rounded-xl overflow-hidden border ${isAi ? 'border-gray-200' : 'border-purple-400'}">
+                      <img src="${item.imageUrl}" class="max-w-full max-h-52 object-contain" alt="Question">
+                    </div>
+                  ` : ''}
+                  <div class="space-y-2">
+                    ${formatAiResponseMarkdown(item.text)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.scrollTop = container.scrollHeight;
+        lucide.createIcons();
+      }
+
+      function formatAiResponseMarkdown(text) {
+        if (!text) return '';
+        return text
+          .replace(/### (.*?)\n/g, '<div class="text-sm font-black text-gray-900 border-b border-gray-100 pb-1 mb-1">$1</div>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>')
+          .replace(/`([^`]+)`/g, '<code class="bg-purple-50 text-purple-700 px-1 py-0.5 rounded font-mono text-[11px] border border-purple-100">$1</code>')
+          .replace(/\n\n/g, '<br><br>')
+          .replace(/\n- /g, '<br>• ');
+      }
+
+      function handleAiDoubtImageSelected(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          selectedAiDoubtImage = {
+            name: file.name,
+            dataUrl: e.target.result
+          };
+          const chip = document.getElementById('aiDoubtImagePreviewChip');
+          const thumb = document.getElementById('aiDoubtPreviewImg');
+          const label = document.getElementById('aiDoubtImageName');
+          if (chip) chip.classList.remove('hidden');
+          if (thumb) thumb.src = e.target.result;
+          if (label) label.innerText = file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function clearAiDoubtImage() {
+        selectedAiDoubtImage = null;
+        const input = document.getElementById('aiDoubtImageFileInput');
+        if (input) input.value = '';
+        const chip = document.getElementById('aiDoubtImagePreviewChip');
+        if (chip) chip.classList.add('hidden');
+      }
+
+      function sendQuickAiPrompt(promptText) {
+        const input = document.getElementById('aiChatInputText');
+        if (input) input.value = promptText;
+        sendAiChatMessage();
+      }
+
+      function sendAiChatMessage() {
+        const input = document.getElementById('aiChatInputText');
+        const userText = input ? input.value.trim() : '';
+
+        if (!userText && !selectedAiDoubtImage) {
+          showAppToast("Please enter a question or upload a doubt image.", "info");
+          return;
+        }
+
+        const userMsg = {
+          role: "user",
+          text: userText,
+          imageUrl: selectedAiDoubtImage ? selectedAiDoubtImage.dataUrl : null,
+          timestamp: new Date().toISOString()
+        };
+
+        state.aiChatHistory.push(userMsg);
+        persistState();
+
+        if (input) input.value = '';
+        const doubtImg = selectedAiDoubtImage;
+        clearAiDoubtImage();
+        renderAiChatStream();
+
+        setTimeout(() => {
+          const aiAnswer = generatePedagogicalAiResponse(userText, !!doubtImg);
+          state.aiChatHistory.push({
+            role: "ai",
+            text: aiAnswer,
+            imageUrl: null,
+            timestamp: new Date().toISOString()
+          });
+          persistState();
+          renderAiChatStream();
+        }, 800);
+      }
+
+      function generatePedagogicalAiResponse(prompt, hasImage) {
+        const p = (prompt || '').toLowerCase();
+        if (hasImage) {
+          return `### 🔍 Question Analysis & Step-by-Step Breakdown\n\n**Topic:** Classical Mechanics / Problem Analysis from Attached Photo\n\n**Step 1: Free Body Diagram (FBD)**\n- Identify all normal contact forces $N$ perpendicular to the contact surface.\n- Resolve gravitational force into components: $mg \\sin\\theta$ parallel and $mg \\cos\\theta$ perpendicular.\n\n**Step 2: Constraint Equations**\n- Applying Newton's Second Law along the trajectory: $\\Sigma F = m \\cdot a$.\n- Torque about the center of mass: $\\tau_{cm} = I_{cm} \\cdot \\alpha$.\n\n**Step 3: Verification & Edge Conditions**\n- For pure rolling: $a_{cm} = \\alpha \\cdot R$.\n- Static friction check: verify $f_s \\le \\mu_s N$.\n\n💡 **Exam Pro-Tip:** In JEE Advanced, always calculate torque about the instantaneous axis of rotation to eliminate the unknown friction variable in a single step!`;
+        }
+
+        if (p.includes('friction') || p.includes('rolling') || p.includes('rotat')) {
+          return `### ⚡ Rotational Dynamics: Pure Rolling on Incline\n\nFor a symmetrical rigid body (mass $M$, radius $R$, moment of inertia $I_{cm}$) rolling down an incline of angle $\\theta$ without slipping:\n\n1. **Linear Acceleration:**\n$$a = \\frac{g \\sin\\theta}{1 + \\frac{I_{cm}}{MR^2}}$$\n\n2. **Static Friction Required:**\n$$f_s = \\frac{Mg \\sin\\theta}{1 + \\frac{MR^2}{I_{cm}}}$$\n\n3. **Minimum Coefficient of Friction:**\n$$\\mu_{min} = \\frac{\\tan\\theta}{1 + \\frac{MR^2}{I_{cm}}}$$\n\n**Standard Comparison:**\n- Solid Sphere: $a = \\frac{5}{7}g \\sin\\theta$\n- Solid Cylinder: $a = \\frac{2}{3}g \\sin\\theta$\n- Ring / Hoop: $a = \\frac{1}{2}g \\sin\\theta$`;
+        }
+
+        if (p.includes('sn1') || p.includes('sn2') || p.includes('organic')) {
+          return `### 🧪 SN1 vs SN2 Reaction Mechanisms Comparison\n\n**1. SN1 (Substitution Nucleophilic Unimolecular):**\n- **Mechanism:** Two-step via planar carbocation intermediate.\n- **Kinetics:** Rate = $k[R-X]$ (First Order).\n- **Substrate Reactivity:** $3^\\circ > 2^\\circ > 1^\\circ$.\n- **Solvent:** Polar Protic (e.g. $H_2O, EtOH$).\n- **Stereochemistry:** Racemization.\n\n**2. SN2 (Substitution Nucleophilic Bimolecular):**\n- **Mechanism:** Concerted single-step backside attack.\n- **Kinetics:** Rate = $k[R-X][Nu^-]$ (Second Order).\n- **Substrate Reactivity:** $CH_3X > 1^\\circ > 2^\\circ > 3^\\circ$.\n- **Solvent:** Polar Aprotic (e.g. Acetone, DMF, DMSO).\n- **Stereochemistry:** 100% Walden Inversion.`;
+        }
+
+        if (p.includes('king') || p.includes('integr') || p.includes('math')) {
+          return `### 📐 Definite Integration: King's Property & Shortcuts\n\n**King's Rule Formulation:**\n$$\\int_{a}^{b} f(x) \\, dx = \\int_{a}^{b} f(a + b - x) \\, dx$$\n\n**Golden Shortcut:**\nIf the integrand has the form $\\frac{f(x)}{f(x) + f(a + b - x)}$, adding $I + I$ results in:\n$$2I = \\int_{a}^{b} 1 \\, dx = b - a \\implies I = \\frac{b - a}{2}$$\n\n**Classic JEE Example:**\n$$\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin x}}{\\sqrt{\\sin x} + \\sqrt{\\cos x}} \\, dx = \\frac{\\pi/2 - 0}{2} = \\frac{\\pi}{4}$$`;
+        }
+
+        if (p.includes('bio') || p.includes('neet')) {
+          return `### 🧬 Top High-Yield NEET Biology Units (360/360 Target)\n\n1. **Genetics & Evolution** (~18-20 Questions)\n2. **Cell Biology & Cell Cycle** (~10-12 Questions)\n3. **Human Physiology** (~15 Questions)\n4. **Plant Physiology** (~8 Questions)\n5. **Biotechnology Principles & Processes** (~8-10 Questions)\n6. **Ecology & Environment** (~10 Questions)\n\n📌 **Strategy:** Read every single line of NCERT, including summary tables and scientist biographies!`;
+        }
+
+        return `### 💡 Prepskm Pedagogical Doubt Guidance\n\nRegarding your query on: **"${prompt}"**\n\n1. **Fundamental Principle:** Begin by defining knowns, unknowns, and standard SI units.\n2. **Formula Selection:** Always check dimensional consistency before substituting numbers.\n3. **CBT Mock Strategy:** In the live CBT test, spend at most 2.5 minutes per MCQ before marking for review.\n\nFeel free to ask for step-by-step derivations or numerical examples!`;
       }
 
       // INITIAL PAGE LOAD & SEEDING
@@ -5948,6 +7818,8 @@
         renderFeaturedVideos();
         updateMentorshipPricingUI(30);
         updateRoleAndHeaderUI();
+        refreshMotivationalQuote();
+        initChatRealtimeListeners();
         lucide.createIcons();
 
         // Real-time Firebase Auth Observer
