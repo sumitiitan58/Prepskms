@@ -170,31 +170,6 @@
             </a>
           </div>
 
-          <!-- Universal Real-Time Search Bar -->
-          <div class="relative flex-1 max-w-md hidden md:block">
-            <div class="relative">
-              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-              <input 
-                id="universalSearchInput" 
-                type="text" 
-                placeholder="Search PYQs, formulas, chapters, tests, or videos..." 
-                class="w-full pl-9 pr-8 py-2 text-sm bg-gray-50 hover:bg-gray-100/80 focus:bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 transition-all text-gray-800 placeholder-gray-400"
-                oninput="handleUniversalSearch(this.value)"
-                onfocus="showSearchDropdown()"
-              />
-              <button id="clearSearchBtn" onclick="clearUniversalSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                <i data-lucide="x" class="w-4 h-4"></i>
-              </button>
-            </div>
-
-            <!-- Real-Time Search Results Dropdown -->
-            <div id="searchResultsDropdown" class="hidden absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-xl border border-gray-200 p-2 z-50 max-h-96 overflow-y-auto">
-              <div id="searchResultsList" class="space-y-1 text-sm">
-                <!-- Injected via JavaScript -->
-              </div>
-            </div>
-          </div>
-
           <!-- Social Links & Navigation Action Hub -->
           <div class="flex items-center gap-2 sm:gap-3">
             
@@ -214,7 +189,7 @@
               </a>
             </div>
 
-            <!-- Website Search Action Button -->
+            <!-- Single Compact Website Search Action Button -->
             <button onclick="openUniversalSearchModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition-all border border-gray-200 shadow-xs" title="Search platform (Ctrl+K)">
               <i data-lucide="search" class="w-3.5 h-3.5 text-blue-600"></i>
               <span class="hidden sm:inline">Search</span>
@@ -228,10 +203,10 @@
               <span class="sm:hidden">AI</span>
             </button>
 
-            <!-- Profile Avatar Logo Button (Replaced continue as banner) -->
-            <button id="headerProfileAvatarBtn" onclick="navigateView('profile')" class="relative flex items-center justify-center p-0.5 rounded-full ring-2 ring-blue-500/30 hover:ring-blue-600 transition-all bg-white hover:scale-105" title="My Profile & Settings">
-              <img id="headerProfileLogoImg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" class="w-8 h-8 rounded-full object-cover" alt="Profile">
-              <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+            <!-- Profile Avatar Logo Button (Opens Profile Auth / Settings Modal) -->
+            <button id="headerProfileAvatarBtn" onclick="openProfileAuthModal()" class="relative flex items-center justify-center p-0.5 rounded-full ring-2 ring-blue-500/30 hover:ring-blue-600 transition-all bg-white hover:scale-105" title="Student Profile & Auth Settings">
+              <img id="headerProfileLogoImg" src="" class="w-8 h-8 rounded-full object-cover bg-gray-100 p-0.5" alt="Profile">
+              <span id="headerProfileStatusDot" class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 border-2 border-white rounded-full"></span>
             </button>
 
             <!-- Owner Badge (Strictly visible ONLY to saurav586kumar@gmail.com) -->
@@ -245,20 +220,6 @@
             <div id="mentorHeaderBadge" class="hidden items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 text-indigo-900 border border-indigo-200 text-xs font-bold shadow-xs">
               <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-indigo-700"></i>
               <span>Mentor Studio Active</span>
-            </div>
-
-            <!-- Google Sign-in / User Profile Actions -->
-            <div id="authContainer" class="flex items-center gap-2">
-              <button id="googleSignInBtn" onclick="handleGoogleSignIn()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-semibold shadow-sm transition-all" title="Sign in with Google to sync study streaks & mock scores">
-                <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
-                <span class="hidden sm:inline">Sign in with Google</span>
-                <span class="sm:hidden">Sign In</span>
-              </button>
-              <div id="userProfileHeader" class="hidden flex items-center gap-2">
-                <button onclick="handleSignOut()" class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50" title="Sign Out">
-                  <i data-lucide="log-out" class="w-4 h-4"></i>
-                </button>
-              </div>
             </div>
 
           </div>
@@ -575,6 +536,10 @@
           </div>
           
           <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="openCurriculumManagerModal()" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 flex items-center gap-1.5 shadow-xs transition-colors" title="Add or edit subjects and chapters permanently">
+              <i data-lucide="book-marked" class="w-3.5 h-3.5"></i>
+              <span>Manage Subjects & Chapters</span>
+            </button>
             <!-- Exam Filter -->
             <select id="materialExamFilter" onchange="renderMaterialsList()" class="px-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
               <option value="ALL">All Exams (JEE & NEET)</option>
@@ -678,7 +643,12 @@
             <div class="space-y-4">
               <div class="flex items-center justify-between">
                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">4. Select Chapters (<span id="selectedChaptersCount">All</span>)</label>
-                <div class="flex gap-2 text-[11px]">
+                <div class="flex items-center gap-2.5 text-[11px]">
+                  <button type="button" onclick="openCurriculumManagerModal()" class="text-indigo-600 hover:text-indigo-800 font-bold hover:underline flex items-center gap-1">
+                    <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                    <span>+ Add Chapter/Subject</span>
+                  </button>
+                  <span class="text-gray-300">|</span>
                   <button type="button" onclick="toggleAllChapters(true)" class="text-blue-600 hover:underline font-semibold">Select All</button>
                   <button type="button" onclick="toggleAllChapters(false)" class="text-gray-500 hover:underline">Clear</button>
                 </div>
@@ -2602,6 +2572,17 @@
         </div>
 
         <div class="pt-2 space-y-2">
+          <button onclick="handleGoogleSignIn()" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 flex items-center justify-center gap-2">
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+            <span>Sign in with Google (1-Click)</span>
+          </button>
+          <button onclick="closeGuestSignupReminder()" class="w-full py-2 text-gray-500 hover:text-gray-700 text-xs font-medium">
+            Continue without saving
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- =================================================================== -->
     <!-- BIG THEATER VIDEO PLAYER MODAL (WITH DRM DOWNLOAD PRIVACY PROTECTION) -->
     <!-- =================================================================== -->
@@ -2929,36 +2910,304 @@
       </div>
     </div>
 
-    <!-- Mobile Bottom Navigation Bar (Enhanced Modern Icon Navigation) -->
-    <nav class="fixed bottom-0 left-0 right-0 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 flex justify-around items-center py-2 z-40 shadow-xl text-[10px] font-semibold text-gray-500 px-1">
-      <button onclick="navigateView('home')" id="mob-btn-home" class="flex flex-col items-center gap-0.5 text-blue-600 transition-colors">
+    <!-- =================================================================== -->
+    <!-- PROFILE AUTH & STUDENT ACCOUNT SETTINGS MODAL -->
+    <!-- =================================================================== -->
+    <div id="profileAuthModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
+      <div class="bg-white rounded-3xl max-w-md w-full border border-gray-200 shadow-2xl p-6 space-y-5 relative overflow-hidden">
+        
+        <!-- Modal Top Bar -->
+        <div class="flex items-start justify-between border-b border-gray-100 pb-3">
+          <div class="flex items-center gap-3">
+            <div id="modalAuthAvatarContainer" class="relative">
+              <img id="modalAuthAvatarImg" src="" class="w-12 h-12 rounded-2xl object-cover border-2 border-blue-500 shadow-sm bg-gray-100" alt="Student Profile">
+              <span id="modalAuthStatusDot" class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-amber-500 border-2 border-white"></span>
+            </div>
+            <div>
+              <h2 id="modalAuthTitle" class="text-base font-extrabold text-gray-900">Student Profile & Auth</h2>
+              <div id="modalAuthSubtitle" class="text-xs text-gray-500">Prepskm Aspirant Account</div>
+            </div>
+          </div>
+          <button onclick="closeProfileAuthModal()" class="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" title="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- VIEW A: GUEST USER (2 OPTIONS: CONTINUE AS GUEST OR SIGN UP) -->
+        <!-- ------------------------------------------------------------- -->
+        <div id="modalAuthGuestView" class="space-y-4">
+          <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex items-start gap-2.5 text-xs text-amber-900">
+            <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">You are currently in Guest Aspirant Mode.</strong>
+              <div class="text-[11px] text-amber-800 mt-0.5">Choose to continue as guest or sign in to permanently save your progress to the cloud.</div>
+            </div>
+          </div>
+
+          <!-- OPTION 1: CONTINUE AS GUEST -->
+          <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200 space-y-3 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-gray-900 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span>Option 1: Continue as Guest</span>
+              </span>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Fast Start</span>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-gray-700 mb-1">Student Name (Editable) *</label>
+              <input id="modalGuestNameInput" type="text" placeholder="e.g. Arjun Sharma" class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-500/20" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-gray-700 mb-1">Target Exam *</label>
+              <select id="modalGuestExamSelect" class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-semibold">
+                <option value="JEE Main & Advanced">JEE Main & Advanced (Engineering)</option>
+                <option value="NEET UG">NEET UG (Medical)</option>
+                <option value="Class 11 Foundation">Class 11 Foundation</option>
+                <option value="Class 12 Boards & Entrance">Class 12 Boards & Entrance</option>
+                <option value="Dropper Batch">Dropper / Repeater Batch</option>
+              </select>
+            </div>
+
+            <button onclick="saveGuestFromAuthModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Continue as Guest</span>
+            </button>
+          </div>
+
+          <!-- DIVIDER -->
+          <div class="relative flex items-center justify-center">
+            <div class="border-t border-gray-200 w-full"></div>
+            <span class="bg-white px-3 text-[10px] text-gray-400 font-extrabold uppercase tracking-wider absolute">OR</span>
+          </div>
+
+          <!-- OPTION 2: SIGN UP / SIGN IN WITH GOOGLE -->
+          <div class="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-blue-200 space-y-3 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-blue-900 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Option 2: Sign Up / Sign In with Google</span>
+              </span>
+              <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded uppercase">Recommended</span>
+            </div>
+
+            <p class="text-[11px] text-blue-800 leading-relaxed">
+              Sync your study streak, CBT mock test analytics, formula sheet downloads, and discussion replies permanently to Firebase Cloud Firestore.
+            </p>
+
+            <button onclick="handleGoogleSignIn(); closeProfileAuthModal();" class="w-full py-3 bg-gray-900 hover:bg-black text-white rounded-xl font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all">
+              <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.1c0 2.8.7 5.4 1.9 7.8l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.4 7.5 23 12 23z"/></svg>
+              <span>Sign Up / Sign In with Google</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- VIEW B: SIGNED-IN STUDENT / USER PROFILE & SIGN OUT -->
+        <!-- ------------------------------------------------------------- -->
+        <div id="modalAuthLoggedInView" class="hidden space-y-4 text-xs">
+          
+          <!-- Avatar Customization Row -->
+          <div class="p-3 bg-gray-50 rounded-2xl border border-gray-200 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <img id="modalLoggedInAvatarThumb" src="" class="w-10 h-10 rounded-xl object-cover border border-gray-200 bg-white" alt="Avatar">
+              <div>
+                <div class="font-bold text-gray-900">Profile Photo</div>
+                <div class="text-[10px] text-gray-500">Custom image or default person avatar</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <label class="cursor-pointer px-2.5 py-1.5 bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 font-bold rounded-lg text-[11px] shadow-xs transition-colors flex items-center gap-1">
+                <i data-lucide="upload" class="w-3 h-3 text-blue-600"></i>
+                <span>Upload</span>
+                <input type="file" accept="image/*" class="hidden" onchange="handleModalAvatarFileSelected(event)" />
+              </label>
+              <button onclick="resetToDefaultAvatar()" class="px-2.5 py-1.5 bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 rounded-lg text-[11px] font-medium" title="Reset to default silhouette">
+                Default
+              </button>
+            </div>
+          </div>
+
+          <!-- Student Name (Editable) -->
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1">Student Name (Editable) *</label>
+            <div class="flex gap-2">
+              <input id="modalLoggedInNameInput" type="text" placeholder="Your name" class="flex-1 px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl font-semibold text-gray-900 focus:ring-2 focus:ring-blue-500/20" />
+              <button onclick="quickUpdateStudentName()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-xs flex items-center gap-1">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                <span>Save</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Student Gmail Address (Locked / Read-Only) -->
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1 flex items-center justify-between">
+              <span>Student Gmail Account</span>
+              <span class="text-[10px] font-bold text-amber-700 uppercase bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">Locked</span>
+            </label>
+            <div class="relative">
+              <input id="modalLoggedInEmailInput" type="email" readonly class="w-full pl-8 pr-3 py-2.5 bg-gray-100 text-gray-600 font-mono text-xs border border-gray-200 rounded-xl cursor-not-allowed select-all" />
+              <i data-lucide="lock" class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+            </div>
+            <p class="text-[10px] text-gray-400 mt-1">Email is verified by Google and cannot be altered.</p>
+          </div>
+
+          <!-- Target Exam -->
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1">Target Exam</label>
+            <select id="modalLoggedInExamSelect" onchange="quickUpdateStudentExam(this.value)" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl font-medium">
+              <option value="JEE Main & Advanced">JEE Main & Advanced</option>
+              <option value="NEET UG">NEET UG</option>
+              <option value="Class 11 Foundation">Class 11 Foundation</option>
+              <option value="Class 12 Boards & Entrance">Class 12 Boards & Entrance</option>
+              <option value="Dropper Batch">Dropper / Repeater Batch</option>
+            </select>
+          </div>
+
+          <!-- Navigation & Sign Out Buttons -->
+          <div class="pt-2 space-y-2 border-t border-gray-100">
+            <button onclick="navigateView('profile'); closeProfileAuthModal();" class="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+              <i data-lucide="user-cog" class="w-4 h-4"></i>
+              <span>Open Full Student Profile & Study Calendar</span>
+            </button>
+            
+            <button onclick="handleSignOut(); closeProfileAuthModal();" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-red-200">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span>Sign Out from Account</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- CURRICULUM MANAGER MODAL: ADD & MANAGE SUBJECTS & CHAPTERS -->
+    <!-- =================================================================== -->
+    <div id="curriculumManagerModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col border border-gray-200 shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        
+        <!-- Header -->
+        <div class="p-5 border-b border-gray-100 bg-gray-50/80 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shadow-xs">
+              <i data-lucide="book-marked" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-extrabold text-gray-900">Manage Subjects & Chapters</h2>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Real-time Sync</span>
+              </div>
+              <p class="text-xs text-gray-500">Added subjects and chapters remain permanently stored and available across Mock Tests, Cropper & PDFs.</p>
+            </div>
+          </div>
+          <button onclick="closeCurriculumManagerModal()" class="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Scrollable Workspace -->
+        <div class="p-5 overflow-y-auto space-y-5 flex-1 text-xs">
+          
+          <!-- Section 1: Add New Subject -->
+          <div class="p-4 bg-blue-50/60 rounded-2xl border border-blue-100 space-y-3">
+            <h3 class="font-bold text-sm text-blue-950 flex items-center gap-1.5">
+              <i data-lucide="plus-circle" class="w-4 h-4 text-blue-600"></i>
+              <span>Add New Subject</span>
+            </h3>
+            <div class="flex gap-2">
+              <input id="newSubjectInput" type="text" placeholder="e.g. Computer Science, Botany, General Aptitude..." class="flex-1 px-3.5 py-2.5 bg-white border border-blue-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500/20" />
+              <button onclick="handleAddNewSubjectSubmit()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-xs flex items-center gap-1.5 shrink-0 transition-all">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Add Subject</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 2: Add New Chapter Under Subject -->
+          <div class="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 space-y-3">
+            <h3 class="font-bold text-sm text-emerald-950 flex items-center gap-1.5">
+              <i data-lucide="file-plus-2" class="w-4 h-4 text-emerald-600"></i>
+              <span>Add New Chapter under Subject</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div>
+                <select id="newChapterSubjectSelect" class="w-full px-3 py-2.5 bg-white border border-emerald-200 rounded-xl font-semibold text-gray-800">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+              <div class="sm:col-span-2 flex gap-2">
+                <input id="newChapterTitleInput" type="text" placeholder="e.g. Semiconductor Devices & Logic Gates" class="flex-1 px-3.5 py-2.5 bg-white border border-emerald-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500/20" />
+                <button onclick="handleAddNewChapterSubmit()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-xs flex items-center gap-1.5 shrink-0 transition-all">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Add Chapter</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Current Subjects & Chapters Directory -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-sm text-gray-900">Current Subjects & Chapters Directory</h3>
+              <span id="curriculumSummaryCount" class="text-xs text-gray-500 font-medium">4 Subjects • 43 Chapters</span>
+            </div>
+
+            <div id="curriculumHierarchyContainer" class="space-y-2.5">
+              <!-- Dynamically populated subject accordions -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Enhanced Native App Layout with Center Prep AI) -->
+    <nav class="fixed bottom-0 left-0 right-0 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 flex justify-around items-end pb-2 pt-1 z-40 shadow-xl text-[10px] font-semibold text-gray-500 px-2">
+      <!-- 1: Home -->
+      <button onclick="navigateView('home')" id="mob-btn-home" class="flex flex-col items-center gap-0.5 text-blue-600 transition-colors w-12 py-1">
         <i data-lucide="home" class="w-4 h-4"></i>
         <span>Home</span>
       </button>
-      <button onclick="navigateView('materials')" id="mob-btn-materials" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
+
+      <!-- 2: Notes / Materials -->
+      <button onclick="navigateView('materials')" id="mob-btn-materials" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors w-12 py-1">
         <i data-lucide="book-open" class="w-4 h-4"></i>
         <span>Notes</span>
       </button>
-      <button onclick="navigateView('mock-test')" id="mob-btn-mock-test" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
+
+      <!-- 3: CENTERPIECE - Prep AI (Gemini Integrated) -->
+      <button onclick="openAiCopilotModal()" id="mob-btn-prep-ai" class="relative -top-3 flex flex-col items-center group focus:outline-none">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/35 border-2 border-white group-hover:scale-105 active:scale-95 transition-all">
+          <i data-lucide="sparkles" class="w-5 h-5 text-amber-300 animate-pulse"></i>
+        </div>
+        <span class="text-[9px] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-700 tracking-tight mt-0.5">Prep AI</span>
+      </button>
+
+      <!-- 4: CBT Mock -->
+      <button onclick="navigateView('mock-test')" id="mob-btn-mock-test" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors w-12 py-1">
         <i data-lucide="timer" class="w-4 h-4"></i>
-        <span>CBT Mock</span>
+        <span>Mock</span>
       </button>
-      <button onclick="navigateView('chat')" id="mob-btn-chat" class="relative flex flex-col items-center gap-0.5 hover:text-emerald-700 transition-colors">
+
+      <!-- 5: Live Chat -->
+      <button onclick="navigateView('chat')" id="mob-btn-chat" class="relative flex flex-col items-center gap-0.5 hover:text-emerald-700 transition-colors w-12 py-1">
         <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
-        <span>Live Chat</span>
-        <span class="absolute top-0 right-1 w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span>Chat</span>
+        <span class="absolute top-0.5 right-2 w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
       </button>
-      <button onclick="navigateView('mentorship')" id="mob-btn-mentorship" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
-        <i data-lucide="phone-call" class="w-4 h-4 text-indigo-600"></i>
-        <span>Mentors</span>
-      </button>
-      <button onclick="navigateView('profile')" id="mob-btn-profile" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
-        <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
+
+      <!-- 6: Profile (Calls openProfileAuthModal) -->
+      <button onclick="openProfileAuthModal()" id="mob-btn-profile" class="flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors w-12 py-1">
+        <div class="w-5 h-5 rounded-full overflow-hidden border border-gray-300 flex items-center justify-center bg-gray-100">
+          <img id="mobProfileAvatarThumb" src="" class="w-full h-full object-cover" alt="Profile">
+        </div>
         <span>Profile</span>
-      </button>
-      <button onclick="navigateView('admin')" id="mob-btn-admin" class="hidden flex flex-col items-center gap-0.5 hover:text-gray-900 transition-colors">
-        <i data-lucide="shield" class="w-4 h-4 text-purple-600"></i>
-        <span>Admin</span>
       </button>
     </nav>
 
@@ -3031,6 +3280,9 @@
       }
       window.alert = (msg) => showAppToast(msg, 'info');
 
+      // Universal Default Person Avatar SVG Silhouette (used when student hasn't uploaded a photo)
+      const DEFAULT_AVATAR_SVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z' clip-rule='evenodd'/%3E%3C/svg%3E";
+
       // 2. STATE MANAGEMENT & ROLE PERMISSIONS
       const SUPER_ADMIN_EMAIL = "saurav586kumar@gmail.com";
 
@@ -3046,7 +3298,7 @@
         uid: "guest-" + Math.random().toString(36).substring(2, 9),
         email: null,
         displayName: (storedGuest && storedGuest.name) ? storedGuest.name : "Aspirant Guest",
-        photoURL: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+        photoURL: (storedGuest && storedGuest.photoURL) ? storedGuest.photoURL : DEFAULT_AVATAR_SVG,
         role: "student", // 'student' | 'mentor' | 'superadmin' (Owner is strictly saurav586kumar@gmail.com)
         isGuest: true,
         targetExam: (storedGuest && storedGuest.targetExam) ? storedGuest.targetExam : "JEE Main & Advanced"
@@ -3056,6 +3308,53 @@
       let selectedPdfFile = null;
       let selectedVideoFile = null;
       let guestActionCounter = 0;
+
+      // Dynamic Permanent Curriculum Database (Subjects & Chapters)
+      const DEFAULT_CURRICULUM_DATA = {
+        subjects: ['Physics', 'Chemistry', 'Mathematics', 'Biology'],
+        chapters: {
+          Physics: [
+            'Kinematics & Vectors', 'Laws of Motion & Friction', 'Work, Energy & Power',
+            'Rotational Dynamics', 'Gravitation', 'Thermodynamics & KTG',
+            'Electrostatics & Capacitance', 'Current Electricity', 'Magnetic Effects of Current',
+            'Electromagnetic Induction & AC', 'Ray & Wave Optics', 'Modern Physics & Semiconductors'
+          ],
+          Chemistry: [
+            'Mole Concept & Stoichiometry', 'Atomic Structure & Periodic Table',
+            'Chemical Bonding & MOT', 'Thermodynamics & Equilibrium',
+            'Redox & Electrochemistry', 'Chemical Kinetics & Surface Chem',
+            'General Organic Chemistry (GOC)', 'Hydrocarbons & Haloalkanes',
+            'Oxygen & Nitrogen Compounds', 'Coordination Compounds & d-Block'
+          ],
+          Mathematics: [
+            'Quadratic Equations & Complex Numbers', 'Sequences & Series',
+            'Permutations & Combinations', 'Binomial Theorem', 'Matrices & Determinants',
+            'Functions, Limits & Continuity', 'Differential Calculus & Applications',
+            'Integral Calculus & Differential Equations', 'Coordinate Geometry & Conic Sections',
+            'Vectors & 3D Geometry', 'Probability & Statistics'
+          ],
+          Biology: [
+            'Diversity in the Living World', 'Structural Organisation in Animals and Plants',
+            'Cell Structure and Function', 'Plant Physiology (Photosynthesis, Respiration)',
+            'Human Physiology (Digestion, Neural, Chemical)', 'Reproduction in Organisms',
+            'Genetics and Evolution', 'Biology and Human Welfare', 'Biotechnology and Applications',
+            'Ecology and Environment'
+          ]
+        }
+      };
+
+      function loadSavedCurriculum() {
+        try {
+          const raw = localStorage.getItem('prepskm_curriculum');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.subjects && parsed.chapters) {
+              return parsed;
+            }
+          }
+        } catch(e) {}
+        return JSON.parse(JSON.stringify(DEFAULT_CURRICULUM_DATA));
+      }
 
       // State Collections
       let state = {
@@ -3447,13 +3746,14 @@
               uid: user.uid,
               email: user.email,
               displayName: user.displayName || user.email.split('@')[0],
-              photoURL: user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+              photoURL: user.photoURL || DEFAULT_AVATAR_SVG,
               role: role,
               isGuest: false,
               targetExam: state.userProfile.targetExams[0] || "JEE Main & Advanced"
             };
             closeGuestSignupReminder();
             closeGuestOnboardingModal();
+            closeProfileAuthModal();
             updateRoleAndHeaderUI();
             showAppToast(`Signed in as ${currentUser.displayName} (${role.toUpperCase()})`, 'success');
             if (role === 'superadmin') {
@@ -3476,12 +3776,13 @@
           uid: "guest-" + Math.random().toString(36).substring(2, 9),
           email: null,
           displayName: (storedGuest && storedGuest.name) ? storedGuest.name : "Aspirant Guest",
-          photoURL: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+          photoURL: (storedGuest && storedGuest.photoURL) ? storedGuest.photoURL : DEFAULT_AVATAR_SVG,
           role: "student",
           isGuest: true,
           targetExam: (storedGuest && storedGuest.targetExam) ? storedGuest.targetExam : "JEE Main & Advanced"
         };
         updateRoleAndHeaderUI();
+        closeProfileAuthModal();
         navigateView('home');
         showAppToast('Signed out. You are now in Guest Aspirant Mode.', 'info');
       }
@@ -3498,6 +3799,35 @@
         const navAdmin = document.getElementById('nav-btn-admin');
         const mobAdmin = document.getElementById('mob-btn-admin');
         const navMentor = document.getElementById('nav-btn-mentor-studio');
+
+        // Top Header and Mobile Avatar Sync
+        const currentAvatar = currentUser.photoURL || DEFAULT_AVATAR_SVG;
+        const headerLogo = document.getElementById('headerProfileLogoImg');
+        const headerStatusDot = document.getElementById('headerProfileStatusDot');
+        const mobAvatar = document.getElementById('mobProfileAvatarThumb');
+
+        if (headerLogo) headerLogo.src = currentAvatar;
+        if (mobAvatar) mobAvatar.src = currentAvatar;
+
+        if (headerStatusDot) {
+          headerStatusDot.className = currentUser.isGuest 
+            ? "absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 border-2 border-white rounded-full shadow-xs" 
+            : "absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full shadow-xs";
+        }
+
+        // Also update view-profile fields
+        const profName = document.getElementById('profileInputName');
+        const profEmail = document.getElementById('profileInputEmail');
+        const profThumb = document.getElementById('profileCurrentAvatarThumb');
+        if (profName && !profName.matches(':focus')) {
+          profName.value = currentUser.displayName || state.userProfile.name;
+        }
+        if (profEmail) {
+          profEmail.value = currentUser.email || 'guest.aspirant@prepskm.edu (Sign in with Google to link Gmail)';
+        }
+        if (profThumb) {
+          profThumb.src = currentAvatar;
+        }
 
         if (currentUser.isGuest) {
           if (guestBox) guestBox.classList.remove('hidden');
@@ -3612,6 +3942,420 @@
         if (reminderModal) reminderModal.classList.add('hidden');
         sessionStorage.setItem('guest_reminder_dismissed_recently', Date.now().toString());
         showAppToast('Continuing in Guest Mode. You can sign in anytime.', 'info');
+      }
+
+      // =====================================================================
+      // PROFILE AUTH QUICK MODAL CONTROLS (GUEST & LOGGED-IN EXPERIENCES)
+      // =====================================================================
+      function openProfileAuthModal() {
+        const modal = document.getElementById('profileAuthModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+
+        const avatarImg = document.getElementById('modalAuthAvatarImg');
+        const statusDot = document.getElementById('modalAuthStatusDot');
+        const title = document.getElementById('modalAuthTitle');
+        const subtitle = document.getElementById('modalAuthSubtitle');
+
+        const guestView = document.getElementById('modalAuthGuestView');
+        const loggedInView = document.getElementById('modalAuthLoggedInView');
+
+        const currentAvatar = currentUser.photoURL || DEFAULT_AVATAR_SVG;
+        if (avatarImg) avatarImg.src = currentAvatar;
+
+        if (currentUser.isGuest) {
+          if (statusDot) statusDot.className = "absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-amber-500 border-2 border-white shadow-xs";
+          if (title) title.innerText = "Aspirant Profile & Quick Sign In";
+          if (subtitle) subtitle.innerText = "Guest Session Active";
+
+          if (guestView) guestView.classList.remove('hidden');
+          if (loggedInView) loggedInView.classList.add('hidden');
+
+          const nameInput = document.getElementById('modalGuestNameInput');
+          if (nameInput) nameInput.value = (currentUser.displayName === 'Aspirant Guest' || currentUser.displayName === 'Aspirant Student') ? '' : currentUser.displayName;
+          const examSelect = document.getElementById('modalGuestExamSelect');
+          if (examSelect && currentUser.targetExam) examSelect.value = currentUser.targetExam;
+        } else {
+          if (statusDot) statusDot.className = "absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-xs";
+          if (title) title.innerText = currentUser.displayName || "Student Profile";
+          if (subtitle) subtitle.innerText = currentUser.role === 'superadmin' ? 'Platform Super Admin Owner' : currentUser.role === 'mentor' ? 'Prepskm Verified Mentor' : 'Prepskm Verified Aspirant';
+
+          if (guestView) guestView.classList.add('hidden');
+          if (loggedInView) loggedInView.classList.remove('hidden');
+
+          const thumb = document.getElementById('modalLoggedInAvatarThumb');
+          if (thumb) thumb.src = currentAvatar;
+
+          const nameInput = document.getElementById('modalLoggedInNameInput');
+          if (nameInput) nameInput.value = currentUser.displayName || '';
+
+          const emailInput = document.getElementById('modalLoggedInEmailInput');
+          if (emailInput) emailInput.value = currentUser.email || 'student@prepskm.edu';
+
+          const examSelect = document.getElementById('modalLoggedInExamSelect');
+          if (examSelect && currentUser.targetExam) examSelect.value = currentUser.targetExam;
+        }
+        lucide.createIcons();
+      }
+
+      function closeProfileAuthModal() {
+        const modal = document.getElementById('profileAuthModal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      function saveGuestFromAuthModal() {
+        const name = (document.getElementById('modalGuestNameInput').value || '').trim() || 'Aspirant Student';
+        const exam = document.getElementById('modalGuestExamSelect').value;
+
+        const profileData = { name, targetExam: exam, photoURL: currentUser.photoURL || DEFAULT_AVATAR_SVG };
+        try {
+          localStorage.setItem('prepskm_guest_profile', JSON.stringify(profileData));
+        } catch(e) {}
+        storedGuest = profileData;
+
+        currentUser.displayName = name;
+        currentUser.targetExam = exam;
+        state.userProfile.name = name;
+        state.userProfile.targetExams = [exam];
+
+        updateRoleAndHeaderUI();
+        updateProfileLiveCard();
+        closeProfileAuthModal();
+        showAppToast(`Welcome ${name}! Continuing as Guest for ${exam}.`, 'success');
+      }
+
+      function quickUpdateStudentName() {
+        const newName = (document.getElementById('modalLoggedInNameInput').value || '').trim();
+        if (!newName) {
+          showAppToast("Please enter a valid name.", "error");
+          return;
+        }
+        currentUser.displayName = newName;
+        state.userProfile.name = newName;
+        persistState();
+
+        if (db && !currentUser.isGuest) {
+          db.collection('users').doc(currentUser.uid).set({
+            displayName: newName,
+            updatedAt: new Date().toISOString()
+          }, { merge: true }).catch(err => console.warn(err));
+        }
+
+        updateRoleAndHeaderUI();
+        updateProfileLiveCard();
+        showAppToast(`Student name updated to "${newName}"!`, 'success');
+      }
+
+      function quickUpdateStudentExam(examVal) {
+        currentUser.targetExam = examVal;
+        state.userProfile.targetExams = [examVal];
+        persistState();
+
+        if (db && !currentUser.isGuest) {
+          db.collection('users').doc(currentUser.uid).set({
+            targetExams: [examVal],
+            updatedAt: new Date().toISOString()
+          }, { merge: true }).catch(err => console.warn(err));
+        }
+        showAppToast(`Target exam updated to ${examVal}!`, 'info');
+      }
+
+      function handleModalAvatarFileSelected(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target.result;
+          currentUser.photoURL = dataUrl;
+          state.userProfile.photoURL = dataUrl;
+          const thumb = document.getElementById('modalLoggedInAvatarThumb');
+          if (thumb) thumb.src = dataUrl;
+          updateRoleAndHeaderUI();
+          persistState();
+
+          if (db && !currentUser.isGuest) {
+            db.collection('users').doc(currentUser.uid).set({
+              photoURL: dataUrl,
+              updatedAt: new Date().toISOString()
+            }, { merge: true }).catch(err => console.warn(err));
+          }
+          showAppToast("Profile photo updated successfully!", "success");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function resetToDefaultAvatar() {
+        currentUser.photoURL = DEFAULT_AVATAR_SVG;
+        state.userProfile.photoURL = DEFAULT_AVATAR_SVG;
+        const thumb = document.getElementById('modalLoggedInAvatarThumb');
+        if (thumb) thumb.src = DEFAULT_AVATAR_SVG;
+        updateRoleAndHeaderUI();
+        persistState();
+
+        if (db && !currentUser.isGuest) {
+          db.collection('users').doc(currentUser.uid).set({
+            photoURL: DEFAULT_AVATAR_SVG,
+            updatedAt: new Date().toISOString()
+          }, { merge: true }).catch(err => console.warn(err));
+        }
+        showAppToast("Profile picture reset to default person avatar.", "info");
+      }
+
+      // =====================================================================
+      // CURRICULUM MANAGER (ADD SUBJECTS & CHAPTERS WITH FIRESTORE SYNC)
+      // =====================================================================
+      function openCurriculumManagerModal() {
+        const modal = document.getElementById('curriculumManagerModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        renderCurriculumManagerUI();
+        lucide.createIcons();
+      }
+
+      function closeCurriculumManagerModal() {
+        const modal = document.getElementById('curriculumManagerModal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      function handleAddNewSubjectSubmit() {
+        const input = document.getElementById('newSubjectInput');
+        const name = (input ? input.value : '').trim();
+        if (!name) {
+          showAppToast("Please enter a subject name.", "error");
+          return;
+        }
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+        if (state.curriculum.subjects.some(s => s.toLowerCase() === name.toLowerCase())) {
+          showAppToast("This subject already exists in the curriculum.", "info");
+          return;
+        }
+        state.curriculum.subjects.push(name);
+        if (!state.curriculum.chapters[name]) {
+          state.curriculum.chapters[name] = [];
+        }
+        saveCurriculum();
+        if (input) input.value = '';
+        renderCurriculumManagerUI();
+        populateCurriculumDropdowns();
+        showAppToast(`Subject "${name}" added permanently to curriculum!`, 'success');
+      }
+
+      function handleAddNewChapterSubmit() {
+        const subSelect = document.getElementById('newChapterSubjectSelect');
+        const chapInput = document.getElementById('newChapterTitleInput');
+        const subject = subSelect ? subSelect.value : '';
+        const chapter = (chapInput ? chapInput.value : '').trim();
+
+        if (!subject) {
+          showAppToast("Please select a subject.", "error");
+          return;
+        }
+        if (!chapter) {
+          showAppToast("Please enter a chapter title.", "error");
+          return;
+        }
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+        if (!state.curriculum.chapters[subject]) {
+          state.curriculum.chapters[subject] = [];
+        }
+        if (state.curriculum.chapters[subject].some(c => c.toLowerCase() === chapter.toLowerCase())) {
+          showAppToast("This chapter already exists under " + subject, "info");
+          return;
+        }
+        state.curriculum.chapters[subject].push(chapter);
+        saveCurriculum();
+        if (chapInput) chapInput.value = '';
+        renderCurriculumManagerUI();
+        populateCurriculumDropdowns();
+        showAppToast(`Chapter "${chapter}" added permanently under ${subject}!`, 'success');
+      }
+
+      function deleteCustomSubject(subjectName) {
+        if (['Physics', 'Chemistry', 'Mathematics', 'Biology'].includes(subjectName)) {
+          if (!confirm(`Are you sure you want to delete core subject "${subjectName}" and all its chapters?`)) return;
+        } else {
+          if (!confirm(`Delete subject "${subjectName}" and all its chapters?`)) return;
+        }
+        state.curriculum.subjects = state.curriculum.subjects.filter(s => s !== subjectName);
+        delete state.curriculum.chapters[subjectName];
+        saveCurriculum();
+        renderCurriculumManagerUI();
+        populateCurriculumDropdowns();
+        showAppToast(`Subject "${subjectName}" removed.`, 'info');
+      }
+
+      function deleteCustomChapter(subjectName, chapterTitle) {
+        if (!confirm(`Remove chapter "${chapterTitle}" from ${subjectName}?`)) return;
+        if (state.curriculum.chapters[subjectName]) {
+          state.curriculum.chapters[subjectName] = state.curriculum.chapters[subjectName].filter(c => c !== chapterTitle);
+          saveCurriculum();
+          renderCurriculumManagerUI();
+          populateCurriculumDropdowns();
+          showAppToast(`Chapter removed from ${subjectName}.`, 'info');
+        }
+      }
+
+      function saveCurriculum() {
+        try {
+          localStorage.setItem('prepskm_curriculum', JSON.stringify(state.curriculum));
+        } catch(e) {}
+        if (db) {
+          db.collection('curriculum').doc('hierarchy').set(state.curriculum).catch(err => console.warn(err));
+        }
+      }
+
+      function renderCurriculumManagerUI() {
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+        const subSelect = document.getElementById('newChapterSubjectSelect');
+        if (subSelect) {
+          subSelect.innerHTML = state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        const container = document.getElementById('curriculumHierarchyContainer');
+        const countLabel = document.getElementById('curriculumSummaryCount');
+
+        let totalChapters = 0;
+        state.curriculum.subjects.forEach(s => {
+          totalChapters += (state.curriculum.chapters[s] || []).length;
+        });
+
+        if (countLabel) {
+          countLabel.innerText = `${state.curriculum.subjects.length} Subjects • ${totalChapters} Chapters`;
+        }
+
+        if (!container) return;
+
+        container.innerHTML = state.curriculum.subjects.map(subj => {
+          const chapters = state.curriculum.chapters[subj] || [];
+          return `
+            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                  <span class="font-extrabold text-sm text-gray-900">${subj}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">${chapters.length} Chapters</span>
+                </div>
+                <button onclick="deleteCustomSubject('${subj}')" class="text-xs text-red-500 hover:text-red-700 font-bold p-1 hover:bg-red-50 rounded-lg transition-colors" title="Delete subject">
+                  Delete Subject
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                ${chapters.length === 0 ? `<div class="text-[11px] text-gray-400 italic col-span-full">No chapters added yet under ${subj}.</div>` : chapters.map(ch => `
+                  <div class="p-2 rounded-xl bg-white border border-gray-200 flex items-center justify-between text-xs text-gray-800">
+                    <span class="truncate pr-2 font-medium">${ch}</span>
+                    <button onclick="deleteCustomChapter('${subj}', '${ch.replace(/'/g, "\\'")}')" class="text-gray-400 hover:text-red-600 font-bold p-0.5 shrink-0" title="Remove chapter">×</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function populateCurriculumDropdowns() {
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+
+        // 1. Update CHAPTERS_DATABASE reference
+        if (typeof CHAPTERS_DATABASE !== 'undefined') {
+          for (let key in state.curriculum.chapters) {
+            CHAPTERS_DATABASE[key] = state.curriculum.chapters[key];
+          }
+        }
+
+        // 2. Refresh CBT Mock Chapters List
+        renderMockChaptersList();
+
+        // 3. Refresh PDF Upload Subject Select
+        const pdfSub = document.getElementById('newPdfSubject');
+        if (pdfSub) {
+          const curVal = pdfSub.value;
+          pdfSub.innerHTML = state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+          if (state.curriculum.subjects.includes(curVal)) pdfSub.value = curVal;
+        }
+
+        // 4. Refresh Materials Filter Subject Select
+        const matSub = document.getElementById('materialSubjectFilter');
+        if (matSub) {
+          const curVal = matSub.value;
+          matSub.innerHTML = `<option value="ALL">All Subjects</option>` + state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+          if (curVal) matSub.value = curVal;
+        }
+
+        // 5. Refresh Cropper Subject Select
+        const cropSub = document.getElementById('cropperSubject');
+        if (cropSub) {
+          const curVal = cropSub.value;
+          cropSub.innerHTML = state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+          if (state.curriculum.subjects.includes(curVal)) cropSub.value = curVal;
+        }
+      }
+
+      function initCloudRealtimeSync() {
+        if (!db) return;
+
+        // 1. Curriculum hierarchy sync
+        try {
+          db.collection('curriculum').doc('hierarchy').onSnapshot(doc => {
+            if (doc.exists) {
+              const cloudCurriculum = doc.data();
+              if (cloudCurriculum && cloudCurriculum.subjects && cloudCurriculum.chapters) {
+                state.curriculum = cloudCurriculum;
+                persistState();
+                populateCurriculumDropdowns();
+                renderCurriculumManagerUI();
+              }
+            } else {
+              // Seed default if document doesn't exist
+              if (state.curriculum) {
+                db.collection('curriculum').doc('hierarchy').set(state.curriculum).catch(e => {});
+              }
+            }
+          }, err => console.warn("Curriculum sync listener warning:", err));
+        } catch(e) {}
+
+        // 2. Real-time Materials (PDFs)
+        try {
+          db.collection('materials').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const cloudMaterials = [];
+              snapshot.forEach(doc => cloudMaterials.push({ id: doc.id, ...doc.data() }));
+              if (cloudMaterials.length > 0) {
+                state.materials = cloudMaterials;
+                renderMaterialsList();
+                renderAdminPdfsTable();
+              }
+            }
+          }, err => console.warn(err));
+        } catch(e) {}
+
+        // 3. Real-time Videos
+        try {
+          db.collection('videos').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const cloudVideos = [];
+              snapshot.forEach(doc => cloudVideos.push({ id: doc.id, ...doc.data() }));
+              if (cloudVideos.length > 0) {
+                state.videos = cloudVideos;
+                renderFeaturedVideos();
+              }
+            }
+          }, err => console.warn(err));
+        } catch(e) {}
+
+        // 4. Real-time Questions (from 6-step multi-crop builder)
+        try {
+          db.collection('questions').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const cloudQuestions = [];
+              snapshot.forEach(doc => cloudQuestions.push({ id: doc.id, ...doc.data() }));
+              if (cloudQuestions.length > 0) {
+                state.questions = cloudQuestions;
+                renderSavedQuestionsTable();
+              }
+            }
+          }, err => console.warn(err));
+        } catch(e) {}
       }
 
       // File Upload Listeners
@@ -4843,7 +5587,7 @@
       let cbtUserAnswers = {}; // { questionId: { selectedAnswer, status, timeSpentSeconds } }
       let cbtQuestionStartTime = Date.now();
 
-      const CHAPTERS_DATABASE = {
+      let CHAPTERS_DATABASE = {
         Physics: [
           'Kinematics & Vectors', 'Laws of Motion & Friction', 'Work, Energy & Power',
           'Rotational Dynamics', 'Gravitation', 'Thermodynamics & KTG',
@@ -4896,22 +5640,33 @@
         const container = document.getElementById('mockChaptersList');
         if (!container) return;
 
-        const subjects = activeMockExam === 'JEE' ? ['Physics', 'Chemistry', 'Mathematics'] : ['Physics', 'Chemistry', 'Biology'];
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+        const baseSubjects = activeMockExam === 'JEE' ? ['Physics', 'Chemistry', 'Mathematics'] : ['Physics', 'Chemistry', 'Biology'];
+        const allSubjects = Array.from(new Set([...baseSubjects, ...(state.curriculum.subjects || [])]));
         let html = '';
 
-        subjects.forEach(subj => {
-          html += `<div class="font-bold text-[11px] text-gray-800 uppercase tracking-wider mt-2 mb-1">${subj}</div>`;
-          CHAPTERS_DATABASE[subj].forEach(ch => {
+        allSubjects.forEach(subj => {
+          const chapters = (state.curriculum.chapters && state.curriculum.chapters[subj]) || CHAPTERS_DATABASE[subj] || [];
+          if (chapters.length > 0) {
             html += `
-              <label class="flex items-center gap-2 text-gray-700 hover:text-black cursor-pointer py-0.5">
-                <input type="checkbox" name="mockChapterCheckbox" value="${ch}" checked onchange="validateMockSetupConstraints()" class="w-3.5 h-3.5 rounded text-blue-600" />
-                <span>${ch}</span>
-              </label>
+              <div class="font-bold text-[11px] text-gray-800 uppercase tracking-wider mt-2.5 mb-1 flex items-center justify-between">
+                <span>${subj}</span>
+                <span class="text-[10px] text-gray-400 font-normal">(${chapters.length} chapters)</span>
+              </div>
             `;
-          });
+            chapters.forEach(ch => {
+              html += `
+                <label class="flex items-center gap-2 text-gray-700 hover:text-black cursor-pointer py-0.5">
+                  <input type="checkbox" name="mockChapterCheckbox" value="${ch}" checked onchange="validateMockSetupConstraints()" class="w-3.5 h-3.5 rounded text-blue-600" />
+                  <span>${ch}</span>
+                </label>
+              `;
+            });
+          }
         });
 
         container.innerHTML = html;
+        validateMockSetupConstraints();
       }
 
       function toggleAllChapters(val) {
@@ -7817,9 +8572,11 @@
         renderMentorsDirectory();
         renderFeaturedVideos();
         updateMentorshipPricingUI(30);
+        populateCurriculumDropdowns();
         updateRoleAndHeaderUI();
         refreshMotivationalQuote();
         initChatRealtimeListeners();
+        initCloudRealtimeSync();
         lucide.createIcons();
 
         // Real-time Firebase Auth Observer
@@ -7831,7 +8588,7 @@
                 uid: user.uid,
                 email: user.email,
                 displayName: user.displayName || user.email.split('@')[0],
-                photoURL: user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+                photoURL: user.photoURL || DEFAULT_AVATAR_SVG,
                 role: role,
                 isGuest: false,
                 targetExam: state.userProfile.targetExams[0] || "JEE Main & Advanced"
