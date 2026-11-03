@@ -11,6 +11,7 @@ import {
   calculateNetVoteScore,
   toggleVote,
   sortForumTopics,
+  calculateStudyStreak,
   TestQuestion,
   UserAnswerRecord,
   MentorshipTokenRecord,
@@ -245,4 +246,57 @@ test('Discussion Forum: Topic sorting by top votes, recent, and replies', () => 
   const sortedReplies = sortForumTopics(topics, 'replies');
   assert.equal(sortedReplies[0].id, 't3'); // 12 replies
 });
+
+test('Daily Study Streak: tracks consecutive days and upgrades motivational tiers', () => {
+  // Test case 1: 0 completed tasks
+  const emptyTasks = [
+    { id: '1', title: 'Task 1', date: '2026-11-03', isBacklog: false, status: 'pending' as const },
+  ];
+  const s0 = calculateStudyStreak(emptyTasks, '2026-11-03');
+  assert.equal(s0.currentStreak, 0);
+  assert.equal(s0.isTodayCompleted, false);
+  assert.equal(s0.activeTier.tierName, 'Aspirant Starter');
+
+  // Test case 2: Task completed today (Nov 3) + yesterday (Nov 2) + day before (Nov 1) -> 3 day streak (Iron Will)
+  const threeDayTasks = [
+    { id: '1', title: 'Task 1', date: '2026-11-03', isBacklog: false, status: 'completed' as const },
+    { id: '2', title: 'Task 2', date: '2026-11-02', isBacklog: false, status: 'completed' as const },
+    { id: '3', title: 'Task 3', date: '2026-11-01', isBacklog: false, status: 'completed' as const },
+  ];
+  const s3 = calculateStudyStreak(threeDayTasks, '2026-11-03');
+  assert.equal(s3.currentStreak, 3);
+  assert.equal(s3.isTodayCompleted, true);
+  assert.equal(s3.activeTier.tierName, 'Iron Will');
+  assert.equal(s3.activeTier.badgeIcon, '⚡');
+  assert.equal(s3.nextTier?.tierName, 'Relentless Ranker');
+
+  // Test case 3: 7 consecutive days completed -> Relentless Ranker tier
+  const sevenDayTasks = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date('2026-11-03T00:00:00Z');
+    d.setUTCDate(d.getUTCDate() - i);
+    sevenDayTasks.push({
+      id: `task-${i}`,
+      title: `Day ${i} task`,
+      date: d.toISOString().split('T')[0],
+      isBacklog: false,
+      status: 'completed' as const,
+    });
+  }
+  const s7 = calculateStudyStreak(sevenDayTasks, '2026-11-03');
+  assert.equal(s7.currentStreak, 7);
+  assert.equal(s7.activeTier.tierName, 'Relentless Ranker');
+  assert.equal(s7.activeTier.badgeIcon, '🔥');
+
+  // Test case 4: Active streak preserved when today is not completed yet, but yesterday and day before were completed
+  const ongoingTodayTasks = [
+    { id: 't1', title: 'Today pending task', date: '2026-11-03', isBacklog: false, status: 'in_progress' as const },
+    { id: 't2', title: 'Yesterday completed', date: '2026-11-02', isBacklog: false, status: 'completed' as const },
+    { id: 't3', title: 'Day before completed', date: '2026-11-01', isBacklog: false, status: 'completed' as const },
+  ];
+  const sOngoing = calculateStudyStreak(ongoingTodayTasks, '2026-11-03');
+  assert.equal(sOngoing.currentStreak, 2);
+  assert.equal(sOngoing.isTodayCompleted, false);
+});
+
 

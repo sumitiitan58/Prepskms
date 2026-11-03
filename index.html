@@ -93,6 +93,58 @@
         0%, 100% { opacity: 1; }
         50% { opacity: .5; }
       }
+
+      /* Task Completion Scale-Out / Fade-Out Animation */
+      @keyframes taskCompletedSuccess {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        25% {
+          transform: scale(1.04);
+          box-shadow: 0 12px 24px -4px rgba(16, 185, 129, 0.35);
+          border-color: #10b981;
+        }
+        55% {
+          transform: scale(0.96);
+          opacity: 0.65;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .task-card-completing {
+        animation: taskCompletedSuccess 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+      }
+
+      /* Streak Flame Animation */
+      @keyframes flamePulse {
+        0%, 100% {
+          transform: scale(1) rotate(0deg);
+          filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.4));
+        }
+        50% {
+          transform: scale(1.15) rotate(-3deg);
+          filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.7));
+        }
+      }
+      .animate-streak-flame {
+        display: inline-block;
+        animation: flamePulse 1.8s ease-in-out infinite;
+      }
+
+      @keyframes streakBadgeGlow {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 15px 2px rgba(245, 158, 11, 0.4);
+        }
+      }
+      .streak-badge-glow {
+        animation: streakBadgeGlow 2.5s ease-in-out infinite;
+      }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 pb-20 md:pb-6">
@@ -336,6 +388,50 @@
                 <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
                 <span>View Full Calendar</span>
               </button>
+            </div>
+          </div>
+
+          <!-- Daily Study Streak Momentum Hub Banner -->
+          <div id="homeStreakHubBanner" class="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-indigo-500/10 border border-amber-200/80 rounded-2xl p-4 sm:p-5 transition-all shadow-xs">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              
+              <!-- Left: Flame & Streak Days Counter -->
+              <div class="flex items-center gap-3.5">
+                <div id="streakFlameContainer" class="w-13 h-13 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-red-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-orange-500/25 shrink-0">
+                  <span id="streakFlameIcon" class="animate-streak-flame">🔥</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span id="streakDaysCount" class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">4 Days Streak</span>
+                    <span id="streakMotivationalBadge" class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-600 text-white shadow-xs streak-badge-glow flex items-center gap-1">
+                      <span id="streakTierIcon">⚡</span>
+                      <span id="streakTierName">Iron Will</span>
+                    </span>
+                  </div>
+                  <p id="streakStatusText" class="text-xs text-gray-600 mt-1 flex items-center gap-1.5 font-medium">
+                    <span id="streakStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="streakStatusLabel">Today's target completed! Streak active & protected (+1).</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Right: Milestone Progress Bar & Target Hint -->
+              <div class="md:w-72 lg:w-80 space-y-2 bg-white/70 backdrop-blur-xs p-3 rounded-xl border border-amber-100">
+                <div class="flex items-center justify-between text-[11px] font-bold">
+                  <span class="text-gray-500 uppercase tracking-wider">Next Milestone: <strong id="streakNextMilestoneName" class="text-gray-900">Relentless Ranker</strong></span>
+                  <span id="streakProgressPercent" class="text-amber-800 font-mono font-extrabold">4 / 7 Days</span>
+                </div>
+                <!-- Progress track -->
+                <div class="w-full h-2.5 bg-gray-200/90 rounded-full overflow-hidden p-0.5">
+                  <div id="streakProgressBar" class="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-500 rounded-full transition-all duration-700 ease-out" style="width: 57%"></div>
+                </div>
+                <div class="flex items-center justify-between text-[10px] text-gray-500">
+                  <span id="streakTierMinDays" class="font-semibold text-gray-700">3d Iron Will</span>
+                  <span id="streakMilestoneHint" class="text-orange-700 font-bold">3 days to next tier!</span>
+                  <span id="streakTierMaxDays" class="font-semibold text-gray-700">7d Ranker</span>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -1740,7 +1836,7 @@
             <!-- Bio / Aspirant Motto -->
             <div class="text-xs space-y-1">
               <label class="block font-medium text-gray-700">Aspirant Bio / Study Strategy</label>
-              <textarea id="profileInputBio" rows="3" oninput="updateProfileLiveCard()" class="w-full px-3 py-2 border border-gray-200 rounded-xl" placeholder="Describe your dream college target and revision focus...">Targeting AIR < 1000 in JEE 2027. Focusing on Physics problem solving and daily backlog revision with Prepskm CBT mocks.</textarea>
+              <textarea id="profileInputBio" rows="3" oninput="updateProfileLiveCard()" class="w-full px-3 py-2 border border-gray-200 rounded-xl" placeholder="Describe your dream college target and revision focus...">Targeting AIR &lt; 1000 in JEE 2027. Focusing on Physics problem solving and daily backlog revision with Prepskm CBT mocks.</textarea>
             </div>
           </div>
 
@@ -1782,7 +1878,7 @@
 
               <!-- Bio Snippet -->
               <div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100 text-xs text-gray-700 leading-relaxed italic" id="cardBioPreview">
-                "Targeting AIR < 1000 in JEE 2027. Focusing on Physics problem solving and daily backlog revision with Prepskm CBT mocks."
+                "Targeting AIR &lt; 1000 in JEE 2027. Focusing on Physics problem solving and daily backlog revision with Prepskm CBT mocks."
               </div>
             </div>
 
@@ -2384,7 +2480,7 @@
             date: '2026-11-03',
             title: 'Solve 30 Electrostatics Previous Year Questions',
             isBacklog: false,
-            status: 'completed' // 'pending' | 'in_progress' | 'completed'
+            status: 'completed'
           },
           {
             id: 'todo-2',
@@ -2399,6 +2495,27 @@
             title: 'Backlog: Definite Integration Limits of Sum',
             isBacklog: true,
             status: 'pending'
+          },
+          {
+            id: 'todo-prev-1',
+            date: '2026-11-02',
+            title: 'Solve 25 Modern Physics JEE Advanced PYQs',
+            isBacklog: false,
+            status: 'completed'
+          },
+          {
+            id: 'todo-prev-2',
+            date: '2026-11-01',
+            title: 'Thermodynamics Carnot Cycle & Entropy Formulas',
+            isBacklog: false,
+            status: 'completed'
+          },
+          {
+            id: 'todo-prev-3',
+            date: '2026-10-31',
+            title: 'Vectors & 3D Geometry DPP #3',
+            isBacklog: false,
+            status: 'completed'
           }
         ],
         mockResults: [],
@@ -2672,6 +2789,142 @@
       let calendarBrowseDate = new Date(2026, 10, 3); // Nov 2026
       let currentCalendarSelectedDate = '2026-11-03';
 
+      function calculateStreakData(tasks, referenceDate = '2026-11-03') {
+        const completedTasks = (tasks || []).filter(t => t.status === 'completed');
+        const completedDatesSet = new Set(completedTasks.map(t => t.date).filter(Boolean));
+        
+        const refDate = new Date(referenceDate + 'T00:00:00Z');
+        const isTodayCompleted = completedDatesSet.has(referenceDate);
+
+        let currentStreak = 0;
+        let checkDate = new Date(refDate);
+        if (!isTodayCompleted) {
+          checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+        }
+
+        while (true) {
+          const dateStr = checkDate.toISOString().split('T')[0];
+          if (completedDatesSet.has(dateStr)) {
+            currentStreak++;
+            checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+          } else {
+            break;
+          }
+        }
+
+        const tiers = [
+          { tierName: 'Aspirant Starter', badgeIcon: '🌱', minDays: 0, flameColor: 'from-gray-600 to-gray-800' },
+          { tierName: 'Seedling Focus', badgeIcon: '🌿', minDays: 1, flameColor: 'from-emerald-500 to-teal-600' },
+          { tierName: 'Iron Will', badgeIcon: '⚡', minDays: 3, flameColor: 'from-amber-500 to-orange-500' },
+          { tierName: 'Relentless Ranker', badgeIcon: '🔥', minDays: 7, flameColor: 'from-orange-600 to-red-600' },
+          { tierName: 'AIR 1 Contender', badgeIcon: '🏆', minDays: 14, flameColor: 'from-purple-600 to-indigo-600' },
+          { tierName: 'Legend of Prepskm', badgeIcon: '👑', minDays: 30, flameColor: 'from-amber-400 via-yellow-500 to-amber-600' }
+        ];
+
+        let activeTier = tiers[0];
+        let nextTier = tiers[1];
+
+        for (let i = tiers.length - 1; i >= 0; i--) {
+          if (currentStreak >= tiers[i].minDays) {
+            activeTier = tiers[i];
+            nextTier = tiers[i + 1] || null;
+            break;
+          }
+        }
+
+        let progressToNextTier = 100;
+        if (nextTier) {
+          const range = nextTier.minDays - activeTier.minDays;
+          const currentProgress = currentStreak - activeTier.minDays;
+          progressToNextTier = Math.min(100, Math.max(0, Math.round((currentProgress / range) * 100)));
+        }
+
+        return {
+          currentStreak,
+          isTodayCompleted,
+          activeTier,
+          nextTier,
+          progressToNextTier,
+          totalCompleted: completedTasks.length
+        };
+      }
+
+      function renderDailyStudyStreak() {
+        const streakData = calculateStreakData(state.todos || [], '2026-11-03');
+        
+        const countEl = document.getElementById('streakDaysCount');
+        const badgeEl = document.getElementById('streakMotivationalBadge');
+        const tierIconEl = document.getElementById('streakTierIcon');
+        const tierNameEl = document.getElementById('streakTierName');
+        const statusDotEl = document.getElementById('streakStatusDot');
+        const statusLabelEl = document.getElementById('streakStatusLabel');
+        const nextMilestoneEl = document.getElementById('streakNextMilestoneName');
+        const progressPercentEl = document.getElementById('streakProgressPercent');
+        const progressBarEl = document.getElementById('streakProgressBar');
+        const tierMinDaysEl = document.getElementById('streakTierMinDays');
+        const tierMaxDaysEl = document.getElementById('streakTierMaxDays');
+        const milestoneHintEl = document.getElementById('streakMilestoneHint');
+        const flameBoxEl = document.getElementById('streakFlameContainer');
+
+        if (countEl) {
+          countEl.innerText = `${streakData.currentStreak} ${streakData.currentStreak === 1 ? 'Day' : 'Days'} Streak`;
+        }
+
+        if (flameBoxEl && streakData.activeTier.flameColor) {
+          flameBoxEl.className = `w-13 h-13 rounded-2xl bg-gradient-to-tr ${streakData.activeTier.flameColor} text-white flex items-center justify-center text-2xl shadow-lg shadow-orange-500/25 shrink-0`;
+        }
+
+        if (badgeEl && tierIconEl && tierNameEl) {
+          tierIconEl.innerText = streakData.activeTier.badgeIcon;
+          tierNameEl.innerText = streakData.activeTier.tierName;
+          
+          const colorMap = {
+            'Aspirant Starter': 'bg-gray-800 text-white',
+            'Seedling Focus': 'bg-emerald-600 text-white',
+            'Iron Will': 'bg-amber-600 text-white',
+            'Relentless Ranker': 'bg-orange-600 text-white',
+            'AIR 1 Contender': 'bg-purple-600 text-white',
+            'Legend of Prepskm': 'bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black'
+          };
+          badgeEl.className = `px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider shadow-xs streak-badge-glow flex items-center gap-1 ${colorMap[streakData.activeTier.tierName] || 'bg-amber-500 text-white'}`;
+        }
+
+        if (statusDotEl && statusLabelEl) {
+          if (streakData.isTodayCompleted) {
+            statusDotEl.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+            statusLabelEl.innerText = "Today's target completed! Streak active & protected (+1).";
+          } else {
+            statusDotEl.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
+            statusLabelEl.innerText = "Pending today's goal — complete 1 task to advance your streak!";
+          }
+        }
+
+        if (nextMilestoneEl && streakData.nextTier) {
+          nextMilestoneEl.innerText = streakData.nextTier.tierName;
+        }
+
+        if (progressPercentEl && streakData.nextTier) {
+          progressPercentEl.innerText = `${streakData.currentStreak} / ${streakData.nextTier.minDays} Days`;
+        }
+
+        if (progressBarEl) {
+          progressBarEl.style.width = `${streakData.progressToNextTier}%`;
+        }
+
+        if (tierMinDaysEl) {
+          tierMinDaysEl.innerText = `${streakData.activeTier.minDays}d ${streakData.activeTier.tierName.split(' ')[0]}`;
+        }
+
+        if (tierMaxDaysEl && streakData.nextTier) {
+          tierMaxDaysEl.innerText = `${streakData.nextTier.minDays}d ${streakData.nextTier.tierName.split(' ')[0]}`;
+        }
+
+        if (milestoneHintEl && streakData.nextTier) {
+          const remaining = Math.max(1, streakData.nextTier.minDays - streakData.currentStreak);
+          milestoneHintEl.innerText = `${remaining} ${remaining === 1 ? 'day' : 'days'} to ${streakData.nextTier.tierName.split(' ')[0]}!`;
+        }
+      }
+
       function initWeeklySchedule() {
         const strip = document.getElementById('weeklyScheduleStrip');
         if (!strip) return;
@@ -2705,6 +2958,7 @@
         }
         strip.innerHTML = html;
         renderTasksForDate(currentCalendarSelectedDate);
+        renderDailyStudyStreak();
       }
 
       function selectDayFromStrip(idx, dateStr) {
@@ -2757,7 +3011,7 @@
           const statusLabel = t.status === 'completed' ? 'Completed' : t.status === 'in_progress' ? 'In Progress' : 'Pending';
 
           return `
-            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-xs hover:shadow-sm transition-all space-y-2 flex flex-col justify-between">
+            <div id="task-card-${t.id}" class="task-card-item bg-white border border-gray-200 rounded-xl p-3 shadow-xs hover:shadow-sm transition-all space-y-2 flex flex-col justify-between">
               <div class="flex items-start justify-between gap-2">
                 <div class="font-bold text-xs text-gray-900 leading-snug">${t.title}</div>
                 <button onclick="deleteTask('${t.id}')" class="text-gray-300 hover:text-red-500 transition-colors" title="Delete">
@@ -2770,7 +3024,7 @@
                 </span>
                 
                 <!-- 3-Stage Status Switcher -->
-                <button onclick="cycleTaskStatus('${t.id}')" class="px-2.5 py-0.5 rounded-full border text-[10px] font-bold transition-all ${statusBg}" title="Click to cycle status">
+                <button onclick="cycleTaskStatus('${t.id}')" id="task-btn-${t.id}" class="task-status-btn px-2.5 py-0.5 rounded-full border text-[10px] font-bold transition-all ${statusBg}" title="Click to cycle status">
                   ${statusLabel} ⟳
                 </button>
               </div>
@@ -2783,17 +3037,57 @@
       function cycleTaskStatus(taskId) {
         const item = state.todos.find(t => t.id === taskId);
         if (!item) return;
+
+        const willBeCompleted = (item.status === 'in_progress');
         if (item.status === 'pending') item.status = 'in_progress';
         else if (item.status === 'in_progress') item.status = 'completed';
         else item.status = 'pending';
         persistState();
+
+        if (willBeCompleted) {
+          const cardEl = document.getElementById(`task-card-${taskId}`);
+          if (cardEl) {
+            // Apply celebratory smooth scale-out/fade-out animation
+            cardEl.classList.add('task-card-completing');
+            const btn = document.getElementById(`task-btn-${taskId}`);
+            if (btn) {
+              btn.className = "task-status-btn px-2.5 py-0.5 rounded-full border text-[10px] font-bold transition-all bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs";
+              btn.innerHTML = `Completed ✓`;
+            }
+            showAppToast(`🎯 Target Completed! Daily Study Streak updated.`, 'success');
+            setTimeout(() => {
+              renderTasksForDate(currentCalendarSelectedDate);
+              renderDailyStudyStreak();
+              initWeeklySchedule();
+            }, 550);
+            return;
+          }
+        }
+
         renderTasksForDate(currentCalendarSelectedDate);
+        renderDailyStudyStreak();
+        initWeeklySchedule();
       }
 
       function deleteTask(taskId) {
+        const cardEl = document.getElementById(`task-card-${taskId}`);
+        if (cardEl) {
+          cardEl.style.transition = 'all 0.3s ease-out';
+          cardEl.style.transform = 'scale(0.9)';
+          cardEl.style.opacity = '0';
+          setTimeout(() => {
+            state.todos = state.todos.filter(t => t.id !== taskId);
+            persistState();
+            renderTasksForDate(currentCalendarSelectedDate);
+            renderDailyStudyStreak();
+            initWeeklySchedule();
+          }, 300);
+          return;
+        }
         state.todos = state.todos.filter(t => t.id !== taskId);
         persistState();
         renderTasksForDate(currentCalendarSelectedDate);
+        renderDailyStudyStreak();
         initWeeklySchedule();
       }
 

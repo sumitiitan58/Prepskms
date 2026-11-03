@@ -378,3 +378,112 @@ export function sortForumTopics(topics: ForumTopic[], sortBy: 'recent' | 'top' |
   return sorted;
 }
 
+export interface StudyTask {
+  id: string;
+  title: string;
+  date: string; // YYYY-MM-DD
+  isBacklog: boolean;
+  status: 'pending' | 'in_progress' | 'completed';
+}
+
+export interface StreakMilestone {
+  tierName: string;
+  badgeIcon: string;
+  minDays: number;
+  nextMilestoneDays: number;
+  description: string;
+  flameLevel: 'low' | 'medium' | 'high' | 'ultra';
+}
+
+export interface StudyStreakResult {
+  currentStreak: number;
+  isTodayCompleted: boolean;
+  activeTier: StreakMilestone;
+  nextTier?: StreakMilestone;
+  progressToNextTier: number; // 0 to 100
+  totalCompletedTasks: number;
+  consecutiveDates: string[];
+  motivationalQuote: string;
+}
+
+export const STREAK_TIERS: StreakMilestone[] = [
+  { tierName: 'Aspirant Starter', badgeIcon: '🌱', minDays: 0, nextMilestoneDays: 1, description: 'Complete a task today to ignite your streak!', flameLevel: 'low' },
+  { tierName: 'Seedling Focus', badgeIcon: '🌿', minDays: 1, nextMilestoneDays: 3, description: 'Consistency is building. Keep the fire burning!', flameLevel: 'low' },
+  { tierName: 'Iron Will', badgeIcon: '⚡', minDays: 3, nextMilestoneDays: 7, description: 'Unstoppable momentum. Daily discipline beats talent!', flameLevel: 'medium' },
+  { tierName: 'Relentless Ranker', badgeIcon: '🔥', minDays: 7, nextMilestoneDays: 14, description: 'Top 1% discipline! Your JEE/NEET rank is forged here.', flameLevel: 'high' },
+  { tierName: 'AIR 1 Contender', badgeIcon: '🏆', minDays: 14, nextMilestoneDays: 30, description: 'Elite mastery. Two straight weeks of zero excuses!', flameLevel: 'ultra' },
+  { tierName: 'Legend of Prepskm', badgeIcon: '👑', minDays: 30, nextMilestoneDays: 30, description: 'God-tier discipline. You are the benchmark.', flameLevel: 'ultra' },
+];
+
+export function calculateStudyStreak(
+  tasks: StudyTask[],
+  referenceDateStr: string = '2026-11-03'
+): StudyStreakResult {
+  const completedTasks = (tasks || []).filter((t) => t.status === 'completed');
+  const completedDatesSet = new Set<string>();
+  completedTasks.forEach((t) => {
+    if (t.date) completedDatesSet.add(t.date);
+  });
+
+  const refDate = new Date(referenceDateStr + 'T00:00:00Z');
+  const isTodayCompleted = completedDatesSet.has(referenceDateStr);
+
+  let currentStreak = 0;
+  const consecutiveDates: string[] = [];
+
+  // Start from today if today has a completed task; otherwise check from yesterday so active streak is preserved during today's study session
+  let checkDate = new Date(refDate);
+  if (!isTodayCompleted) {
+    checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+  }
+
+  while (true) {
+    const dateStr = checkDate.toISOString().split('T')[0];
+    if (completedDatesSet.has(dateStr)) {
+      currentStreak++;
+      consecutiveDates.push(dateStr);
+      checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  // Find active tier
+  let activeTier = STREAK_TIERS[0];
+  let nextTier = STREAK_TIERS[1];
+
+  for (let i = STREAK_TIERS.length - 1; i >= 0; i--) {
+    if (currentStreak >= STREAK_TIERS[i].minDays) {
+      activeTier = STREAK_TIERS[i];
+      nextTier = STREAK_TIERS[i + 1] || undefined;
+      break;
+    }
+  }
+
+  let progressToNextTier = 100;
+  if (nextTier) {
+    const range = nextTier.minDays - activeTier.minDays;
+    const currentProgress = currentStreak - activeTier.minDays;
+    progressToNextTier = Math.min(100, Math.max(0, Math.round((currentProgress / range) * 100)));
+  }
+
+  const quotes = [
+    'One day or day one — you decide.',
+    'Consistency creates rankers. Excuses create dropouts.',
+    'Every completed problem brings you 1 rank closer to your dream IIT/AIIMS.',
+    'Small daily disciplines repeated consistently lead to monumental results.',
+  ];
+  const motivationalQuote = quotes[currentStreak % quotes.length];
+
+  return {
+    currentStreak,
+    isTodayCompleted,
+    activeTier,
+    nextTier,
+    progressToNextTier,
+    totalCompletedTasks: completedTasks.length,
+    consecutiveDates,
+    motivationalQuote,
+  };
+}
+
