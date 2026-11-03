@@ -1,0 +1,6 @@
+{
+  "name": "Prepskm - Educational Platform",
+  "description": "Educational platform for JEE & NEET by @unfiltereddsumit with 6-step question cropper, NTA mock tests, 1:1 mentorship pass, dynamic sections, and study calendar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
