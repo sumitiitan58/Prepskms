@@ -1,5 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import './firebase';
+import './services/cloudStorage.js';
+import './services/db.js';
+import './services/razorpay.js';
 import App from './App.tsx';
 import './index.css';
 

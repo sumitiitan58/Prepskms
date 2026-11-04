@@ -8,6 +8,7 @@ import {
   User
 } from 'firebase/auth';
 import {
+  initializeFirestore,
   getFirestore,
   collection,
   doc,
@@ -58,7 +59,17 @@ export interface FirestoreErrorInfo {
 
 // Initialize Firebase App with named Firestore database from firebase-applet-config.json
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db = (() => {
+  try {
+    return initializeFirestore(
+      app,
+      { experimentalAutoDetectLongPolling: true },
+      firebaseConfig.firestoreDatabaseId
+    );
+  } catch {
+    return getFirestore(app, firebaseConfig.firestoreDatabaseId);
+  }
+})();
 export const auth = getAuth(app);
 
 export function handleFirestoreError(
@@ -97,7 +108,7 @@ async function testConnection() {
       error instanceof Error &&
       error.message.includes('the client is offline')
     ) {
-      console.error('Please check your Firebase configuration.');
+      console.warn('Firestore operating in offline cache mode.');
     }
   }
 }
@@ -230,9 +241,33 @@ export async function resolveCloudFileUrl(pointerOrUrl: string): Promise<string>
   return fullDataUrl;
 }
 
+export function isFileOrBlob(val: unknown): val is Blob {
+  if (!val || typeof val !== 'object') return false;
+  if (typeof Blob !== 'undefined' && val instanceof Blob) return true;
+  if (typeof File !== 'undefined' && val instanceof File) return true;
+  const tag = Object.prototype.toString.call(val);
+  return tag === '[object File]' || tag === '[object Blob]';
+}
+
+export function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (typeof FileReader === 'undefined') {
+      resolve('');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(blob);
+  });
+}
+
 // Clean undefined values recursively so Firestore setDoc/addDoc never rejects undefined fields
 function sanitizeData<T>(obj: T): T {
   if (obj === null || obj === undefined || typeof obj !== 'object') {
+    return obj;
+  }
+  if (isFileOrBlob(obj)) {
     return obj;
   }
   if (Array.isArray(obj)) {
@@ -248,16 +283,30 @@ function sanitizeData<T>(obj: T): T {
 }
 
 /**
- * Ensures no document written to Firestore ever exceeds the 1 MiB document size limit.
- * Any oversized `data:` URL field is automatically chunked into `file_chunks`.
+ * Ensures no document written to Firestore ever exceeds the 1 MiB document size limit
+ * or contains unsupported custom File/Blob objects.
+ * Any File/Blob or oversized `data:` URL field is automatically converted and chunked into `file_chunks`.
  */
-async function enforceFirestorePayloadLimit(
+export async function enforceFirestorePayloadLimit(
   docId: string,
   data: Record<string, unknown>
 ): Promise<Record<string, unknown>> {
   const cleaned = sanitizeData(data);
 
   async function processValue(val: unknown, keyPath: string): Promise<unknown> {
+    if (isFileOrBlob(val)) {
+      try {
+        const fileName =
+          (val as File).name ||
+          (typeof cleaned.fileName === 'string' ? cleaned.fileName : `${docId}.pdf`);
+        const dataUrl = await blobToDataUrl(val);
+        if (!dataUrl) return '';
+        return await uploadDataUrlInChunks(docId, dataUrl, fileName);
+      } catch (err) {
+        console.warn(`File/Blob conversion fallback for ${docId} (${keyPath}):`, err);
+        return `#prepskm-local-file:${docId}`;
+      }
+    }
     if (typeof val === 'string') {
       if (val.length > MAX_INLINE_STRING_CHARS) {
         if (val.startsWith('data:')) {

@@ -558,4 +558,23 @@ export function buildJitsiRoomName(
     : `Prepskm1on1Call_${cleanId}`;
 }
 
-
+/**
+ * 12. Study Material PDF URL Sanitizer (prevents custom File/Blob objects from reaching Firestore)
+ */
+export function normalizeStudyMaterialUrl(
+  rawUrlOrFile: unknown,
+  fallbackId = 'material'
+): string {
+  if (typeof rawUrlOrFile === 'string') {
+    const trimmed = rawUrlOrFile.trim();
+    if (
+      trimmed === '[object Object]' ||
+      trimmed === '[object File]' ||
+      trimmed === '[object Blob]'
+    ) {
+      return `#prepskm-local-file:${fallbackId}`;
+    }
+    return trimmed;
+  }
+  return `#prepskm-local-file:${fallbackId}`;
+}

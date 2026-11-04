@@ -56,12 +56,6 @@
     <!-- QRCode.js for UPI Payment & Digital Pass -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <!-- Firebase v10 Compat CDN -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
-
     <!-- Jitsi Meet External API & Prepskm Cloud/Jitsi React SDK Bridge -->
     <script src="https://meet.jit.si/external_api.js" async></script>
     <script type="module" src="/src/main.tsx"></script>
@@ -4028,22 +4022,37 @@
         return false;
       }
 
-      try {
-        if (!bindPrepskmModularCloud() && window.firebase) {
-          firebaseApp = firebase.initializeApp(firebaseConfig);
-          auth = firebase.auth();
-          db = firebase.firestore();
-          isFirebaseOnline = true;
-        }
-      } catch (err) {
-        console.warn("Live Firebase initialized with local cache fallback:", err);
-      }
+      bindPrepskmModularCloud();
 
       window.addEventListener('prepskm-firebase-ready', () => {
         if (bindPrepskmModularCloud()) {
           initCloudRealtimeSync();
           initChatRealtimeListeners();
           renderBlitzLeaderboard();
+          if (auth && !window._prepskmAuthObserverBound) {
+            window._prepskmAuthObserverBound = true;
+            auth.onAuthStateChanged((user) => {
+              if (user) {
+                const role = checkRoleForEmail(user.email);
+                currentUser = {
+                  uid: user.uid,
+                  email: user.email,
+                  displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Aspirant'),
+                  photoURL: user.photoURL || DEFAULT_AVATAR_SVG,
+                  role: role,
+                  isGuest: false,
+                  targetExam: (state.userProfile && state.userProfile.targetExams) ? state.userProfile.targetExams[0] : "JEE Main & Advanced"
+                };
+                try {
+                  localStorage.setItem('prepskm_auth_user', JSON.stringify(currentUser));
+                } catch(e) {}
+              }
+              updateRoleAndHeaderUI();
+              if (currentUser.role === 'superadmin') {
+                renderAdminLiveCommunications();
+              }
+            });
+          }
         }
       });
 
@@ -4487,13 +4496,18 @@
         ]
       };
 
-      // Sanitize any oversized legacy base64 PDFs in localStorage so we never exceed Firestore 1 MiB / 10 MiB payload limits
+      // Sanitize any oversized legacy base64 PDFs or invalid non-string File objects in localStorage
       function sanitizeMaterialsList(list) {
         if (!Array.isArray(list)) return [];
         return list.filter(m => {
           if (!m) return false;
+          if (m.pdf_url && typeof m.pdf_url !== 'string') return false;
+          if (m.downloadUrl && typeof m.downloadUrl !== 'string') return false;
           const u1 = String(m.pdf_url || '');
           const u2 = String(m.downloadUrl || '');
+          if (u1 === '[object Object]' || u2 === '[object Object]' || u1 === '[object File]' || u2 === '[object File]') {
+            return false;
+          }
           if ((u1.startsWith('data:') && u1.length > 450000) || (u2.startsWith('data:') && u2.length > 450000)) {
             return false;
           }
@@ -4668,8 +4682,11 @@
       }
 
       function handleGoogleSignIn() {
+        if (!auth && window.prepskmCloud && window.prepskmCloud.auth) {
+          auth = window.prepskmCloud.auth;
+        }
         if (auth) {
-          const provider = new firebase.auth.GoogleAuthProvider();
+          const provider = (window.firebase && window.firebase.auth) ? new window.firebase.auth.GoogleAuthProvider() : undefined;
           auth.signInWithPopup(provider).then((result) => {
             const user = result.user;
             const role = checkRoleForEmail(user.email);
@@ -6574,6 +6591,7 @@
 
         const savePdfRecord = async (finalUrlOrFile, isFile) => {
           try {
+            bindPrepskmModularCloud();
             let savedRecord;
             if (isFile && selectedPdfFile && window.prepskmStorageService && window.prepskmStorageService.uploadStudyMaterialPdf) {
               const sizeMb = `${(selectedPdfFile.size / (1024 * 1024)).toFixed(2)} MB`;
@@ -6595,19 +6613,29 @@
                   if (label) label.innerText = `Uploading chunk ${done}/${total} (${Math.round((done / total) * 100)}%)...`;
                 }
               );
-              savedRecord.sectionId = sectionId;
-              savedRecord.sectionName = secObj ? secObj.name : 'Notes';
-              savedRecord.exam = exam;
-              if (db) {
-                await db.collection('study_materials').doc(savedRecord.id).set(savedRecord, { merge: true });
-                await db.collection('materials').doc(savedRecord.id).set(savedRecord, { merge: true });
-              }
             } else {
               let pointerUrl = finalUrlOrFile;
               const pdfId = 'pdf-' + Date.now();
-              if (typeof pointerUrl === 'string' && pointerUrl.startsWith('data:') && window.uploadDataUrlInChunks) {
-                pointerUrl = await window.uploadDataUrlInChunks(pdfId, pointerUrl, selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'));
+              if (pointerUrl && typeof pointerUrl === 'object') {
+                pointerUrl = await new Promise((resolve, reject) => {
+                  const reader = new FileReader();
+                  reader.onload = () => resolve(String(reader.result || ''));
+                  reader.onerror = (err) => reject(err);
+                  reader.readAsDataURL(pointerUrl);
+                });
               }
+              if (typeof pointerUrl === 'string' && pointerUrl.startsWith('data:') && window.uploadDataUrlInChunks) {
+                pointerUrl = await window.uploadDataUrlInChunks(
+                  pdfId,
+                  pointerUrl,
+                  selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'),
+                  (done, total) => {
+                    const label = document.getElementById('pdfFileNoticeText');
+                    if (label) label.innerText = `Uploading chunk ${done}/${total} (${Math.round((done / total) * 100)}%)...`;
+                  }
+                );
+              }
+              const safeUrlStr = typeof pointerUrl === 'string' ? pointerUrl : String(pointerUrl || '');
               savedRecord = {
                 id: pdfId,
                 title,
@@ -6616,16 +6644,16 @@
                 exam,
                 subject,
                 chapter,
-                pdf_url: pointerUrl,
-                downloadUrl: pointerUrl,
-                isFileUpload: isFile,
+                pdf_url: safeUrlStr,
+                downloadUrl: safeUrlStr,
+                isFileUpload: Boolean(isFile),
                 author: 'Sumit (@unfiltereddsumit)',
                 fileName: selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'),
                 createdAt: new Date().toISOString()
               };
               if (db) {
-                await db.collection('study_materials').doc(savedRecord.id).set(savedRecord);
-                await db.collection('materials').doc(savedRecord.id).set(savedRecord);
+                await db.collection('study_materials').doc(savedRecord.id).set(savedRecord, { merge: true });
+                await db.collection('materials').doc(savedRecord.id).set(savedRecord, { merge: true });
               }
             }
 

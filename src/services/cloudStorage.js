@@ -61,10 +61,15 @@ export async function uploadStudyMaterialPdf(fileOrDataUrl, metadata = {}, onPro
     );
   }
 
+  const safeUrlString = typeof pdfPointerOrUrl === 'string' ? pdfPointerOrUrl : String(pdfPointerOrUrl || '');
+
   const nowIso = new Date().toISOString();
   const record = {
     id: materialId,
     title: metadata.title || 'Study Material PDF',
+    sectionId: metadata.sectionId || 'sec-notes',
+    sectionName: metadata.sectionName || 'Revision Notes',
+    exam: metadata.exam || 'JEE',
     subject: metadata.subject || 'Physics',
     chapter: metadata.chapter || 'General',
     category: (metadata.subject || 'physics').toLowerCase(),
@@ -74,10 +79,12 @@ export async function uploadStudyMaterialPdf(fileOrDataUrl, metadata = {}, onPro
     author: metadata.author || 'Sumit (@unfiltereddsumit)',
     dateAdded: metadata.dateAdded || nowIso.slice(0, 10),
     created_at: metadata.created_at || nowIso,
+    createdAt: metadata.createdAt || nowIso,
     updatedAt: nowIso,
     fileName,
-    pdf_url: pdfPointerOrUrl,
-    downloadUrl: pdfPointerOrUrl,
+    pdf_url: safeUrlString,
+    downloadUrl: safeUrlString,
+    isFileUpload: true,
     content:
       metadata.content ||
       `<h3>${metadata.title || 'Study Material'} (${metadata.subject || 'Physics'} • ${metadata.chapter || 'General'})</h3><p>Curated by Mentor Sumit (@unfiltereddsumit). Click Download PDF to view or save the full document.</p>`,

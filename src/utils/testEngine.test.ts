@@ -303,6 +303,7 @@ import {
   calculateBlitzScoreUpdate,
   isAuthorizedAdmin,
   buildJitsiRoomName,
+  normalizeStudyMaterialUrl,
 } from './testEngine';
 
 test('Formula Blitz 60s CBT Rush: streak multiplier and high-score calculation', () => {
@@ -348,5 +349,18 @@ test('Role-Based Access Control (Admin vs Student) and Jitsi room naming', () =>
   );
 });
 
-
+test('Study Material PDF URL sanitizer rejects custom File/Object instances', () => {
+  assert.equal(
+    normalizeStudyMaterialUrl('#prepskm-cloud-file:pdf-123:2:notes.pdf', 'pdf-123'),
+    '#prepskm-cloud-file:pdf-123:2:notes.pdf'
+  );
+  assert.equal(
+    normalizeStudyMaterialUrl({ name: 'test.pdf', size: 1024 }, 'pdf-999'),
+    '#prepskm-local-file:pdf-999'
+  );
+  assert.equal(
+    normalizeStudyMaterialUrl('[object File]', 'pdf-999'),
+    '#prepskm-local-file:pdf-999'
+  );
+});
 
