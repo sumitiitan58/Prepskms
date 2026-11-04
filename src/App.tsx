@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { JitsiMeeting } from '@jitsi/react-sdk';
+import LiveClassroom from './components/LiveClassroom.jsx';
+import AdminControls from './components/AdminControls.jsx';
+import './services/cloudStorage.js';
 
 export interface JitsiSessionConfig {
   roomName: string;
@@ -24,8 +27,20 @@ declare global {
 export default function App() {
   const [session, setSession] = useState<JitsiSessionConfig | null>(null);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+  const [adminMountTarget, setAdminMountTarget] = useState<HTMLElement | null>(
+    null
+  );
 
   useEffect(() => {
+    const locateAdminMount = () => {
+      const el = document.getElementById('adminReactControlMount');
+      if (el && el !== adminMountTarget) {
+        setAdminMountTarget(el);
+      }
+    };
+    locateAdminMount();
+    const timer = setInterval(locateAdminMount, 1000);
+
     window.mountJitsiSession = (config: JitsiSessionConfig) => {
       const target = document.getElementById('jitsiMeetStageContainer');
       setPortalTarget(target);
@@ -51,61 +66,66 @@ export default function App() {
     };
 
     return () => {
+      clearInterval(timer);
       delete window.mountJitsiSession;
       delete window.unmountJitsiSession;
       delete window.triggerJitsiRaiseHand;
     };
-  }, []);
+  }, [adminMountTarget]);
 
-  if (!session || !portalTarget) {
-    return null;
-  }
-
-  return createPortal(
-    <div className="w-full h-full min-h-[340px] bg-gray-950 relative overflow-hidden">
-      <JitsiMeeting
-        domain="meet.jit.si"
-        roomName={session.roomName}
-        configOverwrite={{
-          startWithAudioMuted: Boolean(session.isStudent),
-          startWithVideoMuted: Boolean(session.isAudioOnly),
-          prejoinPageEnabled: false,
-          disableDeepLinking: true,
-          subject: session.subject || 'Prepskm Live Mentorship',
-          toolbarButtons: [
-            'microphone',
-            'camera',
-            'desktop',
-            'chat',
-            'raisehand',
-            'tileview',
-            'hangup',
-          ],
-        }}
-        interfaceConfigOverwrite={{
-          MOBILE_APP_PROMO: false,
-          SHOW_JITSI_WATERMARK: false,
-          SHOW_BRAND_WATERMARK: false,
-          TOOLBAR_ALWAYS_VISIBLE: true,
-        }}
-        userInfo={{
-          displayName: session.displayName || 'Prepskm Aspirant',
-          email: session.email || 'aspirant@prepskm.in',
-        }}
-        onApiReady={(externalApi) => {
-          window.activeJitsiApi = externalApi;
-          externalApi.addEventListener('readyToClose', () => {
-            if (session.onEnd) session.onEnd();
-          });
-        }}
-        getIFrameRef={(iframeRef) => {
-          iframeRef.style.height = '100%';
-          iframeRef.style.width = '100%';
-          iframeRef.style.minHeight = '340px';
-          iframeRef.style.border = '0';
-        }}
-      />
-    </div>,
-    portalTarget
+  return (
+    <>
+      {createPortal(<LiveClassroom />, document.body)}
+      {adminMountTarget && createPortal(<AdminControls />, adminMountTarget)}
+      {session &&
+        portalTarget &&
+        createPortal(
+          <div className="w-full h-full min-h-[340px] bg-gray-950 relative overflow-hidden">
+            <JitsiMeeting
+              domain="meet.jit.si"
+              roomName={session.roomName}
+              configOverwrite={{
+                startWithAudioMuted: Boolean(session.isStudent),
+                startWithVideoMuted: Boolean(session.isAudioOnly),
+                prejoinPageEnabled: false,
+                disableDeepLinking: true,
+                subject: session.subject || 'Prepskm Live Mentorship',
+                toolbarButtons: [
+                  'microphone',
+                  'camera',
+                  'desktop',
+                  'chat',
+                  'raisehand',
+                  'tileview',
+                  'hangup',
+                ],
+              }}
+              interfaceConfigOverwrite={{
+                MOBILE_APP_PROMO: false,
+                SHOW_JITSI_WATERMARK: false,
+                SHOW_BRAND_WATERMARK: false,
+                TOOLBAR_ALWAYS_VISIBLE: true,
+              }}
+              userInfo={{
+                displayName: session.displayName || 'Prepskm Aspirant',
+                email: session.email || 'aspirant@prepskm.in',
+              }}
+              onApiReady={(externalApi) => {
+                window.activeJitsiApi = externalApi;
+                externalApi.addEventListener('readyToClose', () => {
+                  if (session.onEnd) session.onEnd();
+                });
+              }}
+              getIFrameRef={(iframeRef) => {
+                iframeRef.style.height = '100%';
+                iframeRef.style.width = '100%';
+                iframeRef.style.minHeight = '340px';
+                iframeRef.style.border = '0';
+              }}
+            />
+          </div>,
+          portalTarget
+        )}
+    </>
   );
 }

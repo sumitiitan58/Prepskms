@@ -293,12 +293,15 @@
                   <i data-lucide="flame" class="w-3 h-3 text-amber-300"></i>
                   Daily Fuel
                 </span>
-                <span class="text-[11px] text-blue-200">Curated by @unfiltereddsumit</span>
+                <div class="flex items-center gap-1.5">
+                  <img id="dailyQuoteMentorAvatar" src="/assets/aistudio/IMG_1422_c0b1f775.png" alt="Sumit" class="mentor-dynamic-avatar w-4 h-4 rounded-full object-cover border border-blue-200" />
+                  <span class="text-[11px] text-blue-100 font-semibold">Curated by Sumit (@unfiltereddsumit)</span>
+                </div>
               </div>
               <p id="dailyMotivationText" class="text-xs sm:text-sm md:text-base font-medium tracking-tight text-white/95 leading-relaxed">
                 "Consistency in solving 30 quality questions daily beats 10 hours of unfocused reading. One day or day one — your JEE rank is determined by today's discipline."
               </p>
-              <p class="text-[11px] text-blue-200 font-medium">— Prepskm JEE/NEET Mentorship Core</p>
+              <p class="text-[11px] text-blue-200 font-medium">— Sumit (@unfiltereddsumit) • Prepskm Mentorship</p>
             </div>
             <div class="flex items-center gap-2 shrink-0 pt-1 sm:pt-0">
               <button onclick="refreshMotivationalQuote()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold backdrop-blur border border-white/20 flex items-center gap-1.5 transition-all">
@@ -316,54 +319,46 @@
           <div class="absolute right-32 -top-12 w-32 h-32 bg-indigo-400/20 rounded-full blur-xl pointer-events-none"></div>
         </div>
 
-        <!-- Announcement Banner: Daily Study Goals & Upcoming Mocks -->
-        <div class="bg-white border border-blue-200/80 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-start sm:items-center gap-3">
-            <div class="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shrink-0">
-              <i data-lucide="bell" class="w-5 h-5 text-blue-600"></i>
-            </div>
-            <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <span id="homeLiveMockTitle" class="text-sm font-bold text-gray-900">JEE Main 2027 All India CBT Mock Test Series #4</span>
-                <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">Live Today</span>
-              </div>
-              <p id="homeLiveMockSyllabus" class="text-xs text-gray-500 mt-0.5">Syllabus: Kinematics, Mole Concept, Quadratic Equations & Thermodynamics. 75 Questions (80% MCQ, 20% NAT).</p>
-            </div>
+        <!-- Optional In-App Broadcast Alert Banner (When Admin schedules/broadcasts live alert) -->
+        <div id="homeBroadcastAlertBanner" class="hidden bg-gradient-to-r from-amber-500/15 via-rose-500/15 to-indigo-500/15 border border-amber-400/50 rounded-xl px-3.5 py-2 flex items-center justify-between gap-2 text-xs text-gray-900 shadow-xs">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">LIVE ALERT</span>
+            <span id="homeBroadcastAlertText" class="font-bold text-gray-900 truncate">Mentor Sumit is going live — Get ready!</span>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <button id="homeLiveMockBtn" onclick="startSpecificMock('all_india_4')" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1.5">
-              <span>Attempt Test Now</span>
-              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
+          <button onclick="joinGroupLiveMentorshipSession()" class="text-[11px] font-extrabold text-indigo-700 hover:underline shrink-0">Open Classroom →</button>
         </div>
 
-        <!-- Live Group Mentorship Session Indicator Banner (Synced via Firestore live_sessions) -->
-        <div id="homeLiveMentorshipBanner" class="bg-gray-900 bg-gradient-to-r from-indigo-900 via-blue-900 to-gray-900 border border-indigo-500/40 rounded-2xl p-4 sm:p-5 shadow-md text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-start sm:items-center gap-3.5">
+        <!-- Sleek, Compact "🔴 LIVE MENTORSHIP" Card (Minimal Vertical Height, Synced via Firestore live_sessions) -->
+        <div id="homeLiveMentorshipBanner" class="bg-gray-900 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/40 rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 shadow-md text-white flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <div class="relative shrink-0">
-              <img id="homeLiveMentorshipThumb" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=240&auto=format&fit=crop&q=80" alt="Live Mentorship" class="w-16 h-12 sm:w-20 sm:h-14 rounded-xl object-cover border border-indigo-400/50 shadow-sm" />
-              <span class="absolute -top-1.5 -left-1.5 px-1.5 py-0.5 rounded bg-red-600 text-white text-[9px] font-black uppercase tracking-wider flex items-center gap-1 shadow">
+              <img id="homeLiveMentorshipThumb" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=240&auto=format&fit=crop&q=80" alt="Live Mentorship" class="w-14 h-10 sm:w-16 sm:h-11 rounded-xl object-cover border border-indigo-400/50 shadow-xs" />
+              <span id="homeLiveCornerBadge" class="absolute -top-1 -left-1 px-1.5 py-0.2 rounded bg-red-600 text-white text-[8px] font-black uppercase tracking-wider flex items-center gap-1 shadow">
                 <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
-                <span>LIVE</span>
+                <span id="homeLiveCornerBadgeText">LIVE</span>
               </span>
             </div>
-            <div>
+            <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <span id="homeLiveMentorshipStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-red-500/20 text-red-300 border border-red-400/30 flex items-center gap-1">
+                <span id="homeLiveMentorshipStatusBadge" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-red-500/20 text-red-300 border border-red-400/30 flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
-                  <span>Live Group Mentorship Active</span>
+                  <span id="homeLiveStatusText">🔴 LIVE MENTORSHIP</span>
                 </span>
-                <span id="homeLiveMentorshipHost" class="text-[11px] text-indigo-200 font-semibold">By @unfiltereddsumit</span>
+                <span id="homeLiveCountdownTimer" class="hidden px-2 py-0.5 rounded-full text-[10px] font-mono font-extrabold bg-amber-500/20 text-amber-300 border border-amber-400/40">
+                  Starts in 00:00:00
+                </span>
+                <span class="inline-flex items-center gap-1 text-[11px] text-indigo-200 font-semibold">
+                  <img id="homeLiveMentorAvatar" src="/assets/aistudio/IMG_1422_c0b1f775.png" alt="Sumit" class="mentor-dynamic-avatar w-3.5 h-3.5 rounded-full object-cover border border-indigo-300" />
+                  <span id="homeLiveMentorshipHost">Sumit (@unfiltereddsumit)</span>
+                </span>
               </div>
-              <h3 id="homeLiveMentorshipTitle" class="text-sm sm:text-base font-extrabold text-white mt-0.5">JEE & NEET Rank Booster: Rotational Mechanics & Backlog Clearance</h3>
-              <p id="homeLiveMentorshipMeta" class="text-xs text-blue-200/80">Students join muted by default • Use "Raise Hand ✋" inside the room to ask doubts live</p>
+              <h3 id="homeLiveMentorshipTitle" class="text-xs sm:text-sm font-extrabold text-white truncate mt-0.5">JEE & NEET Rank Booster: Rotational Mechanics & Backlog Clearance</h3>
             </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <button onclick="joinGroupLiveMentorshipSession()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all">
-              <i data-lucide="video" class="w-4 h-4"></i>
-              <span>Join Live Session</span>
+            <button onclick="joinGroupLiveMentorshipSession()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+              <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+              <span id="homeLiveJoinBtnText">Join Full Screen</span>
             </button>
           </div>
         </div>
@@ -604,17 +599,17 @@
           </div>
         </div>
 
-        <!-- 1:1 Direct Chat & Calling with Owner (@unfiltereddsumit / Saurav) Section on Home -->
+        <!-- 1:1 Direct Chat & Calling with Owner (Sumit @unfiltereddsumit) Section on Home -->
         <div class="bg-gradient-to-br from-emerald-900 via-teal-900 to-indigo-950 rounded-2xl p-5 text-white shadow-md space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
             <div class="flex items-center gap-3.5">
               <div class="relative shrink-0">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" class="w-13 h-13 rounded-2xl object-cover border-2 border-emerald-400 shadow-md" alt="Saurav Kumar">
+                <img src="/assets/aistudio/IMG_1422_c0b1f775.png" class="mentor-dynamic-avatar w-13 h-13 rounded-2xl object-cover border-2 border-emerald-400 shadow-md" alt="Sumit">
                 <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-gray-900 rounded-full"></span>
               </div>
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <h3 class="font-extrabold text-base text-white">Saurav Kumar (@unfiltereddsumit)</h3>
+                  <h3 class="font-extrabold text-base text-white">Sumit (@unfiltereddsumit)</h3>
                   <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/30 text-blue-200 border border-blue-400/30">
                     <svg class="w-3.5 h-3.5 text-blue-400 fill-blue-400" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                     <span>Owner & Head Mentor</span>
@@ -626,11 +621,11 @@
 
             <!-- Call & Chat Actions -->
             <div class="flex items-center gap-2 shrink-0">
-              <button onclick="startCall('audio', 'Saurav Kumar (Platform Owner)')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center gap-1.5 backdrop-blur transition-all" title="Start Normal Audio Call">
+              <button onclick="startCall('audio', 'Sumit (@unfiltereddsumit)')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center gap-1.5 backdrop-blur transition-all" title="Start Normal Audio Call">
                 <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-300"></i>
                 <span>Normal Call</span>
               </button>
-              <button onclick="startCall('video', 'Saurav Kumar (Platform Owner)')" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold shadow-md flex items-center gap-1.5 transition-all" title="Start 1:1 HD Video Call">
+              <button onclick="startCall('video', 'Sumit (@unfiltereddsumit)')" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold shadow-md flex items-center gap-1.5 transition-all" title="Start 1:1 HD Video Call">
                 <i data-lucide="video" class="w-3.5 h-3.5"></i>
                 <span>Video Call</span>
               </button>
@@ -1448,6 +1443,9 @@
             <button onclick="switchAdminTab('authenticator')" id="admin-tab-authenticator" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Token Authenticator</button>
           </div>
         </div>
+
+        <!-- React AdminControls Mount Point (Mentor Sumit Profile Photo Upload, Live Classroom Scheduler & Cloud PDF Studio) -->
+        <div id="adminReactControlMount"></div>
 
         <!-- ------------------------------------------------------------- -->
         <!-- TAB A: 6-STEP MULTI-CROP QUESTION BUILDER -->
@@ -2303,7 +2301,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
                 <label class="block font-semibold text-gray-700 mb-1">Full Name (Editable) *</label>
-                <input id="profileInputName" type="text" value="Saurav Kumar" oninput="updateProfileLiveCard()" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500/20" />
+                <input id="profileInputName" type="text" value="Sumit" oninput="updateProfileLiveCard()" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500/20" />
                 <span class="text-[10px] text-gray-400 mt-0.5 block">Your public name displayed on forum, mock leaderboards & chat.</span>
               </div>
               <div>
@@ -2370,7 +2368,7 @@
               </div>
               <div>
                 <label class="block font-medium text-gray-700 mb-1">Telegram Handle</label>
-                <input id="profileInputTelegram" type="text" value="@saurav_prep" oninput="updateProfileLiveCard()" placeholder="@username" class="w-full px-3 py-2 border border-gray-200 rounded-xl" />
+                <input id="profileInputTelegram" type="text" value="@unfiltereddsumit" oninput="updateProfileLiveCard()" placeholder="@username" class="w-full px-3 py-2 border border-gray-200 rounded-xl" />
               </div>
               <div>
                 <label class="block font-medium text-gray-700 mb-1">Daily Study Target</label>
@@ -2403,7 +2401,7 @@
               <div class="flex items-center gap-3">
                 <img id="cardAvatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" class="w-14 h-14 rounded-2xl object-cover border-2 border-blue-500 shadow-sm" alt="Student">
                 <div>
-                  <h3 id="cardNamePreview" class="text-base font-extrabold text-gray-900 leading-tight">Saurav Kumar</h3>
+                  <h3 id="cardNamePreview" class="text-base font-extrabold text-gray-900 leading-tight">Sumit</h3>
                   <div class="flex items-center gap-1.5 mt-0.5">
                     <span id="cardGradePreview" class="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-md text-[10px] font-bold">Class 12</span>
                     <span id="cardYearPreview" class="text-[11px] font-semibold text-gray-500">Target 2027</span>
@@ -2560,7 +2558,7 @@
               </div>
               <div>
                 <label class="block font-medium text-gray-700 mb-1">Author Name</label>
-                <input id="newTopicAuthor" type="text" value="Saurav Kumar" class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50" readonly />
+                <input id="newTopicAuthor" type="text" value="Aspirant" class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50" readonly />
               </div>
             </div>
 
@@ -2672,17 +2670,17 @@
             </div>
             <h1 class="text-xl sm:text-2xl font-black text-white">Live Chat Support & 1:1 Calling Hub</h1>
             <p class="text-xs text-emerald-100/90 leading-relaxed">
-              Personal direct chat with Platform Owner (@unfiltereddsumit / Saurav) with instant audio & video call support, and an active aspirant community stream.
+              Personal direct chat with Platform Owner Sumit (@unfiltereddsumit) with instant audio & video call support, and an active aspirant community stream.
             </p>
           </div>
 
           <!-- Quick Calling Launchers -->
           <div class="flex items-center gap-2 shrink-0">
-            <button onclick="startCall('audio', 'Saurav Kumar (Platform Owner)')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center gap-2 backdrop-blur transition-all">
+            <button onclick="startCall('audio', 'Sumit (@unfiltereddsumit)')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center gap-2 backdrop-blur transition-all">
               <i data-lucide="phone" class="w-4 h-4 text-emerald-300"></i>
               <span>Audio Call Owner</span>
             </button>
-            <button onclick="startCall('video', 'Saurav Kumar (Platform Owner)')" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold shadow-md flex items-center gap-2 transition-all">
+            <button onclick="startCall('video', 'Sumit (@unfiltereddsumit)')" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold shadow-md flex items-center gap-2 transition-all">
               <i data-lucide="video" class="w-4 h-4"></i>
               <span>Video Call Owner</span>
             </button>
@@ -2693,7 +2691,7 @@
         <div class="bg-white rounded-2xl border border-gray-200 p-2 shadow-sm flex items-center gap-2">
           <button onclick="switchChatTab('owner')" id="chat-tab-btn-owner" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-xs transition-all">
             <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-            <span>Direct Chat with Owner (@unfiltereddsumit)</span>
+            <span>Direct Chat with Sumit (@unfiltereddsumit)</span>
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           </button>
           <button onclick="switchChatTab('community')" id="chat-tab-btn-community" class="flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 text-gray-600 hover:bg-gray-100 transition-all">
@@ -2712,12 +2710,12 @@
           <div class="p-4 bg-gray-50/80 border-b border-gray-200 flex items-center justify-between gap-3 shrink-0">
             <div class="flex items-center gap-3">
               <div class="relative">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" class="w-11 h-11 rounded-2xl object-cover border-2 border-emerald-500 shadow-xs" alt="Saurav Kumar">
+                <img src="/assets/aistudio/IMG_1422_c0b1f775.png" class="mentor-dynamic-avatar w-11 h-11 rounded-2xl object-cover border-2 border-emerald-500 shadow-xs" alt="Sumit">
                 <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
               </div>
               <div>
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <h3 class="font-bold text-sm text-gray-900">Saurav Kumar (@unfiltereddsumit)</h3>
+                  <h3 class="font-bold text-sm text-gray-900">Sumit (@unfiltereddsumit)</h3>
                   <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200" title="Verified Prepskm Platform Owner">
                     <svg class="w-3.5 h-3.5 text-blue-600 fill-blue-600" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                     <span>Owner Verified</span>
@@ -2736,11 +2734,11 @@
 
             <!-- Call Launcher Buttons Inside Chat Header -->
             <div class="flex items-center gap-2">
-              <button onclick="startCall('audio', 'Saurav Kumar (Platform Owner)')" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 flex items-center gap-1.5 transition-colors" title="Normal Audio Call">
+              <button onclick="startCall('audio', 'Sumit (@unfiltereddsumit)')" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 flex items-center gap-1.5 transition-colors" title="Normal Audio Call">
                 <i data-lucide="phone" class="w-4 h-4 text-emerald-600"></i>
                 <span class="hidden sm:inline">Normal Call</span>
               </button>
-              <button onclick="startCall('video', 'Saurav Kumar (Platform Owner)')" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-bold border border-blue-200 flex items-center gap-1.5 transition-colors" title="1:1 Video Call">
+              <button onclick="startCall('video', 'Sumit (@unfiltereddsumit)')" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-bold border border-blue-200 flex items-center gap-1.5 transition-colors" title="1:1 Video Call">
                 <i data-lucide="video" class="w-4 h-4 text-blue-600"></i>
                 <span class="hidden sm:inline">Video Call</span>
               </button>
@@ -2770,7 +2768,7 @@
             <input 
               id="ownerChatTextInput" 
               type="text" 
-              placeholder="Message Saurav directly (ask doubts, schedule call, or send screenshots)..." 
+              placeholder="Message Sumit (@unfiltereddsumit) directly (ask doubts, schedule call, or send screenshots)..." 
               class="flex-1 px-4 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:outline-none" 
               onkeydown="if(event.key === 'Enter') sendOwnerDirectMessage();"
             />
@@ -3208,7 +3206,7 @@
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h3 id="callParticipantNameDisplay" class="font-bold text-sm text-white">Saurav Kumar</h3>
+                <h3 id="callParticipantNameDisplay" class="font-bold text-sm text-white">Sumit (@unfiltereddsumit)</h3>
                 <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
                   <svg class="w-3 h-3 text-blue-400 fill-blue-400" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                   Verified
@@ -3241,11 +3239,11 @@
               <div class="absolute -inset-4 rounded-full bg-emerald-500/20 animate-ping pointer-events-none"></div>
               <div class="absolute -inset-8 rounded-full bg-blue-500/10 animate-pulse pointer-events-none"></div>
               
-              <img id="callRemoteAvatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&auto=format&fit=crop&q=80" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-emerald-500 shadow-2xl relative z-10" alt="Remote Caller">
+              <img id="callRemoteAvatar" src="/assets/aistudio/IMG_1422_c0b1f775.png" class="mentor-dynamic-avatar w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-emerald-500 shadow-2xl relative z-10" alt="Remote Caller">
             </div>
 
             <div class="space-y-1 relative z-10">
-              <h4 id="callRemoteNameSubtitle" class="font-extrabold text-base sm:text-lg text-white">Saurav Kumar (@unfiltereddsumit)</h4>
+              <h4 id="callRemoteNameSubtitle" class="font-extrabold text-base sm:text-lg text-white">Sumit (@unfiltereddsumit)</h4>
               <p class="text-xs text-gray-400">1:1 Direct Consultation • High Fidelity Jitsi WebRTC Stream</p>
               
               <!-- Frequency Bars Visualizer Simulation -->
@@ -4174,13 +4172,13 @@
       // State Collections
       let state = {
         userProfile: {
-          uid: "uid-saurav586",
-          name: "Saurav Kumar",
-          email: "saurav586kumar@gmail.com",
+          uid: "uid-sumit",
+          name: "Sumit",
+          email: "unfiltereddsumit@gmail.com",
           gradeLevel: "Class 12",
           targetExams: ["JEE Main", "JEE Advanced"],
           targetYear: "2027",
-          telegram: "@saurav_prep",
+          telegram: "@unfiltereddsumit",
           dailyGoalHours: 8,
           bio: "Targeting AIR < 1000 in JEE 2027. Focusing on Physics problem solving and daily backlog revision with Prepskm CBT mocks.",
           updatedAt: new Date().toISOString()
@@ -4191,16 +4189,16 @@
             title: "How to resolve friction direction in pure rolling on inclined planes?",
             content: "When a solid cylinder rolls down an incline with angle theta, does static friction always act upward along the incline, or can it act downward in accelerated cases? Let's discuss both torque around COM and instantaneous axis of rotation.",
             category: "Physics Doubts",
-            authorName: "Saurav Kumar",
-            authorUid: "uid-saurav586",
-            upvotedBy: ["uid-saurav586", "uid-mentor-sumit", "uid-user-3"],
+            authorName: "Arjun Sharma",
+            authorUid: "uid-student-1",
+            upvotedBy: ["uid-student-1", "uid-mentor-sumit", "uid-user-3"],
             downvotedBy: [],
             replyCount: 2,
             createdAt: "2026-11-03T05:30:00Z",
             replies: [
               {
                 id: "rep-1",
-                authorName: "Sumit Kumar (@unfiltereddsumit)",
+                authorName: "Sumit (@unfiltereddsumit)",
                 authorUid: "uid-mentor-sumit",
                 content: "Great question! For pure rolling down an incline starting from rest, gravity creates a torque about the contact point that would cause slipping unless friction acts UP the incline. So fs = (mg sin theta) / (1 + I_cm/(m*R^2)) upwards.",
                 upvotedBy: ["uid-saurav586", "uid-user-2"],
@@ -4398,9 +4396,9 @@
           {
             id: "msg-owner-welcome",
             senderId: "uid-mentor-sumit",
-            senderName: "Saurav Kumar (@unfiltereddsumit)",
-            senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-            text: "Namaste Aspirant! Welcome to Prepskm. I am Saurav (@unfiltereddsumit). You can directly chat with me here, ask any JEE/NEET physics doubt, send question photos, or tap the Call buttons above for a 1:1 Normal Audio or Video consultation!",
+            senderName: "Sumit (@unfiltereddsumit)",
+            senderAvatar: "/assets/aistudio/IMG_1422_c0b1f775.png",
+            text: "Namaste Aspirant! Welcome to Prepskm. I am Sumit (@unfiltereddsumit). You can directly chat with me here, ask any JEE/NEET physics doubt, send question photos, or tap the Call buttons above for a 1:1 Normal Audio or Video consultation!",
             imageUrl: null,
             isOwner: true,
             timestamp: new Date(Date.now() - 3600000).toISOString()
@@ -4410,12 +4408,12 @@
           {
             id: "cmsg-1",
             senderId: "uid-mentor-sumit",
-            senderName: "Sumit Kumar (@unfiltereddsumit)",
-            senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+            senderName: "Sumit (@unfiltereddsumit)",
+            senderAvatar: "/assets/aistudio/IMG_1422_c0b1f775.png",
             isMentor: true,
             text: "Daily Tip for JEE Main 2027: Solve at least 15 Numerical NAT questions under timed 3-minute intervals. Do NOT guess in NAT to protect your +4 marks!",
             imageUrl: null,
-            likes: ["uid-saurav586", "user-101", "user-102"],
+            likes: ["uid-sumit", "user-101", "user-102"],
             replyTo: null,
             timestamp: new Date(Date.now() - 7200000).toISOString()
           },
@@ -4427,19 +4425,19 @@
             isMentor: false,
             text: "Sir, what is the best order of subjects in the CBT mock? Should I start with Chemistry or Physics?",
             imageUrl: null,
-            likes: ["uid-saurav586"],
+            likes: ["uid-sumit"],
             replyTo: null,
             timestamp: new Date(Date.now() - 3600000).toISOString()
           },
           {
             id: "cmsg-3",
             senderId: "uid-mentor-sumit",
-            senderName: "Sumit Kumar (@unfiltereddsumit)",
-            senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+            senderName: "Sumit (@unfiltereddsumit)",
+            senderAvatar: "/assets/aistudio/IMG_1422_c0b1f775.png",
             isMentor: true,
             text: "Always Chemistry first! Spend 35-40 min to secure 70-80 marks quickly, then 55 min on Physics, and remaining time on Mathematics.",
             imageUrl: null,
-            likes: ["user-103", "uid-saurav586", "user-104"],
+            likes: ["user-103", "uid-sumit", "user-104"],
             replyTo: {
               authorName: "Rohan Verma",
               snippet: "Sir, what is the best order of subjects in the CBT mock? Should I start with Chemistry or Physics?"
@@ -4450,18 +4448,35 @@
         aiChatHistory: [
           {
             role: "ai",
-            text: "Hello! I am your **Prepskm AI Study Copilot** trained on official NTA JEE & NEET syllabi. Ask me any doubt in Physics, Chemistry, Mathematics, or Biology, or attach a question image for a step-by-step breakdown!",
+            text: "Hello! I am your **Prepskm AI Study Copilot** working alongside Mentor Sumit (@unfiltereddsumit). Ask me any doubt in Physics, Chemistry, Mathematics, or Biology, or attach a question image for a step-by-step breakdown!",
             imageUrl: null,
             timestamp: new Date().toISOString()
           }
         ]
       };
 
+      // Sanitize any oversized legacy base64 PDFs in localStorage so we never exceed Firestore 1 MiB / 10 MiB payload limits
+      function sanitizeMaterialsList(list) {
+        if (!Array.isArray(list)) return [];
+        return list.filter(m => {
+          if (!m) return false;
+          const u1 = String(m.pdf_url || '');
+          const u2 = String(m.downloadUrl || '');
+          if ((u1.startsWith('data:') && u1.length > 450000) || (u2.startsWith('data:') && u2.length > 450000)) {
+            return false;
+          }
+          return true;
+        });
+      }
+
       // Load non-dummy user preferences from localStorage while keeping cloud collections authoritative
       try {
         const localSaved = localStorage.getItem('prepskm_state');
         if (localSaved) {
           const parsed = JSON.parse(localSaved);
+          if (parsed.materials) {
+            parsed.materials = sanitizeMaterialsList(parsed.materials);
+          }
           if (parsed.videos && Array.isArray(parsed.videos)) {
             parsed.videos = parsed.videos.map(v => {
               if (v.videoUrl && v.videoUrl.includes('dQw4w9WgXcQ')) {
@@ -4477,9 +4492,34 @@
 
       function persistState() {
         try {
+          if (state && state.materials) {
+            state.materials = sanitizeMaterialsList(state.materials);
+          }
+          window.state = state;
           localStorage.setItem('prepskm_state', JSON.stringify(state));
         } catch (e) {}
       }
+      window.state = state;
+      window.showToast = (msg) => showAppToast(msg, 'info');
+      window.switchTab = (tabName) => navigateView(tabName);
+
+      // Apply Mentor Sumit's dynamic profile photo across Header, Daily Fuel Quote Card, Live Card, and Chat
+      window.applyMentorProfileToDOM = function(profile) {
+        if (!profile || !profile.avatarUrl) return;
+        document.querySelectorAll('.mentor-dynamic-avatar').forEach(img => {
+          img.src = profile.avatarUrl;
+        });
+        const quoteAvatar = document.getElementById('dailyQuoteMentorAvatar');
+        if (quoteAvatar) quoteAvatar.src = profile.avatarUrl;
+        const liveAvatar = document.getElementById('homeLiveMentorAvatar');
+        if (liveAvatar) liveAvatar.src = profile.avatarUrl;
+        if (isCurrentUserSuperAdmin()) {
+          const headerImg = document.getElementById('headerProfileLogoImg');
+          if (headerImg) headerImg.src = profile.avatarUrl;
+          const mobImg = document.getElementById('mobProfileAvatarThumb');
+          if (mobImg) mobImg.src = profile.avatarUrl;
+        }
+      };
 
       // Motivational Quotes Library
       const MOTIVATIONAL_QUOTES = [
@@ -4699,6 +4739,13 @@
           currentUser.role = 'superadmin';
           currentUser.isGuest = false;
         }
+        state.isAdminUnlocked = Boolean(isAdmin);
+        state.user = {
+          uid: currentUser.uid,
+          name: isAdmin ? 'Sumit (@unfiltereddsumit)' : (currentUser.displayName || 'Aspirant'),
+          email: currentUser.email
+        };
+        window.state = state;
 
         if (currentUser.isGuest && !isAdmin) {
           if (guestBox) guestBox.classList.remove('hidden');
@@ -5270,9 +5317,10 @@
               const cloudVideos = [];
               snapshot.forEach(doc => {
                 const d = doc.data();
-                const cleanUrl = (d.video_url || d.videoUrl || '').includes('dQw4w9WgXcQ')
+                const rawUrl = String(d.video_url || d.videoUrl || '');
+                const cleanUrl = (rawUrl.includes('dQw4w9WgXcQ') || rawUrl.startsWith('blob:'))
                   ? 'https://www.youtube.com/embed/b1t41Q3xRM8'
-                  : (d.video_url || d.videoUrl);
+                  : rawUrl;
                 cloudVideos.push({
                   id: doc.id,
                   ...d,
@@ -5351,7 +5399,13 @@
           db.collection('mentors').onSnapshot(snapshot => {
             if (snapshot && !snapshot.empty) {
               const cloudMentors = [];
-              snapshot.forEach(doc => cloudMentors.push({ id: doc.id, ...doc.data() }));
+              snapshot.forEach(doc => {
+                const d = doc.data();
+                const safeAvatar = (d.avatar && !String(d.avatar).startsWith('blob:'))
+                  ? d.avatar
+                  : '/assets/aistudio/IMG_1422_c0b1f775.png';
+                cloudMentors.push({ id: doc.id, ...d, avatar: safeAvatar });
+              });
               if (cloudMentors.length > 0) {
                 state.mentors = cloudMentors;
                 persistState();
@@ -6486,54 +6540,126 @@
 
         const secObj = state.sections.find(s => s.id === sectionId);
 
-        const savePdfRecord = (finalUrl, isFile) => {
-          const newPdf = {
-            id: 'pdf-' + Date.now(),
-            title,
-            sectionId,
-            sectionName: secObj ? secObj.name : 'Notes',
-            exam,
-            subject,
-            chapter,
-            pdf_url: finalUrl,
-            downloadUrl: finalUrl,
-            isFileUpload: isFile,
-            fileName: selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'),
-            createdAt: new Date().toISOString()
-          };
+        const savePdfRecord = async (finalUrlOrFile, isFile) => {
+          try {
+            let savedRecord;
+            if (isFile && selectedPdfFile && window.prepskmStorageService && window.prepskmStorageService.uploadStudyMaterialPdf) {
+              const sizeMb = `${(selectedPdfFile.size / (1024 * 1024)).toFixed(2)} MB`;
+              savedRecord = await window.prepskmStorageService.uploadStudyMaterialPdf(
+                selectedPdfFile,
+                {
+                  title,
+                  sectionId,
+                  sectionName: secObj ? secObj.name : 'Notes',
+                  exam,
+                  subject,
+                  chapter,
+                  size: sizeMb,
+                  author: 'Sumit (@unfiltereddsumit)',
+                  fileName: selectedPdfFile.name
+                },
+                (done, total) => {
+                  const label = document.getElementById('pdfFileNoticeText');
+                  if (label) label.innerText = `Uploading chunk ${done}/${total} (${Math.round((done / total) * 100)}%)...`;
+                }
+              );
+              savedRecord.sectionId = sectionId;
+              savedRecord.sectionName = secObj ? secObj.name : 'Notes';
+              savedRecord.exam = exam;
+              if (db) {
+                await db.collection('study_materials').doc(savedRecord.id).set(savedRecord, { merge: true });
+                await db.collection('materials').doc(savedRecord.id).set(savedRecord, { merge: true });
+              }
+            } else {
+              let pointerUrl = finalUrlOrFile;
+              const pdfId = 'pdf-' + Date.now();
+              if (typeof pointerUrl === 'string' && pointerUrl.startsWith('data:') && window.uploadDataUrlInChunks) {
+                pointerUrl = await window.uploadDataUrlInChunks(pdfId, pointerUrl, selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'));
+              }
+              savedRecord = {
+                id: pdfId,
+                title,
+                sectionId,
+                sectionName: secObj ? secObj.name : 'Notes',
+                exam,
+                subject,
+                chapter,
+                pdf_url: pointerUrl,
+                downloadUrl: pointerUrl,
+                isFileUpload: isFile,
+                author: 'Sumit (@unfiltereddsumit)',
+                fileName: selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'),
+                createdAt: new Date().toISOString()
+              };
+              if (db) {
+                await db.collection('study_materials').doc(savedRecord.id).set(savedRecord);
+                await db.collection('materials').doc(savedRecord.id).set(savedRecord);
+              }
+            }
 
-          state.materials.unshift(newPdf);
-          persistState();
-          if (db) {
-            db.collection('study_materials').doc(newPdf.id).set(newPdf).catch(e => console.warn(e));
-            db.collection('materials').doc(newPdf.id).set(newPdf).catch(e => console.warn(e));
+            state.materials = [savedRecord, ...(state.materials || []).filter(m => m.id !== savedRecord.id)];
+            persistState();
+
+            document.getElementById('newPdfTitle').value = '';
+            if (document.getElementById('newPdfChapter')) document.getElementById('newPdfChapter').value = '';
+            document.getElementById('newPdfLink').value = '';
+            clearSelectedPdfFile();
+            renderMaterialsList();
+            renderAdminPdfsTable();
+            showAppToast(`PDF "${title}" uploaded to Cloud Storage & synced across all student devices!`, 'success');
+          } catch (err) {
+            console.error("PDF Cloud Upload Error:", err);
+            showAppToast("Failed to upload PDF. Please check your connection.", "error");
           }
-
-          document.getElementById('newPdfTitle').value = '';
-          if (document.getElementById('newPdfChapter')) document.getElementById('newPdfChapter').value = '';
-          document.getElementById('newPdfLink').value = '';
-          clearSelectedPdfFile();
-          renderMaterialsList();
-          renderAdminPdfsTable();
-          showAppToast(`PDF "${title}" published to Cloud DB (study_materials)!`, 'success');
         };
 
         if (selectedPdfFile) {
-          showAppToast("Uploading PDF to Cloud Storage & syncing metadata...", "info");
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            savePdfRecord(e.target.result, true);
-          };
-          reader.onerror = () => {
-            savePdfRecord(URL.createObjectURL(selectedPdfFile), true);
-          };
-          reader.readAsDataURL(selectedPdfFile);
+          showAppToast("Uploading PDF in safe cloud chunks & syncing metadata...", "info");
+          savePdfRecord(selectedPdfFile, true);
         } else if (link) {
           savePdfRecord(link, false);
         } else {
           showAppToast("Please choose a .PDF file from your device or enter a download URL.", "error");
         }
       }
+
+      async function openPrepskmCloudPdf(materialId, event) {
+        if (event) event.preventDefault();
+        const item = (state.materials || []).find(m => m.id === materialId);
+        if (!item) return;
+        const rawUrl = item.pdf_url || item.downloadUrl || '';
+        if (!rawUrl) {
+          showAppToast("PDF link not available.", "error");
+          return;
+        }
+        try {
+          if (rawUrl.startsWith('#prepskm-cloud-file:')) {
+            showAppToast("Preparing PDF from Prepskm Cloud Storage...", "info");
+            const resolvedUrl = window.resolveCloudFileUrl
+              ? await window.resolveCloudFileUrl(rawUrl)
+              : rawUrl;
+            const a = document.createElement('a');
+            a.href = resolvedUrl;
+            a.download = item.fileName || `${item.title || 'study-material'}.pdf`;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          } else {
+            const a = document.createElement('a');
+            a.href = rawUrl;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }
+        } catch (err) {
+          console.error("Error opening cloud PDF:", err);
+          showAppToast("Could not load cloud PDF file.", "error");
+        }
+      }
+      window.openPrepskmCloudPdf = openPrepskmCloudPdf;
 
       let activeMaterialSectionId = 'ALL';
 
@@ -6600,11 +6726,11 @@
             </div>
 
             <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <a href="${m.downloadUrl}" target="_blank" rel="noopener" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 transition-colors">
+              <button onclick="openPrepskmCloudPdf('${m.id}', event)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i>
                 <span>Download PDF</span>
-              </a>
-              <span class="text-[11px] text-gray-400">Prepskm Verified</span>
+              </button>
+              <span class="text-[11px] text-gray-400">By Sumit (@unfiltereddsumit)</span>
             </div>
           </div>
         `).join('');
@@ -8716,16 +8842,24 @@
         const container = document.getElementById('studioVideosList');
         if (!container) return;
 
-        const myVideos = state.videos;
-        container.innerHTML = myVideos.map(v => `
-          <div class="bg-gray-50 rounded-2xl border border-gray-200 p-4 space-y-2">
-            <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden">
-              <iframe src="${v.videoUrl}" title="${v.title}" class="w-full h-full border-0"></iframe>
+        const myVideos = state.videos || [];
+        container.innerHTML = myVideos.map(v => {
+          const thumb = (v.thumbnail && !String(v.thumbnail).startsWith('blob:'))
+            ? v.thumbnail
+            : 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80';
+          return `
+          <div class="bg-gray-50 rounded-2xl border border-gray-200 p-4 space-y-2 cursor-pointer hover:border-indigo-300 transition-all" onclick="openVideoModal('${v.id}')">
+            <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative">
+              <img src="${thumb}" alt="${v.title}" class="w-full h-full object-cover opacity-85" />
+              <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                <span class="px-3 py-1 rounded-full bg-white/90 text-gray-900 text-[11px] font-bold shadow">Preview Lecture</span>
+              </div>
             </div>
             <div class="font-bold text-xs text-gray-900">${v.title}</div>
-            <div class="text-[11px] text-gray-500">Subject: ${v.subject} (${v.exam})</div>
+            <div class="text-[11px] text-gray-500">Subject: ${v.subject} (${v.exam || 'JEE/NEET'})</div>
           </div>
-        `).join('');
+          `;
+        }).join('');
         lucide.createIcons();
       }
 
@@ -8925,7 +9059,7 @@
       let activeCallData = {
         active: false,
         callType: 'video', // 'audio' | 'video'
-        targetName: 'Saurav Kumar (Platform Owner)',
+        targetName: 'Sumit (@unfiltereddsumit)',
         timerInterval: null,
         secondsElapsed: 0,
         micMuted: false,
@@ -9527,32 +9661,45 @@
         reader.readAsDataURL(file);
       }
 
-      function adminStartGroupLiveMentorship() {
+      async function adminStartGroupLiveMentorship() {
         if (!isCurrentUserSuperAdmin()) {
           openAdminSecretAuthModal();
           return;
         }
-        const title = (document.getElementById('adminLiveSessionTitle')?.value || '').trim() || 'Live JEE/NEET Mentorship & Doubt Clearing Session';
-        const thumbUrl = uploadedLiveThumbDataUrl || (document.getElementById('adminLiveSessionThumbUrl')?.value || '').trim() || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&auto=format&fit=crop&q=80';
-        const roomName = `PrepskmLiveMentorship_${Date.now()}`;
+        const title = (document.getElementById('adminLiveSessionTitleInput')?.value || document.getElementById('adminLiveSessionTitle')?.value || '').trim() || 'JEE & NEET Rank Booster Live Mentorship';
+        let thumbUrl = uploadedLiveThumbDataUrl || (document.getElementById('adminLiveSessionThumbInput')?.value || document.getElementById('adminLiveSessionThumbUrl')?.value || '').trim() || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&auto=format&fit=crop&q=80';
+        const roomName = `PrepskmLiveMentorshipSumit`;
+
+        if (thumbUrl.startsWith('data:') && window.uploadDataUrlInChunks) {
+          try {
+            thumbUrl = await window.uploadDataUrlInChunks('live_thumb_' + Date.now(), thumbUrl, 'thumbnail.png');
+          } catch (e) {}
+        }
 
         const sessionObj = {
           isLive: true,
+          status: 'live',
           title,
-          mentorName: currentUser.displayName || 'Sumit Kumar (@unfiltereddsumit)',
+          mentorName: 'Sumit (@unfiltereddsumit)',
           roomName,
           thumbnail: thumbUrl,
+          thumbnailUrl: thumbUrl,
           raisedHands: [],
+          onStageStudents: [],
           startedAt: new Date().toISOString()
         };
 
         state.liveSession = sessionObj;
         persistState();
         if (db) {
-          db.collection('live_sessions').doc('current').set(sessionObj).catch(e => console.warn(e));
+          db.collection('live_sessions').doc('current').set(sessionObj, { merge: true }).catch(e => console.warn(e));
         }
         renderLiveMentorshipBannerUI();
-        startCall('video', title, false, roomName, true);
+        if (typeof window.openLiveClassroomModal === 'function') {
+          window.openLiveClassroomModal({ asHost: true });
+        } else {
+          startCall('video', title, false, roomName, true);
+        }
       }
 
       function adminStopGroupLiveMentorship() {
@@ -9562,22 +9709,28 @@
         }
         if (state.liveSession) {
           state.liveSession.isLive = false;
+          state.liveSession.status = 'ended';
         }
         persistState();
         if (db) {
-          db.collection('live_sessions').doc('current').set({ isLive: false, endedAt: new Date().toISOString() }, { merge: true }).catch(e => console.warn(e));
+          db.collection('live_sessions').doc('current').set({ isLive: false, status: 'ended', endedAt: new Date().toISOString() }, { merge: true }).catch(e => console.warn(e));
         }
         renderLiveMentorshipBannerUI();
-        showAppToast("Live Group Mentorship broadcast ended.", "info");
+        showAppToast("Live Group Mentorship session ended for all students.", "info");
       }
 
       function joinGroupLiveMentorshipSession() {
+        const isAdmin = isCurrentUserSuperAdmin();
+        if (typeof window.openLiveClassroomModal === 'function') {
+          window.openLiveClassroomModal({ asHost: isAdmin });
+          return;
+        }
         const live = state.liveSession || {
           isLive: true,
           title: 'JEE & NEET Rank Booster: Rotational Mechanics & Strategy',
-          roomName: 'PrepskmLiveMentorship_RankBooster2027'
+          roomName: 'PrepskmLiveMentorshipSumit'
         };
-        startCall('video', live.title, true, live.roomName, true);
+        startCall('video', live.title, !isAdmin, live.roomName, true);
       }
 
       function toggleStudentRaiseHand() {
@@ -9590,7 +9743,7 @@
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         if (!state.liveSession) {
-          state.liveSession = { isLive: true, title: 'Live Mentorship', roomName: 'PrepskmLiveMentorship_RankBooster2027', raisedHands: [] };
+          state.liveSession = { isLive: true, title: 'Live Mentorship', roomName: 'PrepskmLiveMentorshipSumit', raisedHands: [] };
         }
         state.liveSession.raisedHands = state.liveSession.raisedHands || [];
         state.liveSession.raisedHands.unshift(entry);
@@ -9599,7 +9752,7 @@
           db.collection('live_sessions').doc('current').set({ raisedHands: state.liveSession.raisedHands }, { merge: true }).catch(e => console.warn(e));
         }
         renderLiveMentorshipBannerUI();
-        showAppToast("✋ Hand Raised! Host @unfiltereddsumit has been notified in Jitsi Meet.", "success");
+        showAppToast("✋ Hand Raised! Mentor Sumit (@unfiltereddsumit) has been notified.", "success");
       }
 
       function adminStartDirectStudentCall(callType = 'video') {
@@ -9612,36 +9765,95 @@
         startCall(callType, `1-on-1 Call: ${studentName}`, false, roomName, false);
       }
 
+      let liveCountdownInterval = null;
+
+      function updateHomepageCountdownDisplay(scheduledAt) {
+        const timerEl = document.getElementById('homeLiveCountdownTimer');
+        if (!timerEl) return;
+        if (!scheduledAt) {
+          timerEl.classList.add('hidden');
+          return;
+        }
+        const targetMs = new Date(scheduledAt).getTime();
+        if (isNaN(targetMs)) {
+          timerEl.classList.add('hidden');
+          return;
+        }
+        const diffSec = Math.max(0, Math.floor((targetMs - Date.now()) / 1000));
+        if (diffSec <= 0) {
+          timerEl.innerText = 'Starting Soon!';
+          timerEl.classList.remove('hidden');
+          return;
+        }
+        const hrs = Math.floor(diffSec / 3600);
+        const mins = Math.floor((diffSec % 3600) / 60);
+        const secs = diffSec % 60;
+        timerEl.innerText = `⏰ Starts in ${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        timerEl.classList.remove('hidden');
+      }
+
       function renderLiveMentorshipBannerUI() {
         const banner = document.getElementById('homeLiveMentorshipBanner');
         const titleEl = document.getElementById('homeLiveMentorshipTitle');
-        const mentorEl = document.getElementById('homeLiveMentorshipMentor');
+        const hostEl = document.getElementById('homeLiveMentorshipHost');
         const thumbEl = document.getElementById('homeLiveMentorshipThumb');
-        const stopBtn = document.getElementById('adminStopLiveBtn');
-        const raisedBox = document.getElementById('adminRaisedHandsList');
-        const raisedItems = document.getElementById('adminRaisedHandsItems');
+        const statusTextEl = document.getElementById('homeLiveStatusText');
+        const cornerBadgeText = document.getElementById('homeLiveCornerBadgeText');
+        const joinBtnText = document.getElementById('homeLiveJoinBtnText');
+        const alertBanner = document.getElementById('homeBroadcastAlertBanner');
+        const alertText = document.getElementById('homeBroadcastAlertText');
 
-        const live = state.liveSession;
-        if (banner) {
-          if (live && live.isLive) {
-            banner.classList.remove('hidden');
-            if (titleEl) titleEl.innerText = live.title || 'Live JEE/NEET Group Mentorship';
-            if (mentorEl) mentorEl.innerText = `Host: ${live.mentorName || 'Sumit Kumar (@unfiltereddsumit)'} • Students join muted • Raise Hand ✋ enabled`;
-            if (thumbEl && live.thumbnail) thumbEl.src = live.thumbnail;
-            if (stopBtn) stopBtn.classList.remove('hidden');
+        const live = state.liveSession || {};
+
+        if (alertBanner && alertText) {
+          if (live.alertMessage && String(live.alertMessage).trim()) {
+            alertText.innerText = live.alertMessage;
+            alertBanner.classList.remove('hidden');
           } else {
-            banner.classList.add('hidden');
-            if (stopBtn) stopBtn.classList.add('hidden');
+            alertBanner.classList.add('hidden');
           }
         }
 
-        if (raisedBox && raisedItems && live && Array.isArray(live.raisedHands) && live.raisedHands.length > 0) {
-          raisedBox.classList.remove('hidden');
-          raisedItems.innerHTML = live.raisedHands.slice(0, 6).map(h => `
-            <span class="px-2.5 py-1 rounded-lg bg-white border border-amber-300 font-bold text-amber-900">✋ ${h.name} (${h.time})</span>
-          `).join('');
+        if (liveCountdownInterval) {
+          clearInterval(liveCountdownInterval);
+          liveCountdownInterval = null;
+        }
+
+        if (banner) {
+          banner.classList.remove('hidden');
+          if (titleEl) titleEl.innerText = live.title || 'JEE & NEET Rank Booster: Rotational Mechanics & Strategy';
+          if (hostEl) hostEl.innerText = 'Sumit (@unfiltereddsumit)';
+          const rawThumb = live.thumbnailUrl || live.thumbnail;
+          if (thumbEl && rawThumb && !String(rawThumb).startsWith('#prepskm-cloud-file:')) {
+            thumbEl.src = rawThumb;
+          }
+
+          if (live.status === 'scheduled' && !live.isLive && live.scheduledAt) {
+            if (statusTextEl) statusTextEl.innerText = 'UPCOMING LIVE CLASS';
+            if (cornerBadgeText) cornerBadgeText.innerText = 'SOON';
+            if (joinBtnText) joinBtnText.innerText = 'Enter Waiting Room';
+            updateHomepageCountdownDisplay(live.scheduledAt);
+            liveCountdownInterval = setInterval(() => {
+              updateHomepageCountdownDisplay(live.scheduledAt);
+            }, 1000);
+          } else if (live.status === 'ended' && !live.isLive) {
+            if (statusTextEl) statusTextEl.innerText = '🔴 LIVE MENTORSHIP (REPLAY / LOBBY)';
+            if (cornerBadgeText) cornerBadgeText.innerText = 'ENDED';
+            if (joinBtnText) joinBtnText.innerText = 'View Classroom';
+            updateHomepageCountdownDisplay(null);
+          } else {
+            if (statusTextEl) statusTextEl.innerText = '🔴 LIVE MENTORSHIP';
+            if (cornerBadgeText) cornerBadgeText.innerText = 'LIVE';
+            if (joinBtnText) joinBtnText.innerText = 'Join Full Screen';
+            updateHomepageCountdownDisplay(null);
+          }
         }
       }
+
+      window.syncHomepageLiveCardFromReact = function(nextSession) {
+        state.liveSession = { ...(state.liveSession || {}), ...nextSession };
+        renderLiveMentorshipBannerUI();
+      };
 
       function submitNewCloudMockTestSeries() {
         if (!isCurrentUserSuperAdmin()) {
