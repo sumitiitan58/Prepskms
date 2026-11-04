@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
@@ -40,7 +40,12 @@ export default defineConfig(({ mode }) => {
                 if (!apiKey) {
                   res.statusCode = 503;
                   res.setHeader('Content-Type', 'application/json');
-                  res.end(JSON.stringify({ error: 'GEMINI_API_KEY not configured', fallback: true }));
+                  res.end(
+                    JSON.stringify({
+                      error: 'GEMINI_API_KEY not configured',
+                      fallback: true,
+                    })
+                  );
                   return;
                 }
 
@@ -51,7 +56,11 @@ export default defineConfig(({ mode }) => {
                 });
                 const parts: any[] = [];
 
-                if (body.imageBase64 && typeof body.imageBase64 === 'string' && body.imageBase64.includes('base64,')) {
+                if (
+                  body.imageBase64 &&
+                  typeof body.imageBase64 === 'string' &&
+                  body.imageBase64.includes('base64,')
+                ) {
                   const [meta, base64Data] = body.imageBase64.split('base64,');
                   const mimeMatch = meta.match(/data:(.*?);/);
                   parts.push({
@@ -63,15 +72,17 @@ export default defineConfig(({ mode }) => {
                 }
 
                 parts.push({
-                  text: body.prompt || 'Solve this JEE/NEET question step by step.',
+                  text:
+                    body.prompt ||
+                    'Solve this JEE/NEET question step by step.',
                 });
 
                 const response = await ai.models.generateContent({
                   model: 'gemini-3.8-flash',
                   contents: [{ role: 'user', parts }],
                   config: {
-                    systemInstruction: `You are the official Prepskm AI Study Copilot working alongside Mentor Sumit (@unfiltereddsumit) for JEE Main, JEE Advanced, and NEET UG aspirants. Act as an encouraging top-ranker mentor working alongside Sumit (@unfiltereddsumit). Give step-by-step solutions for Physics, Chemistry, Mathematics, and Biology with Markdown/LaTeX formulas, core concepts, and an AIR Ranker Shortcut tip.`,
-                    temperature: 0.4,
+                    thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+                    systemInstruction: `You are the official Prepskm AI Study Copilot ("Prep AI") working alongside Lead Mentor Sumit (@unfiltereddsumit) for JEE Main, JEE Advanced, and NEET UG aspirants. Never use the word "Owner"—always use "Lead Mentor" or "Mentor". Give conceptual step-by-step solutions for Physics, Chemistry, Mathematics, and Biology with formatted LaTeX formulas, core concepts, and an AIR Ranker Shortcut tip.`,
                   },
                 });
 
@@ -81,16 +92,18 @@ export default defineConfig(({ mode }) => {
               } catch (err: any) {
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({ error: err?.message || 'AI Error', fallback: true }));
+                res.end(
+                  JSON.stringify({
+                    error: err?.message || 'AI Error',
+                    fallback: true,
+                  })
+                );
               }
             });
           });
         },
       },
     ],
-    define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

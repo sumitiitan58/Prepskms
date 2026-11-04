@@ -3,7 +3,13 @@ import { createPortal } from 'react-dom';
 import { JitsiMeeting } from '@jitsi/react-sdk';
 import LiveClassroom from './components/LiveClassroom.jsx';
 import AdminControls from './components/AdminControls.jsx';
+import SubscriptionModal from './components/SubscriptionModal.jsx';
+import VideoPlayer from './components/VideoPlayer.jsx';
+import PDFViewerModal from './components/PDFViewerModal.jsx';
+import TestAnalytics from './components/TestAnalytics.jsx';
 import './services/cloudStorage.js';
+import './services/db.js';
+import './services/razorpay.js';
 
 export interface JitsiSessionConfig {
   roomName: string;
@@ -30,16 +36,22 @@ export default function App() {
   const [adminMountTarget, setAdminMountTarget] = useState<HTMLElement | null>(
     null
   );
+  const [analyticsMountTarget, setAnalyticsMountTarget] =
+    useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const locateAdminMount = () => {
-      const el = document.getElementById('adminReactControlMount');
-      if (el && el !== adminMountTarget) {
-        setAdminMountTarget(el);
+    const locateMounts = () => {
+      const adminEl = document.getElementById('adminReactControlMount');
+      if (adminEl && adminEl !== adminMountTarget) {
+        setAdminMountTarget(adminEl);
+      }
+      const analyticsEl = document.getElementById('testAnalyticsMount');
+      if (analyticsEl && analyticsEl !== analyticsMountTarget) {
+        setAnalyticsMountTarget(analyticsEl);
       }
     };
-    locateAdminMount();
-    const timer = setInterval(locateAdminMount, 1000);
+    locateMounts();
+    const timer = setInterval(locateMounts, 1000);
 
     window.mountJitsiSession = (config: JitsiSessionConfig) => {
       const target = document.getElementById('jitsiMeetStageContainer');
@@ -71,12 +83,17 @@ export default function App() {
       delete window.unmountJitsiSession;
       delete window.triggerJitsiRaiseHand;
     };
-  }, [adminMountTarget]);
+  }, [adminMountTarget, analyticsMountTarget]);
 
   return (
     <>
       {createPortal(<LiveClassroom />, document.body)}
+      {createPortal(<SubscriptionModal />, document.body)}
+      {createPortal(<VideoPlayer />, document.body)}
+      {createPortal(<PDFViewerModal />, document.body)}
       {adminMountTarget && createPortal(<AdminControls />, adminMountTarget)}
+      {analyticsMountTarget &&
+        createPortal(<TestAnalytics />, analyticsMountTarget)}
       {session &&
         portalTarget &&
         createPortal(

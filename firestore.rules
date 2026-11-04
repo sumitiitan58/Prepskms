@@ -104,8 +104,14 @@ service cloud.firestore {
       allow create, update: if request.resource.data.score is number && request.resource.data.score >= 0;
     }
 
-    // 7. Profiles, Forum & Real-time Chat
+    // 7. Profiles, Subscriptions, Weekly Schedule, Forum & Real-time Chat
     match /users/{userId} {
+      allow read, write: if true;
+    }
+    match /subscriptions/{userId} {
+      allow read, write: if true;
+    }
+    match /weekly_schedule/{itemId} {
       allow read, write: if true;
     }
     match /forumTopics/{topicId} {

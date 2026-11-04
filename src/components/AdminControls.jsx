@@ -190,10 +190,21 @@ export default function AdminControls() {
         },
         { merge: true }
       );
+      if (window.prepskmDb?.syncEventToWeeklySchedule) {
+        const datePart = scheduledDateTime.split('T')[0];
+        await window.prepskmDb.syncEventToWeeklySchedule({
+          id: `sched-live-${Date.now()}`,
+          title: liveTitle.trim() || 'JEE/NEET Live Mentorship by Sumit',
+          subject: 'Physics & Strategy',
+          dateStr: datePart,
+          timeLabel: formattedTime,
+          eventType: 'live',
+        });
+      }
       setAlertBannerText(autoAlert);
       if (typeof window.showToast === 'function') {
         window.showToast(
-          '⏰ Live Session Scheduled! Countdown timer & alert banner are now active on student homepages.'
+          '⏰ Live Session Scheduled & added to Weekly Schedule Hub with 🔴 LIVE badge!'
         );
       }
     } catch (err) {
@@ -221,6 +232,15 @@ export default function AdminControls() {
         },
         { merge: true }
       );
+      if (window.prepskmDb?.syncEventToWeeklySchedule) {
+        await window.prepskmDb.syncEventToWeeklySchedule({
+          id: 'sched-live-active',
+          title: liveTitle.trim() || 'JEE/NEET Live Mentorship by Sumit',
+          subject: 'Live Mentorship',
+          timeLabel: 'LIVE NOW',
+          eventType: 'live',
+        });
+      }
       if (typeof window.showToast === 'function') {
         window.showToast('🔴 You are now LIVE! Opening Host Classroom...');
       }

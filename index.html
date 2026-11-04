@@ -270,7 +270,7 @@
           </button>
           <button onclick="navigateView('admin')" id="nav-btn-admin" class="hidden nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 items-center gap-1.5 transition-all ml-auto text-indigo-700 font-semibold bg-indigo-50/60 border border-indigo-200">
             <i data-lucide="shield-check" class="w-4 h-4 text-indigo-600"></i>
-            <span>Owner Admin</span>
+            <span>Lead Mentor Studio</span>
           </button>
         </nav>
       </div>
@@ -612,7 +612,7 @@
                   <h3 class="font-extrabold text-base text-white">Sumit (@unfiltereddsumit)</h3>
                   <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/30 text-blue-200 border border-blue-400/30">
                     <svg class="w-3.5 h-3.5 text-blue-400 fill-blue-400" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    <span>Owner & Head Mentor</span>
+                    <span>Lead Mentor</span>
                   </span>
                 </div>
                 <p class="text-xs text-emerald-200/90 mt-0.5">Direct 1:1 Mentorship Support • Fast reply on exam strategy, backlog clearance & test analysis.</p>
@@ -754,6 +754,9 @@
             <!-- Dynamically populated from Firestore mock_tests -->
           </div>
         </div>
+
+        <!-- Dedicated In-Depth Test Analytics & Student Performance Hub ("My Test Results") -->
+        <div id="testAnalyticsMount" class="max-w-4xl mx-auto"></div>
         
         <!-- Mock Test Setup Card -->
         <div id="mockTestSetupView" class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6 max-w-4xl mx-auto">
@@ -1072,14 +1075,19 @@
         <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl">
           <div class="relative z-10 max-w-3xl space-y-3">
             <span class="px-3 py-1 bg-white/10 text-emerald-400 border border-white/20 rounded-full text-xs font-bold uppercase tracking-wider">
-              Official Prepskm Mentorship System
+              Official Prepskm Mentorship Program • ₹149 / Month
             </span>
             <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-              1:1 High-Impact Mentorship with @unfiltereddsumit & Rankers
+              1:1 Permanent Mentorship with Lead Mentor Sumit (@unfiltereddsumit) &amp; Top Rankers
             </h1>
             <p class="text-sm text-gray-300 leading-relaxed">
-              High-impact, 1:1 strategy consultation and personalized roadmap sessions with top rankers. Dedicated backlog resolution, problem-solving techniques, and exam temperament guidance with instant cryptographic pass verification.
+              Subscribe for ₹149/month via Razorpay Checkout (UPI, GPay, PhonePe, Cards, NetBanking) and select your Permanent Mentor for 1:1 scheduled audio/video calls, private doubt chat, and personalized progress tracking.
             </p>
+            <div class="pt-2 flex flex-wrap gap-3">
+              <button type="button" onclick="window.openSubscriptionModal && window.openSubscriptionModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-black shadow-lg flex items-center gap-2 cursor-pointer">
+                <span>⚡ Unlock ₹149/mo 1:1 Mentorship &amp; Select Permanent Mentor</span>
+              </button>
+            </div>
           </div>
           <div class="absolute right-0 top-0 bottom-0 w-80 bg-gradient-to-l from-indigo-500/20 to-transparent pointer-events-none"></div>
         </div>
@@ -2062,7 +2070,7 @@
                   <div id="adminNoCallsPlaceholder" class="text-center py-4 space-y-2">
                     <i data-lucide="phone-incoming" class="w-8 h-8 text-gray-400 mx-auto opacity-70"></i>
                     <div class="text-xs font-bold text-gray-300">No active incoming calls right now</div>
-                    <p class="text-[11px] text-gray-400">When an aspirant clicks "Call Owner" or "Video Call", ringing alert and "Uthayein" button will pop up here instantly.</p>
+                    <p class="text-[11px] text-gray-400">When an aspirant clicks "Call Lead Mentor" or "Video Call", ringing alert and "Uthayein" button will pop up here instantly.</p>
                   </div>
 
                   <!-- Active Ringing / In-Call Notice (Hidden by default, shown on ringing) -->
@@ -2481,10 +2489,10 @@
           <!-- Category Filter Pills -->
           <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs" id="forumCategoryPills">
             <button onclick="filterForumCategory('ALL')" id="forum-cat-all" class="px-3 py-1.5 rounded-xl font-bold bg-blue-600 text-white shadow-xs shrink-0">All Topics</button>
-            <button onclick="filterForumCategory('Physics Doubts')" id="forum-cat-physics" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Physics Doubts</button>
-            <button onclick="filterForumCategory('Chemistry Concepts')" id="forum-cat-chem" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Chemistry Concepts</button>
-            <button onclick="filterForumCategory('Maths Tricks')" id="forum-cat-maths" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Maths Tricks</button>
-            <button onclick="filterForumCategory('NEET Biology')" id="forum-cat-bio" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">NEET Biology</button>
+            <button onclick="filterForumCategory('Physics Doubts')" id="forum-cat-physics" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Physics</button>
+            <button onclick="filterForumCategory('Chemistry Concepts')" id="forum-cat-chem" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Chemistry</button>
+            <button onclick="filterForumCategory('Maths Tricks')" id="forum-cat-maths" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Mathematics</button>
+            <button onclick="filterForumCategory('NEET Biology')" id="forum-cat-bio" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Biology</button>
             <button onclick="filterForumCategory('Strategy & Mentorship')" id="forum-cat-strat" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">Strategy & Mentorship</button>
             <button onclick="filterForumCategory('General Discussion')" id="forum-cat-gen" class="px-3 py-1.5 rounded-xl font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shrink-0">General</button>
           </div>
@@ -2670,7 +2678,7 @@
             </div>
             <h1 class="text-xl sm:text-2xl font-black text-white">Live Chat Support & 1:1 Calling Hub</h1>
             <p class="text-xs text-emerald-100/90 leading-relaxed">
-              Personal direct chat with Platform Owner Sumit (@unfiltereddsumit) with instant audio & video call support, and an active aspirant community stream.
+              Personal direct chat with Lead Mentor Sumit (@unfiltereddsumit) with instant audio & video call support, and an active aspirant community stream.
             </p>
           </div>
 
@@ -2678,11 +2686,11 @@
           <div class="flex items-center gap-2 shrink-0">
             <button onclick="startCall('audio', 'Sumit (@unfiltereddsumit)')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center gap-2 backdrop-blur transition-all">
               <i data-lucide="phone" class="w-4 h-4 text-emerald-300"></i>
-              <span>Audio Call Owner</span>
+              <span>Audio Call Mentor</span>
             </button>
             <button onclick="startCall('video', 'Sumit (@unfiltereddsumit)')" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold shadow-md flex items-center gap-2 transition-all">
               <i data-lucide="video" class="w-4 h-4"></i>
-              <span>Video Call Owner</span>
+              <span>Video Call Mentor</span>
             </button>
           </div>
         </div>
@@ -2702,11 +2710,11 @@
         </div>
 
         <!-- ----------------------------------------------------------------- -->
-        <!-- TAB 1: DIRECT PERSONAL CHAT WITH OWNER -->
+        <!-- TAB 1: DIRECT PERSONAL CHAT WITH LEAD MENTOR -->
         <!-- ----------------------------------------------------------------- -->
         <div id="chatContainer-owner" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[600px]">
           
-          <!-- Owner Chat Header -->
+          <!-- Lead Mentor Chat Header -->
           <div class="p-4 bg-gray-50/80 border-b border-gray-200 flex items-center justify-between gap-3 shrink-0">
             <div class="flex items-center gap-3">
               <div class="relative">
@@ -2716,9 +2724,9 @@
               <div>
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <h3 class="font-bold text-sm text-gray-900">Sumit (@unfiltereddsumit)</h3>
-                  <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200" title="Verified Prepskm Platform Owner">
+                  <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200" title="Verified Prepskm Lead Mentor">
                     <svg class="w-3.5 h-3.5 text-blue-600 fill-blue-600" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    <span>Owner Verified</span>
+                    <span>Lead Mentor Verified</span>
                   </span>
                 </div>
                 <div class="text-[11px] text-gray-500 flex items-center gap-2">
@@ -4185,6 +4193,30 @@
         },
         forumTopics: [
           {
+            id: "topic-pinned-sumit",
+            title: "📌 Official 60-Day JEE/NEET High-Weightage Revision Roadmap & Mock Strategy",
+            content: "Welcome to the Prepskm Community! Prioritize Rotational Mechanics, Electrostatics, Modern Physics, GOC, Coordination Compounds, and Calculus/Genetics first. Attempt 2 Full-Syllabus CBT Mocks every week and review your Weak Chapter tags in the Test Analytics tab!",
+            category: "Strategy & Mentorship",
+            authorName: "Sumit (@unfiltereddsumit)",
+            authorUid: "uid-mentor-sumit",
+            isPinned: true,
+            upvotedBy: ["uid-student-1", "uid-mentor-sumit", "uid-user-3", "uid-user-4", "uid-user-5"],
+            downvotedBy: [],
+            replyCount: 1,
+            createdAt: "2026-11-03T07:00:00Z",
+            replies: [
+              {
+                id: "rep-pinned-1",
+                authorName: "Sumit (@unfiltereddsumit)",
+                authorUid: "uid-mentor-sumit",
+                content: "Post your daily target completion and hardest PYQ doubts in this forum—I personally review and pin the best conceptual discussions every evening!",
+                upvotedBy: ["uid-student-1", "uid-user-2"],
+                downvotedBy: [],
+                createdAt: "2026-11-03T07:05:00Z"
+              }
+            ]
+          },
+          {
             id: "topic-1",
             title: "How to resolve friction direction in pure rolling on inclined planes?",
             content: "When a solid cylinder rolls down an incline with angle theta, does static friction always act upward along the incline, or can it act downward in accelerated cases? Let's discuss both torque around COM and instantaneous axis of rotation.",
@@ -4659,7 +4691,7 @@
             updateRoleAndHeaderUI();
             showAppToast(`Signed in as ${currentUser.displayName} (${role.toUpperCase()})`, 'success');
             if (role === 'superadmin') {
-              showAppToast('Super Admin Owner permissions unlocked!', 'success');
+              showAppToast('Lead Mentor Admin permissions unlocked!', 'success');
             }
           }).catch((err) => {
             console.warn("Popup blocked or canceled:", err);
@@ -4923,7 +4955,7 @@
         } else {
           if (statusDot) statusDot.className = "absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-xs";
           if (title) title.innerText = currentUser.displayName || "Student Profile";
-          if (subtitle) subtitle.innerText = currentUser.role === 'superadmin' ? 'Platform Super Admin Owner' : currentUser.role === 'mentor' ? 'Prepskm Verified Mentor' : 'Prepskm Verified Aspirant';
+          if (subtitle) subtitle.innerText = currentUser.role === 'superadmin' ? 'Prepskm Lead Mentor' : currentUser.role === 'mentor' ? 'Prepskm Verified Mentor' : 'Prepskm Verified Aspirant';
 
           if (guestView) guestView.classList.add('hidden');
           if (loggedInView) loggedInView.classList.remove('hidden');
@@ -6625,8 +6657,12 @@
 
       async function openPrepskmCloudPdf(materialId, event) {
         if (event) event.preventDefault();
-        const item = (state.materials || []).find(m => m.id === materialId);
+        const item = (state.materials || []).find(m => String(m.id) === String(materialId));
         if (!item) return;
+        if (typeof window.openInAppPdfModal === 'function') {
+          window.openInAppPdfModal(item);
+          return;
+        }
         const rawUrl = item.pdf_url || item.downloadUrl || '';
         if (!rawUrl) {
           showAppToast("PDF link not available.", "error");
@@ -6707,7 +6743,7 @@
             <div class="col-span-full p-8 text-center bg-white rounded-2xl border border-gray-200 space-y-2">
               <i data-lucide="file-question" class="w-10 h-10 text-gray-300 mx-auto"></i>
               <div class="text-sm font-bold text-gray-700">No PDFs found for this section or filter</div>
-              <p class="text-xs text-gray-400">Super Admin can publish new PDFs anytime in Admin Control.</p>
+              <p class="text-xs text-gray-400">Lead Mentor can publish new PDFs anytime in Mentor Studio.</p>
             </div>
           `;
           lucide.createIcons();
@@ -6725,10 +6761,10 @@
               <div class="text-xs text-gray-500 font-medium">Subject: <span class="text-gray-800 font-semibold">${m.subject}</span></div>
             </div>
 
-            <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <button onclick="openPrepskmCloudPdf('${m.id}', event)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                <span>Download PDF</span>
+            <div class="pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
+              <button onclick="openPrepskmCloudPdf('${m.id}', event)" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                <span>Read &amp; Download PDF</span>
               </button>
               <span class="text-[11px] text-gray-400">By Sumit (@unfiltereddsumit)</span>
             </div>
@@ -7659,9 +7695,9 @@
                   <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
                   <span>Direct Chat</span>
                 </button>
-                <button onclick="bookSpecificMentor('${m.fullName.replace(/'/g, "\\'")}')" class="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1 transition-colors">
+                <button onclick="bookSpecificMentor('${m.fullName.replace(/'/g, "\\'")}')" class="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1 transition-colors cursor-pointer">
                   <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                  <span>Book Pass</span>
+                  <span>Book 1:1 Call</span>
                 </button>
               </div>
             </div>
@@ -7673,6 +7709,10 @@
       function bookSpecificMentor(name) {
         const sel = document.getElementById('bookingMentorSelect');
         if (sel) sel.value = name;
+        if (typeof window.openSubscriptionModal === 'function') {
+          window.openSubscriptionModal({ preselectMentorName: name });
+          return;
+        }
         window.scrollTo({ top: 300, behavior: 'smooth' });
       }
 
@@ -7887,9 +7927,13 @@
 
       let activeVideoForModal = null;
       function openBigVideoPlayer(videoId) {
-        const video = state.videos.find(v => v.id === videoId) || state.videos[0];
+        const video = state.videos.find(v => String(v.id) === String(videoId)) || state.videos[0];
         if (!video) return;
         activeVideoForModal = video;
+        if (typeof window.openAdvancedVideoPlayer === 'function') {
+          window.openAdvancedVideoPlayer(video);
+          return;
+        }
 
         const modal = document.getElementById('bigVideoPlayerModal');
         const titleEl = document.getElementById('bigVideoTitle');
@@ -8111,7 +8155,7 @@
         document.getElementById('newMentorFullName').value = '';
         renderAdminMentorsTable();
         renderMentorsDirectory();
-        showAppToast(`Mentor ${fullName} (${email}) appointed successfully by Owner!`, "success");
+        showAppToast(`Mentor ${fullName} (${email}) appointed successfully by Lead Mentor!`, "success");
       }
 
       function renderAdminMentorsTable() {
@@ -8489,18 +8533,25 @@
           );
         }
 
-        // Sort topics
+        // Sort topics (always keep Pinned Mentor Announcements at top)
         if (sortBy === 'top') {
           list.sort((a, b) => {
+            if (Boolean(b.isPinned) !== Boolean(a.isPinned)) return b.isPinned ? 1 : -1;
             const scoreA = (a.upvotedBy?.length || 0) - (a.downvotedBy?.length || 0);
             const scoreB = (b.upvotedBy?.length || 0) - (b.downvotedBy?.length || 0);
             return scoreB - scoreA;
           });
         } else if (sortBy === 'replies') {
-          list.sort((a, b) => (b.replyCount || 0) - (a.replyCount || 0));
+          list.sort((a, b) => {
+            if (Boolean(b.isPinned) !== Boolean(a.isPinned)) return b.isPinned ? 1 : -1;
+            return (b.replyCount || 0) - (a.replyCount || 0);
+          });
         } else {
           // recent
-          list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          list.sort((a, b) => {
+            if (Boolean(b.isPinned) !== Boolean(a.isPinned)) return b.isPinned ? 1 : -1;
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          });
         }
 
         if (list.length === 0) {
@@ -8518,11 +8569,14 @@
           return;
         }
 
+        const isAdminUser = isCurrentUserSuperAdmin();
+
         container.innerHTML = list.map(t => {
           const netScore = (t.upvotedBy?.length || 0) - (t.downvotedBy?.length || 0);
           const hasUpvoted = (t.upvotedBy || []).includes(currentUser.uid);
           const hasDownvoted = (t.downvotedBy || []).includes(currentUser.uid);
           const repliesCount = t.replyCount || (t.replies ? t.replies.length : 0);
+          const isPinned = Boolean(t.isPinned);
 
           let catColor = "bg-blue-50 text-blue-700 border-blue-200";
           if (t.category.includes('Physics')) catColor = "bg-indigo-50 text-indigo-700 border-indigo-200";
@@ -8531,7 +8585,7 @@
           if (t.category.includes('Biology')) catColor = "bg-emerald-50 text-emerald-800 border-emerald-200";
 
           return `
-            <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col sm:flex-row items-start gap-4">
+            <div class="bg-white rounded-2xl border ${isPinned ? 'border-amber-400 ring-1 ring-amber-400/30 bg-amber-50/10' : 'border-gray-200'} p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col sm:flex-row items-start gap-4">
               
               <!-- Upvote / Downvote Vertical Counter Box -->
               <div class="flex sm:flex-col items-center justify-center bg-gray-50 border border-gray-200 rounded-xl p-1.5 sm:w-12 shrink-0">
@@ -8549,6 +8603,7 @@
               <!-- Main Content Body -->
               <div class="flex-1 space-y-2 cursor-pointer" onclick="openForumThreadModal('${t.id}')">
                 <div class="flex items-center gap-2 flex-wrap">
+                  ${isPinned ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">📌 Pinned by Lead Mentor</span>` : ''}
                   <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${catColor}">${t.category}</span>
                   <span class="text-[11px] text-gray-500 font-medium">By <strong class="text-gray-800">${t.authorName}</strong></span>
                   <span class="text-gray-300">•</span>
@@ -8572,8 +8627,13 @@
                 </div>
               </div>
 
-              <!-- Join Discussion Button -->
-              <div class="shrink-0 self-end sm:self-center">
+              <!-- Join Discussion & Lead Mentor Pin Button -->
+              <div class="shrink-0 self-end sm:self-center flex items-center gap-2">
+                ${isAdminUser ? `
+                  <button onclick="togglePinForumTopic('${t.id}')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold border ${isPinned ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-amber-50'}" title="Pin/Unpin Announcement">
+                    📌 ${isPinned ? 'Unpin' : 'Pin'}
+                  </button>
+                ` : ''}
                 <button onclick="openForumThreadModal('${t.id}')" class="px-3.5 py-1.5 bg-gray-100 hover:bg-blue-50 hover:text-blue-700 rounded-xl text-xs font-bold text-gray-700 transition-colors flex items-center gap-1">
                   <span>View Thread</span>
                   <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
@@ -8585,6 +8645,18 @@
         }).join('');
 
         lucide.createIcons();
+      }
+
+      function togglePinForumTopic(topicId) {
+        const topic = (state.forumTopics || []).find(t => t.id === topicId);
+        if (!topic) return;
+        topic.isPinned = !topic.isPinned;
+        persistState();
+        renderForumTopicsList();
+        if (window.prepskmDb && window.prepskmDb.togglePinCommunityThread) {
+          window.prepskmDb.togglePinCommunityThread(topicId, topic.isPinned);
+        }
+        showAppToast(topic.isPinned ? "📌 Thread pinned to top of Community!" : "Thread unpinned.", "success");
       }
 
       function handleForumVote(topicId, type) {
@@ -8848,7 +8920,7 @@
             ? v.thumbnail
             : 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80';
           return `
-          <div class="bg-gray-50 rounded-2xl border border-gray-200 p-4 space-y-2 cursor-pointer hover:border-indigo-300 transition-all" onclick="openVideoModal('${v.id}')">
+          <div class="bg-gray-50 rounded-2xl border border-gray-200 p-4 space-y-2 cursor-pointer hover:border-indigo-300 transition-all" onclick="openBigVideoPlayer('${v.id}')">
             <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative">
               <img src="${thumb}" alt="${v.title}" class="w-full h-full object-cover opacity-85" />
               <div class="absolute inset-0 flex items-center justify-center bg-black/20">
@@ -10470,7 +10542,7 @@
           db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').doc(newMsg.id).set(newMsg).catch(err => console.warn(err));
         }
 
-        showAppToast("Direct message sent to Platform Owner (@unfiltereddsumit)!", "success");
+        showAppToast("Direct message sent to Lead Mentor Sumit (@unfiltereddsumit)!", "success");
       }
 
       // Explicit Global Window Bindings for Inline Event Handlers
@@ -10700,12 +10772,21 @@
           const aiReply = data && (data.reply || data.text);
 
           if (aiReply) {
-            state.aiChatHistory.push({
+            const streamMsg = {
               role: "ai",
-              text: aiReply,
+              text: "",
               imageUrl: null,
               timestamp: new Date().toISOString()
-            });
+            };
+            state.aiChatHistory.push(streamMsg);
+            const words = String(aiReply).split(' ');
+            const step = Math.max(4, Math.ceil(words.length / 16));
+            for (let i = 0; i < words.length; i += step) {
+              streamMsg.text = words.slice(0, i + step).join(' ');
+              renderAiChatStream();
+              await new Promise(r => setTimeout(r, 18));
+            }
+            streamMsg.text = aiReply;
           } else if (data && data.error) {
             state.aiChatHistory.push({
               role: "ai",
