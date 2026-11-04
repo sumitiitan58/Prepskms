@@ -213,7 +213,6 @@
             <div id="superAdminOwnerHeaderBadge" class="hidden items-center gap-1.5 px-3 py-1 rounded-xl bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold shadow-xs">
               <i data-lucide="shield-check" class="w-3.5 h-3.5 text-purple-700"></i>
               <span>Academic Directorate</span>
-              <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-purple-200/70 text-purple-800">Admin Active</span>
             </div>
 
             <!-- Mentor Badge (Strictly visible ONLY to appointed mentors) -->
@@ -244,22 +243,18 @@
           <button onclick="navigateView('mock-test')" id="nav-btn-mock-test" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="timer" class="w-4 h-4"></i>
             <span>NTA Mock Engine</span>
-            <span class="px-1.5 py-0.2 text-[10px] bg-red-100 text-red-700 rounded-full font-bold">CBT</span>
           </button>
           <button onclick="navigateView('chat')" id="nav-btn-chat" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
             <span>Live Doubt & Calls</span>
-            <span class="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">Live 24/7</span>
           </button>
           <button onclick="navigateView('mentorship')" id="nav-btn-mentorship" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="users" class="w-4 h-4"></i>
             <span>1:1 Mentorship</span>
-            <span class="px-1.5 py-0.2 text-[10px] bg-indigo-100 text-indigo-800 rounded-full font-bold">Top Rankers</span>
           </button>
           <button onclick="navigateView('forum')" id="nav-btn-forum" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="messages-square" class="w-4 h-4 text-indigo-600"></i>
             <span>Discussion Forum</span>
-            <span class="px-1.5 py-0.2 text-[10px] bg-indigo-100 text-indigo-800 rounded-full font-bold">Live</span>
           </button>
           <button onclick="navigateView('profile')" id="nav-btn-profile" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="user-circle" class="w-4 h-4 text-blue-600"></i>
@@ -1986,7 +1981,7 @@
                 <!-- Admin Quick Reply Form -->
                 <div class="p-3 bg-white border-t border-gray-200 space-y-2 shrink-0">
                   <div class="flex items-center justify-between text-[11px] text-gray-500">
-                    <span>Replying as: <strong class="text-blue-700">Prepskm Academic Directorate (@unfiltereddsumit)</strong></span>
+                    <span id="adminReplyTargetContainer">Replying as: <strong class="text-blue-700">Prepskm Academic Directorate (@unfiltereddsumit)</strong> <span id="adminReplyTargetBadge" class="hidden ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-bold">To: <span id="adminReplyTargetLabel"></span> <button onclick="clearAdminReplyTarget()" class="text-red-500 font-extrabold ml-1">×</button></span></span>
                     <span class="text-emerald-700 font-medium">✓ Verified Blue Tick Reply</span>
                   </div>
                   <div class="flex gap-2">
@@ -4637,9 +4632,12 @@
               snapshot.forEach(doc => cloudMaterials.push({ id: doc.id, ...doc.data() }));
               if (cloudMaterials.length > 0) {
                 state.materials = cloudMaterials;
+                persistState();
                 renderMaterialsList();
                 renderAdminPdfsTable();
               }
+            } else if (snapshot && snapshot.empty && state.materials && state.materials.length > 0) {
+              state.materials.forEach(m => db.collection('materials').doc(m.id).set(m).catch(() => {}));
             }
           }, err => console.warn(err));
         } catch(e) {}
@@ -4652,8 +4650,12 @@
               snapshot.forEach(doc => cloudVideos.push({ id: doc.id, ...doc.data() }));
               if (cloudVideos.length > 0) {
                 state.videos = cloudVideos;
+                persistState();
                 renderFeaturedVideos();
+                renderMentorStudioView();
               }
+            } else if (snapshot && snapshot.empty && state.videos && state.videos.length > 0) {
+              state.videos.forEach(v => db.collection('videos').doc(v.id).set(v).catch(() => {}));
             }
           }, err => console.warn(err));
         } catch(e) {}
@@ -4666,8 +4668,11 @@
               snapshot.forEach(doc => cloudQuestions.push({ id: doc.id, ...doc.data() }));
               if (cloudQuestions.length > 0) {
                 state.questions = cloudQuestions;
+                persistState();
                 renderSavedQuestionsTable();
               }
+            } else if (snapshot && snapshot.empty && state.questions && state.questions.length > 0) {
+              state.questions.forEach(q => db.collection('questions').doc(q.id).set(q).catch(() => {}));
             }
           }, err => console.warn(err));
         } catch(e) {}
@@ -4683,6 +4688,8 @@
                 persistState();
                 renderDynamicSectionsUI();
               }
+            } else if (snapshot && snapshot.empty && state.sections && state.sections.length > 0) {
+              state.sections.forEach(s => db.collection('sections').doc(s.id).set(s).catch(() => {}));
             }
           }, err => console.warn(err));
         } catch(e) {}
@@ -4699,6 +4706,8 @@
                 renderMentorsDirectory();
                 renderAdminMentorsTable();
               }
+            } else if (snapshot && snapshot.empty && state.mentors && state.mentors.length > 0) {
+              state.mentors.forEach(m => db.collection('mentors').doc(m.id).set(m).catch(() => {}));
             }
           }, err => console.warn(err));
         } catch(e) {}
@@ -8440,6 +8449,33 @@
         renderAdminStudentMessages();
       }
 
+      let activeAdminChatTargetUid = null;
+      let activeAdminChatTargetName = null;
+
+      function setAdminReplyTarget(studentUid, studentName) {
+        activeAdminChatTargetUid = studentUid;
+        activeAdminChatTargetName = studentName;
+        const targetBadge = document.getElementById('adminReplyTargetBadge');
+        const targetLabel = document.getElementById('adminReplyTargetLabel');
+        const input = document.getElementById('adminReplyTextInput');
+        if (targetBadge) targetBadge.classList.remove('hidden');
+        if (targetLabel) targetLabel.innerText = studentName;
+        if (input) {
+          input.focus();
+          input.placeholder = `Direct faculty reply to ${studentName}...`;
+        }
+        showAppToast(`Selected inquiry from ${studentName}. Type your reply below.`, 'info');
+      }
+
+      function clearAdminReplyTarget() {
+        activeAdminChatTargetUid = null;
+        activeAdminChatTargetName = null;
+        const targetBadge = document.getElementById('adminReplyTargetBadge');
+        const input = document.getElementById('adminReplyTextInput');
+        if (targetBadge) targetBadge.classList.add('hidden');
+        if (input) input.placeholder = "Type verified faculty guidance or answer to student...";
+      }
+
       function renderAdminStudentMessages() {
         const stream = document.getElementById('adminStudentMessagesStream');
         if (!stream) return;
@@ -8462,7 +8498,15 @@
                 <span class="font-bold text-gray-900">${m.senderName}</span>
                 ${m.isOwner ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-100 text-blue-800">Faculty Directorate</span>` : `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-gray-100 text-gray-600">Aspirant Inquiry</span>`}
               </div>
-              <span class="text-gray-400 text-[10px]">${formatRelativeTime(m.timestamp)}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-gray-400 text-[10px]">${formatRelativeTime(m.timestamp)}</span>
+                ${!m.isOwner ? `
+                  <button onclick="setAdminReplyTarget('${m.senderId}', '${(m.senderName || 'Student').replace(/'/g, "\\'")}')" class="px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-colors">
+                    <i data-lucide="reply" class="w-3 h-3"></i>
+                    <span>Reply</span>
+                  </button>
+                ` : ''}
+              </div>
             </div>
             <div class="text-xs text-gray-800 leading-relaxed whitespace-pre-wrap pl-8">
               ${m.text || ''}
@@ -8488,11 +8532,17 @@
           return;
         }
 
+        const targetUid = activeAdminChatTargetUid || 'all';
+        const targetName = activeAdminChatTargetName || 'All Aspirants';
+
         const replyMsg = {
           id: "msg-" + Date.now(),
           senderId: currentUser.uid || 'director-admin',
           senderName: "Academic Directorate (@unfiltereddsumit)",
           senderAvatar: currentUser.photoURL || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+          senderEmail: currentUser.email || SUPER_ADMIN_EMAIL,
+          studentUid: targetUid,
+          targetName: targetName,
           text: text,
           imageUrl: null,
           isOwner: true,
@@ -8503,16 +8553,18 @@
         persistState();
 
         if (input) input.value = '';
+        clearAdminReplyTarget();
         renderAdminStudentMessages();
         renderOwnerDirectChat();
 
         if (db) {
-          const chatRoomId = currentUser.uid || 'guest-chat';
+          db.collection('directInquiries').doc(replyMsg.id).set(replyMsg).catch(err => console.warn(err));
+          // Backwards compatibility with subcollection
+          const chatRoomId = targetUid !== 'all' ? targetUid : (currentUser.uid || 'guest-chat');
           db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').doc(replyMsg.id).set(replyMsg).catch(err => console.warn(err));
-          db.collection('communityChat').doc(replyMsg.id).set(replyMsg).catch(err => console.warn(err));
         }
 
-        showAppToast("Faculty response dispatched to student successfully!", "success");
+        showAppToast("Faculty response dispatched to student across all devices in real time!", "success");
       }
 
       async function startCall(callType = 'video', targetName = 'Academic Directorate (@unfiltereddsumit)', isDirectAnswer = false) {
@@ -8738,7 +8790,7 @@
         hasInitChatListeners = true;
 
         try {
-          db.collection('communityChat').orderBy('timestamp', 'asc').limit(100).onSnapshot(snapshot => {
+          db.collection('communityChat').orderBy('timestamp', 'asc').limit(150).onSnapshot(snapshot => {
             if (snapshot && !snapshot.empty) {
               const msgs = [];
               snapshot.forEach(doc => {
@@ -8748,12 +8800,15 @@
                 state.communityMessages = msgs;
                 persistState();
                 if (activeChatTab === 'community') renderCommunityChat();
+                renderHomeChatPreviews();
               }
+            } else if (snapshot && snapshot.empty && state.communityMessages && state.communityMessages.length > 0) {
+              state.communityMessages.forEach(m => db.collection('communityChat').doc(m.id).set(m).catch(() => {}));
             }
           }, err => console.warn("Community chat stream notice:", err));
 
-          const chatRoomId = currentUser.uid || 'guest-chat';
-          db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+          // Realtime global Direct Inquiries collection for cross-device faculty <-> aspirant sync
+          db.collection('directInquiries').orderBy('timestamp', 'asc').limit(200).onSnapshot(snapshot => {
             if (snapshot && !snapshot.empty) {
               const msgs = [];
               snapshot.forEach(doc => {
@@ -8763,9 +8818,12 @@
                 state.ownerDirectChats = msgs;
                 persistState();
                 if (activeChatTab === 'owner') renderOwnerDirectChat();
+                renderAdminStudentMessages();
               }
+            } else if (snapshot && snapshot.empty && state.ownerDirectChats && state.ownerDirectChats.length > 0) {
+              state.ownerDirectChats.forEach(m => db.collection('directInquiries').doc(m.id).set(m).catch(() => {}));
             }
-          }, err => console.warn("Owner chat stream notice:", err));
+          }, err => console.warn("Direct inquiries stream notice:", err));
         } catch (e) {
           console.warn("Realtime chat listeners fallback:", e);
         }
@@ -8776,12 +8834,25 @@
         const container = document.getElementById('ownerChatMessagesList');
         if (!container) return;
 
-        const msgs = state.ownerDirectChats || [];
+        let msgs = state.ownerDirectChats || [];
+        const isAdmin = (currentUser.role === 'superadmin' || isSuperAdminEmail(currentUser.email));
+
+        if (!isAdmin) {
+          const myUid = currentUser.uid || 'guest-user';
+          // Students see their own messages, replies directed to them, broadcast faculty replies, or general greetings
+          msgs = msgs.filter(m => 
+            m.senderId === myUid || 
+            m.studentUid === myUid || 
+            m.studentUid === 'all' || 
+            (!m.studentUid && m.isOwner)
+          );
+        }
+
         container.innerHTML = msgs.map(m => {
-          const isMe = (m.senderId === currentUser.uid || (!m.isOwner && m.senderId !== 'uid-mentor-sumit'));
+          const isMe = (m.senderId === currentUser.uid || (!m.isOwner && m.senderId !== 'uid-mentor-sumit' && !isAdmin));
           return `
             <div class="flex items-start gap-2.5 ${isMe ? 'flex-row-reverse' : ''}">
-              <img src="${m.senderAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=80'}" class="w-8 h-8 rounded-xl object-cover border border-gray-200 shrink-0" alt="Avatar">
+              <img src="${m.senderAvatar || DEFAULT_AVATAR_SVG}" class="w-8 h-8 rounded-xl object-cover border border-gray-200 shrink-0" alt="Avatar">
               <div class="max-w-[80%] sm:max-w-md space-y-1 ${isMe ? 'items-end text-right' : ''}">
                 <div class="flex items-center gap-1.5 text-[11px] ${isMe ? 'justify-end' : ''}">
                   <span class="font-bold text-gray-800">${m.senderName}</span>
@@ -8789,7 +8860,7 @@
                     <span class="inline-flex items-center text-blue-600" title="Verified Owner">
                       <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                     </span>
-                    <span class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-100 text-blue-800">Owner</span>
+                    <span class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-100 text-blue-800">Faculty</span>
                   ` : ''}
                   <span class="text-gray-400 text-[10px]">• ${formatRelativeTime(m.timestamp)}</span>
                 </div>
@@ -8851,14 +8922,17 @@
           return;
         }
 
+        const isOwnerSender = (currentUser.role === 'superadmin' || isSuperAdminEmail(currentUser.email));
         const newMsg = {
           id: "msg-" + Date.now(),
           senderId: currentUser.uid || 'guest-user',
-          senderName: currentUser.displayName || 'Aspirant',
-          senderAvatar: currentUser.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+          senderName: isOwnerSender ? "Academic Directorate (@unfiltereddsumit)" : (currentUser.displayName || 'Aspirant'),
+          senderAvatar: currentUser.photoURL || (isOwnerSender ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" : DEFAULT_AVATAR_SVG),
+          senderEmail: currentUser.email || 'guest@prepskm.edu',
+          studentUid: currentUser.uid || 'guest-user',
           text: text,
           imageUrl: selectedOwnerChatImage ? selectedOwnerChatImage.dataUrl : null,
-          isOwner: (currentUser.role === 'superadmin' || currentUser.email === SUPER_ADMIN_EMAIL),
+          isOwner: isOwnerSender,
           timestamp: new Date().toISOString()
         };
 
@@ -8868,34 +8942,16 @@
         if (input) input.value = '';
         clearOwnerChatSelectedImage();
         renderOwnerDirectChat();
+        renderAdminStudentMessages();
 
         if (db) {
+          db.collection('directInquiries').doc(newMsg.id).set(newMsg).catch(err => console.warn(err));
+          // Backwards compatibility with subcollection
           const chatRoomId = currentUser.uid || 'guest-chat';
           db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').doc(newMsg.id).set(newMsg).catch(err => console.warn(err));
         }
 
-        // Automatic response simulation from Owner Saurav Kumar
-        if (currentUser.role !== 'superadmin' && !newMsg.isOwner) {
-          setTimeout(() => {
-            const ownerReply = {
-              id: "msg-" + Date.now(),
-              senderId: "uid-mentor-sumit",
-              senderName: "Saurav Kumar (@unfiltereddsumit)",
-              senderAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-              text: "Namaste! Message received. I am actively reviewing your question. Keep up the high-focus revision today! If you need urgent 1:1 problem solving, tap the Normal Call or Video Call buttons above.",
-              imageUrl: null,
-              isOwner: true,
-              timestamp: new Date().toISOString()
-            };
-            state.ownerDirectChats.push(ownerReply);
-            persistState();
-            renderOwnerDirectChat();
-            if (db) {
-              const chatRoomId = currentUser.uid || 'guest-chat';
-              db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').doc(ownerReply.id).set(ownerReply).catch(err => console.warn(err));
-            }
-          }, 1400);
-        }
+        showAppToast("Message sent to Academic Directorate across all devices!", "success");
       }
 
       // Community Chat Functions
