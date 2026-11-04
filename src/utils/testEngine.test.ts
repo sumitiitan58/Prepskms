@@ -475,5 +475,44 @@ test('Chapter-level weakness identifier aggregates negative marks lost and sorts
   assert.equal(weakTags[1].severity, 'MODERATE');
 });
 
+import {
+  formatFirebaseAuthError,
+  calculateVideoSkipTime,
+  computeCbtPaletteCounts,
+} from './testEngine';
 
+test('Firebase Auth error formatter produces actionable student messages', () => {
+  assert.equal(
+    formatFirebaseAuthError({ code: 'auth/invalid-credential' }),
+    'Invalid email or password. Please verify your credentials or reset your password.'
+  );
+  assert.equal(
+    formatFirebaseAuthError('auth/popup-blocked'),
+    'Sign-in popup was blocked by your browser. Please allow popups for prepskm.in or use Email/Password login.'
+  );
+  assert.equal(
+    formatFirebaseAuthError({ code: 'auth/network-request-failed' }),
+    'Network connection error. Please check your internet connection and try again.'
+  );
+});
 
+test('Advanced Video Player double-tap 10s skip calculation stays within media bounds', () => {
+  assert.equal(calculateVideoSkipTime(45, 300, 'left', 10), 35);
+  assert.equal(calculateVideoSkipTime(5, 300, 'left', 10), 0);
+  assert.equal(calculateVideoSkipTime(295, 300, 'right', 10), 300);
+  assert.equal(calculateVideoSkipTime(120, 300, 'right', 10), 130);
+});
+
+test('CBT Question Palette state counter tracks Answered, Marked for Review, and Unanswered', () => {
+  const qIds = ['q1', 'q2', 'q3', 'q4'];
+  const state = {
+    q1: { selectedAnswer: 'A', markedForReview: false },
+    q2: { selectedAnswer: '', markedForReview: true },
+    q3: { selectedAnswer: '42', markedForReview: true },
+    // q4 unvisited/unanswered
+  };
+  const counts = computeCbtPaletteCounts(qIds, state);
+  assert.equal(counts.answeredCount, 2);
+  assert.equal(counts.markedReviewCount, 2);
+  assert.equal(counts.unansweredCount, 1);
+});

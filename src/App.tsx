@@ -2,12 +2,18 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import LiveClassroom from './components/LiveClassroom.jsx';
 import SubscriptionModal from './components/SubscriptionModal.jsx';
-import VideoPlayer from './components/VideoPlayer.jsx';
-import PDFViewerModal from './components/PDFViewerModal.jsx';
+import AdvancedVideoPlayer from './components/AdvancedVideoPlayer.jsx';
+import PDFPreviewModal from './components/PDFPreviewModal.jsx';
 import StudentViewer from './components/StudentViewer.jsx';
 import TeacherHost from './components/TeacherHost.jsx';
 import AppRoutes from './router/AppRoutes.jsx';
-import './services/firebase.js';
+import {
+  loginWithEmailPassword,
+  registerWithEmailPassword,
+  loginWithGooglePopup,
+  logoutUser,
+  formatFirebaseAuthError,
+} from './services/firebase.js';
 import './services/cloudStorage.js';
 import './services/db.js';
 import './services/razorpay.js';
@@ -28,6 +34,9 @@ declare global {
     unmountJitsiSession?: () => void;
     triggerJitsiRaiseHand?: () => void;
     ensureJitsiScriptLoaded?: () => Promise<boolean>;
+    openVideoPlayerModal?: (lecture: any) => void;
+    openPdfViewerModal?: (material: any) => void;
+    prepskmAuth?: any;
     activeJitsiApi?: any;
     JitsiMeetExternalAPI?: any;
   }
@@ -95,6 +104,9 @@ export default function App() {
   >('idle');
   const [jitsiRetryCount, setJitsiRetryCount] = useState(0);
 
+  const [globalVideoModalLecture, setGlobalVideoModalLecture] = useState<any>(null);
+  const [globalPdfModalMaterial, setGlobalPdfModalMaterial] = useState<any>(null);
+
   const verifyOrLoadJitsi = useCallback(async () => {
     if (typeof window.JitsiMeetExternalAPI === 'function') {
       setJitsiScriptStatus('ready');
@@ -124,6 +136,22 @@ export default function App() {
   }, [verifyOrLoadJitsi, jitsiRetryCount]);
 
   useEffect(() => {
+    window.prepskmAuth = {
+      loginWithEmailPassword,
+      registerWithEmailPassword,
+      loginWithGooglePopup,
+      logoutUser,
+      formatFirebaseAuthError,
+    };
+
+    window.openVideoPlayerModal = (lecture: any) => {
+      setGlobalVideoModalLecture(lecture);
+    };
+
+    window.openPdfViewerModal = (material: any) => {
+      setGlobalPdfModalMaterial(material);
+    };
+
     window.mountJitsiSession = async (config: JitsiSessionConfig) => {
       const target = document.getElementById('jitsiMeetStageContainer');
       setPortalTarget(target);
@@ -161,20 +189,39 @@ export default function App() {
       <AppRoutes />
       {createPortal(<LiveClassroom />, document.body)}
       {createPortal(<SubscriptionModal />, document.body)}
-      {createPortal(<VideoPlayer />, document.body)}
-      {createPortal(<PDFViewerModal />, document.body)}
+
+      {globalVideoModalLecture &&
+        createPortal(
+          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
+            <AdvancedVideoPlayer
+              lecture={globalVideoModalLecture}
+              onClose={() => setGlobalVideoModalLecture(null)}
+            />
+          </div>,
+          document.body
+        )}
+
+      {globalPdfModalMaterial &&
+        createPortal(
+          <PDFPreviewModal
+            isOpen={Boolean(globalPdfModalMaterial)}
+            material={globalPdfModalMaterial}
+            onClose={() => setGlobalPdfModalMaterial(null)}
+          />,
+          document.body
+        )}
 
       {session &&
         portalTarget &&
         createPortal(
-          <div className="w-full h-full min-h-[340px] bg-[#0B0F19] relative overflow-hidden flex flex-col items-center justify-center">
+          <div className="w-full h-full min-h-[340px] bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl relative overflow-hidden flex flex-col items-center justify-center">
             {jitsiScriptStatus === 'loading' && (
               <div className="flex flex-col items-center justify-center p-6 text-center space-y-3">
-                <div className="w-10 h-10 rounded-full border-3 border-indigo-500 border-t-transparent animate-spin" />
-                <p className="text-xs font-extrabold text-white">
+                <div className="w-10 h-10 rounded-full border-3 border-indigo-600 border-t-transparent animate-spin" />
+                <p className="text-xs font-extrabold text-[#1E293B]">
                   Connecting to Prepskm Encrypted HD Classroom...
                 </p>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-slate-500">
                   Initializing low-latency audio &amp; smartboard stream
                 </p>
               </div>
@@ -182,18 +229,18 @@ export default function App() {
 
             {jitsiScriptStatus === 'error' && (
               <div className="flex flex-col items-center justify-center p-6 text-center space-y-3 max-w-sm">
-                <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-[11px] font-black">
+                <span className="px-3 py-1 rounded-full bg-red-50 text-red-700 border border-red-200 text-[11px] font-black">
                   Stream Connection Timeout
                 </span>
-                <p className="text-xs font-bold text-slate-200">
+                <p className="text-xs font-bold text-[#1E293B]">
                   Could not establish the live stream bridge automatically. Please check your connection and retry.
                 </p>
                 <button
                   type="button"
                   onClick={() => setJitsiRetryCount((c) => c + 1)}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black shadow-lg cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-xs cursor-pointer"
                 >
-                  🔄 Retry Live Connection
+                  Retry Live Connection
                 </button>
               </div>
             )}

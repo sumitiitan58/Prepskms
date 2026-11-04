@@ -761,4 +761,104 @@ export function identifyWeakChaptersFromMistakes(
     .sort((a, b) => b.mistakes - a.mistakes);
 }
 
+/**
+ * 19. Firebase Authentication Error Formatter (explicit cross-device user-friendly messages)
+ */
+export function formatFirebaseAuthError(rawError: unknown): string {
+  const text =
+    typeof rawError === 'string'
+      ? rawError
+      : (rawError as { code?: string; message?: string })?.code ||
+        (rawError as { message?: string })?.message ||
+        '';
+  const lower = String(text).toLowerCase();
 
+  if (
+    lower.includes('auth/invalid-credential') ||
+    lower.includes('auth/wrong-password') ||
+    lower.includes('auth/user-not-found') ||
+    lower.includes('invalid-login-credentials')
+  ) {
+    return 'Invalid email or password. Please verify your credentials or reset your password.';
+  }
+  if (lower.includes('auth/email-already-in-use')) {
+    return 'This email is already registered on Prepskm. Please switch to Login instead.';
+  }
+  if (lower.includes('auth/weak-password')) {
+    return 'Password is too weak. Please enter at least 6 characters.';
+  }
+  if (lower.includes('auth/popup-blocked')) {
+    return 'Sign-in popup was blocked by your browser. Please allow popups for prepskm.in or use Email/Password login.';
+  }
+  if (lower.includes('auth/popup-closed-by-user')) {
+    return 'Google sign-in window was closed before completing authentication.';
+  }
+  if (lower.includes('auth/network-request-failed')) {
+    return 'Network connection error. Please check your internet connection and try again.';
+  }
+  if (lower.includes('auth/too-many-requests')) {
+    return 'Too many failed attempts. Please wait a minute before trying again.';
+  }
+  return text ? `Authentication error: ${String(text).replace(/^Firebase:\s*/i, '')}` : 'Authentication failed. Please try again.';
+}
+
+/**
+ * 20. Advanced Video Player 10-Second Double-Tap Skip Calculator
+ */
+export function calculateVideoSkipTime(
+  currentTimeSeconds: number,
+  durationSeconds: number,
+  direction: 'left' | 'right',
+  skipStepSeconds: number = 10
+): number {
+  const safeCurrent = Math.max(0, Number(currentTimeSeconds) || 0);
+  const safeDuration = Math.max(0, Number(durationSeconds) || 0);
+  const delta = direction === 'left' ? -Math.abs(skipStepSeconds) : Math.abs(skipStepSeconds);
+  const target = safeCurrent + delta;
+  if (safeDuration > 0) {
+    return Math.max(0, Math.min(safeDuration, target));
+  }
+  return Math.max(0, target);
+}
+
+/**
+ * 21. CBT Question Palette Status Counter (Answered, Marked for Review, Unanswered)
+ */
+export interface CbtPaletteSummary {
+  answeredCount: number;
+  markedReviewCount: number;
+  unansweredCount: number;
+}
+
+export function computeCbtPaletteCounts(
+  questionIds: string[],
+  answersMap: Record<string, { selectedAnswer?: string | string[] | null; markedForReview?: boolean }>
+): CbtPaletteSummary {
+  let answeredCount = 0;
+  let markedReviewCount = 0;
+  let unansweredCount = 0;
+
+  (questionIds || []).forEach((qId) => {
+    const entry = answersMap?.[qId];
+    const hasAnswer =
+      entry?.selectedAnswer !== undefined &&
+      entry?.selectedAnswer !== null &&
+      String(entry.selectedAnswer).trim() !== '';
+    const isMarked = Boolean(entry?.markedForReview);
+
+    if (isMarked) {
+      markedReviewCount++;
+    }
+    if (hasAnswer) {
+      answeredCount++;
+    } else if (!isMarked) {
+      unansweredCount++;
+    }
+  });
+
+  return {
+    answeredCount,
+    markedReviewCount,
+    unansweredCount,
+  };
+}
