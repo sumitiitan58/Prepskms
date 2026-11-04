@@ -209,11 +209,11 @@
               <span id="headerProfileStatusDot" class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 border-2 border-white rounded-full"></span>
             </button>
 
-            <!-- Owner Badge (Strictly visible ONLY to saurav586kumar@gmail.com) -->
-            <div id="superAdminOwnerHeaderBadge" class="hidden items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold shadow-xs">
+            <!-- Owner Badge (Strictly visible to Super Admins / Platform Directorate) -->
+            <div id="superAdminOwnerHeaderBadge" class="hidden items-center gap-1.5 px-3 py-1 rounded-xl bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold shadow-xs">
               <i data-lucide="shield-check" class="w-3.5 h-3.5 text-purple-700"></i>
-              <span class="hidden sm:inline">Platform Owner:</span>
-              <span class="font-mono text-[11px] text-purple-700">saurav586kumar@gmail.com</span>
+              <span>Academic Directorate</span>
+              <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-purple-200/70 text-purple-800">Admin Active</span>
             </div>
 
             <!-- Mentor Badge (Strictly visible ONLY to appointed mentors) -->
@@ -248,13 +248,13 @@
           </button>
           <button onclick="navigateView('chat')" id="nav-btn-chat" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
-            <span>Live Chat & Calls</span>
-            <span class="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">Direct Owner</span>
+            <span>Live Doubt & Calls</span>
+            <span class="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">Live 24/7</span>
           </button>
           <button onclick="navigateView('mentorship')" id="nav-btn-mentorship" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="users" class="w-4 h-4"></i>
             <span>1:1 Mentorship</span>
-            <span class="px-1.5 py-0.2 text-[10px] bg-indigo-100 text-indigo-800 rounded-full font-bold">₹5/min</span>
+            <span class="px-1.5 py-0.2 text-[10px] bg-indigo-100 text-indigo-800 rounded-full font-bold">Top Rankers</span>
           </button>
           <button onclick="navigateView('forum')" id="nav-btn-forum" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="messages-square" class="w-4 h-4 text-indigo-600"></i>
@@ -489,9 +489,9 @@
                 <i data-lucide="ticket" class="w-5 h-5"></i>
               </div>
               <div>
-                <h3 class="text-base font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">1:1 Mentorship Pass (₹5/min)</h3>
+                <h3 class="text-base font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">1:1 Strategy & Mentorship Pass</h3>
                 <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-                  Direct guidance from @unfiltereddsumit and top rankers. Dynamic UPI QR payment and instant official Prepskm cryptographic digital pass.
+                  Personalized 1:1 guidance from @unfiltereddsumit and top rankers. Seamless instant scheduling and official Prepskm cryptographic digital pass.
                 </p>
               </div>
             </div>
@@ -994,7 +994,7 @@
               1:1 High-Impact Mentorship with @unfiltereddsumit & Rankers
             </h1>
             <p class="text-sm text-gray-300 leading-relaxed">
-              Transparent, student-first pricing at flat <strong class="text-white">₹5 per minute</strong>. No inflated ₹10,000 packages. Pay strictly for the exact consultation time you need. Instant verified cryptographic pass issued with direct Telegram integration.
+              High-impact, 1:1 strategy consultation and personalized roadmap sessions with top rankers. Dedicated backlog resolution, problem-solving techniques, and exam temperament guidance with instant cryptographic pass verification.
             </p>
           </div>
           <div class="absolute right-0 top-0 bottom-0 w-80 bg-gradient-to-l from-indigo-500/20 to-transparent pointer-events-none"></div>
@@ -1008,10 +1008,10 @@
             <div class="flex items-center justify-between border-b border-gray-100 pb-3">
               <div>
                 <h2 class="text-base font-bold text-gray-900">Select Session Duration & Mentor</h2>
-                <p class="text-xs text-gray-500">Flat rate: ₹5 / minute. Calculated in real-time.</p>
+                <p class="text-xs text-gray-500">Structured consultation pass tailored to your preparation roadmap.</p>
               </div>
               <div class="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-extrabold">
-                ₹5 / min
+                Priority Pass
               </div>
             </div>
 
@@ -1055,9 +1055,9 @@
                 class="w-full accent-blue-600 cursor-pointer"
               />
               <div class="flex justify-between text-[10px] text-gray-400">
-                <span>10 min (₹50)</span>
-                <span>60 min (₹300)</span>
-                <span>120 min (₹600)</span>
+                <span>10 min</span>
+                <span>60 min</span>
+                <span>120 min</span>
               </div>
             </div>
 
@@ -1065,15 +1065,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">Your Full Name *</label>
-                <input id="bookingStudentName" type="text" placeholder="e.g. Aman Verma" value="Saurav Kumar" class="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20" />
+                <input id="bookingStudentName" type="text" placeholder="e.g. Aman Verma" class="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20" />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">Your Email Address *</label>
-                <input id="bookingStudentEmail" type="email" placeholder="e.g. saurav586kumar@gmail.com" value="saurav586kumar@gmail.com" class="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20" />
+                <input id="bookingStudentEmail" type="email" placeholder="e.g. student@gmail.com" class="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20" />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">Your Telegram Handle *</label>
-                <input id="bookingStudentTelegram" type="text" placeholder="e.g. @saurav_jee" value="@saurav_prep" class="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20" />
+                <input id="bookingStudentTelegram" type="text" placeholder="e.g. @aspirant_jee" class="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20" />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">Target Exam & Year</label>
@@ -1099,10 +1099,10 @@
             <div class="space-y-3">
               <div class="flex items-center justify-between border-b border-gray-200 pb-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-gray-600">Booking Summary</span>
-                <span class="text-xs font-mono font-bold text-gray-400">Prepskm Pay</span>
+                <span class="text-xs font-mono font-bold text-gray-400">Prepskm Pass</span>
               </div>
               <div class="space-y-1.5 text-xs text-gray-600">
-                <div class="flex justify-between"><span>Rate:</span> <span>₹5.00 / min</span></div>
+                <div class="flex justify-between"><span>Session Type:</span> <span class="font-bold text-gray-900">1:1 Verified Mentorship</span></div>
                 <div class="flex justify-between"><span>Duration:</span> <span id="summaryDuration">30 minutes</span></div>
                 <div class="flex justify-between text-base font-extrabold text-gray-900 pt-2 border-t border-gray-200">
                   <span>Payable Amount:</span>
@@ -1332,17 +1332,23 @@
             <div>
               <div class="flex items-center gap-2">
                 <h1 class="text-lg font-bold">Prepskm Super Admin Control Center</h1>
-                <span id="superAdminBadge" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded text-[11px] font-extrabold uppercase">
-                  Super Admin: saurav586kumar@gmail.com
+                <span id="superAdminBadge" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded text-[11px] font-extrabold uppercase flex items-center gap-1">
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>Directorate Portal</span>
                 </span>
               </div>
-              <p class="text-xs text-gray-300 mt-0.5">Full CRUD rights across questions, dynamic sections, PDFs, videos, mentors, and token authentication.</p>
+              <p class="text-xs text-gray-300 mt-0.5">Real-time administration: pick up incoming audio/video calls, reply to student messages, manage PDFs, questions, and curriculum.</p>
             </div>
           </div>
 
           <!-- Admin Quick Action Tabs -->
           <div class="flex items-center gap-1.5 flex-wrap text-xs">
-            <button onclick="switchAdminTab('cropper')" id="admin-tab-cropper" class="px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold">6-Step Cropper</button>
+            <button onclick="switchAdminTab('livehub')" id="admin-tab-livehub" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="phone-call" class="w-3.5 h-3.5 text-emerald-200"></i>
+              <span>Calls & Messages</span>
+              <span id="adminLiveCallsCountBadge" class="hidden px-1.5 py-0.2 bg-red-500 text-white rounded-full text-[9px] font-black animate-pulse">LIVE</span>
+            </button>
+            <button onclick="switchAdminTab('cropper')" id="admin-tab-cropper" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">6-Step Cropper</button>
             <button onclick="switchAdminTab('sections')" id="admin-tab-sections" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Sections & PDFs</button>
             <button onclick="switchAdminTab('videos')" id="admin-tab-videos" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Video Upload</button>
             <button onclick="switchAdminTab('mentors')" id="admin-tab-mentors" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Manage Mentors</button>
@@ -1757,7 +1763,7 @@
         <div id="adminTabContent-mentors" class="hidden bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6">
           <div class="border-b border-gray-100 pb-3">
             <h2 class="text-base font-bold text-gray-900">Appoint & Manage Mentors</h2>
-            <p class="text-xs text-gray-500">Super Admin (saurav586kumar@gmail.com) can appoint users as mentors and grant studio access.</p>
+            <p class="text-xs text-gray-500">Academic Directorate can appoint verified educators as mentors and grant studio access.</p>
           </div>
 
           <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200 space-y-4">
@@ -1845,6 +1851,159 @@
           </div>
         </div>
 
+        <!-- ------------------------------------------------------------- -->
+        <!-- TAB F: LIVE INCOMING CALLS & STUDENT MESSAGES HUB -->
+        <!-- ------------------------------------------------------------- -->
+        <div id="adminTabContent-livehub" class="hidden bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6">
+          <div class="border-b border-gray-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+                  <i data-lucide="phone-call" class="w-5 h-5"></i>
+                </span>
+                <h2 class="text-base font-bold text-gray-900">Live Calls & Aspirant Inquiries Hub</h2>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Real-time Active</span>
+                </span>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Receive live audio/video calls from students, answer incoming calls, and reply to direct student messages in real time.</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <button onclick="refreshAdminLiveCommunications()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh Hub</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left 5 Cols: Live Call Station -->
+            <div class="lg:col-span-5 space-y-4">
+              <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900 rounded-2xl p-5 text-white space-y-4 shadow-sm border border-gray-800">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Live Call Receiver</span>
+                  </span>
+                  <span id="adminLiveCallStatusBadge" class="px-2 py-0.5 bg-white/10 rounded-full text-[10px] font-mono text-gray-300">
+                    Listening for calls...
+                  </span>
+                </div>
+
+                <!-- Call Status Display Box -->
+                <div id="adminCurrentCallBox" class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
+                  <div id="adminNoCallsPlaceholder" class="text-center py-4 space-y-2">
+                    <i data-lucide="phone-incoming" class="w-8 h-8 text-gray-400 mx-auto opacity-70"></i>
+                    <div class="text-xs font-bold text-gray-300">No active incoming calls right now</div>
+                    <p class="text-[11px] text-gray-400">When an aspirant clicks "Call Owner" or "Video Call", ringing alert and "Uthayein" button will pop up here instantly.</p>
+                  </div>
+
+                  <!-- Active Ringing / In-Call Notice (Hidden by default, shown on ringing) -->
+                  <div id="adminRingingCallDetails" class="hidden space-y-3">
+                    <div class="flex items-center gap-3">
+                      <div class="relative">
+                        <img id="adminCallerAvatarImg" src="" class="w-12 h-12 rounded-2xl object-cover border-2 border-emerald-400 shadow-md bg-gray-800" alt="Caller">
+                        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-gray-900 rounded-full animate-ping"></span>
+                      </div>
+                      <div class="flex-1 truncate">
+                        <div class="flex items-center gap-1.5">
+                          <h4 id="adminCallerNameDisplay" class="font-bold text-sm text-white truncate">Student</h4>
+                          <span id="adminCallerTypeBadge" class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-500/30 text-emerald-300 uppercase">Video</span>
+                        </div>
+                        <div id="adminCallerEmailDisplay" class="text-[11px] text-gray-300 truncate font-mono">student@gmail.com</div>
+                      </div>
+                    </div>
+
+                    <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-200 flex items-center justify-between">
+                      <span class="font-bold">Incoming Call Alert</span>
+                      <span class="animate-pulse font-mono text-[11px]">Ringing...</span>
+                    </div>
+
+                    <!-- Call Answer / Reject Buttons -->
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                      <button onclick="adminAcceptIncomingCall()" class="py-2.5 px-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-1.5 transition-all hover:scale-102">
+                        <i data-lucide="phone-call" class="w-4 h-4"></i>
+                        <span>Uthayein (Accept)</span>
+                      </button>
+                      <button onclick="adminDeclineIncomingCall()" class="py-2.5 px-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1.5 transition-all">
+                        <i data-lucide="phone-off" class="w-4 h-4"></i>
+                        <span>Katyein (Decline)</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Call Test Simulator (For Faculty) -->
+                <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs">
+                  <span class="text-gray-400 text-[11px]">Simulate Test Call:</span>
+                  <div class="flex gap-1.5">
+                    <button onclick="simulateIncomingTestCall('audio')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[10px] font-semibold text-emerald-300 transition-colors">
+                      Test Audio Call
+                    </button>
+                    <button onclick="simulateIncomingTestCall('video')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[10px] font-semibold text-blue-300 transition-colors">
+                      Test Video Call
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Call Logs History Card -->
+              <div class="bg-gray-50 rounded-2xl border border-gray-200 p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">Recent Consultation Calls</h3>
+                  <span id="adminCallLogsCount" class="text-[11px] text-gray-500 font-medium">0 logged</span>
+                </div>
+                <div id="adminCallLogsList" class="space-y-2 max-h-56 overflow-y-auto text-xs">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right 7 Cols: Live Student Inquiries & Reply Center ("also message") -->
+            <div class="lg:col-span-7 space-y-4">
+              <div class="bg-white rounded-2xl border border-gray-200 shadow-xs flex flex-col h-[520px]">
+                
+                <!-- Chat Stream Selector Header -->
+                <div class="p-3.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between gap-2 shrink-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-xs text-gray-900">Student Inquiries Stream</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">Firestore Live</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setAdminMessageFilter('all')" id="btn-msg-filter-all" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-600 text-white">All Messages</button>
+                    <button onclick="setAdminMessageFilter('unreplied')" id="btn-msg-filter-unreplied" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-100">Unanswered</button>
+                  </div>
+                </div>
+
+                <!-- Messages Stream (Scrollable) -->
+                <div id="adminStudentMessagesStream" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs bg-gray-50/40">
+                  <!-- Messages rendered via JS -->
+                </div>
+
+                <!-- Admin Quick Reply Form -->
+                <div class="p-3 bg-white border-t border-gray-200 space-y-2 shrink-0">
+                  <div class="flex items-center justify-between text-[11px] text-gray-500">
+                    <span>Replying as: <strong class="text-blue-700">Prepskm Academic Directorate (@unfiltereddsumit)</strong></span>
+                    <span class="text-emerald-700 font-medium">✓ Verified Blue Tick Reply</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <input id="adminReplyTextInput" type="text" placeholder="Type verified faculty guidance or answer to student..." class="flex-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500/20" onkeydown="if(event.key==='Enter') submitAdminReplyToStudent();" />
+                    <button onclick="submitAdminReplyToStudent()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1.5 shrink-0 transition-all">
+                      <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                      <span>Send Reply</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </section>
 
       <!-- =================================================================== -->
@@ -1921,7 +2080,7 @@
                   <span class="text-[10px] text-amber-700 font-mono font-bold">PERMANENT</span>
                 </label>
                 <div class="relative">
-                  <input id="profileInputEmail" type="email" value="saurav586kumar@gmail.com" readonly class="w-full pl-8 pr-3 py-2.5 bg-gray-100 text-gray-600 font-mono text-xs border border-gray-200 rounded-xl cursor-not-allowed select-all" />
+                  <input id="profileInputEmail" type="email" value="" placeholder="student.aspirant@gmail.com" readonly class="w-full pl-8 pr-3 py-2.5 bg-gray-100 text-gray-600 font-mono text-xs border border-gray-200 rounded-xl cursor-not-allowed select-all" />
                   <i data-lucide="lock" class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
                 </div>
                 <div class="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[10px] mt-1.5 flex items-start gap-1.5 font-medium leading-relaxed">
@@ -2031,9 +2190,9 @@
 
               <!-- Info rows -->
               <div class="bg-white p-3 rounded-xl border border-gray-200 text-xs space-y-2">
-                <div class="flex justify-between"><span class="text-gray-400">Telegram:</span> <strong id="cardTelegramPreview" class="text-blue-600 font-mono">@saurav_prep</strong></div>
+                <div class="flex justify-between"><span class="text-gray-400">Telegram:</span> <strong id="cardTelegramPreview" class="text-blue-600 font-mono">@aspirant_prep</strong></div>
                 <div class="flex justify-between"><span class="text-gray-400">Daily Target:</span> <strong id="cardGoalPreview" class="text-gray-800">8 Hours / day</strong></div>
-                <div class="flex justify-between"><span class="text-gray-400">Auth UID:</span> <span id="cardUidShort" class="font-mono text-[10px] text-gray-500">uid-saurav586</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Auth UID:</span> <span id="cardUidShort" class="font-mono text-[10px] text-gray-500">uid-student</span></div>
               </div>
 
               <!-- Bio Snippet -->
@@ -2897,6 +3056,42 @@
     </div>
 
     <!-- =================================================================== -->
+    <!-- INCOMING CALL RINGING & PICKUP NOTIFICATION MODAL -->
+    <!-- =================================================================== -->
+    <div id="incomingCallModal" class="hidden fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="bg-gray-900 text-white rounded-3xl max-w-sm w-full p-6 border border-gray-700 shadow-2xl flex flex-col items-center text-center space-y-5">
+        
+        <div class="relative">
+          <div class="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center animate-ping absolute inset-0"></div>
+          <img id="incomingCallerAvatar" src="" class="w-20 h-20 rounded-full object-cover border-4 border-emerald-500 shadow-xl relative z-10 bg-gray-800" alt="Caller">
+          <span class="absolute -bottom-1 -right-1 z-20 w-6 h-6 rounded-full bg-emerald-500 border-2 border-gray-900 flex items-center justify-center text-white">
+            <i id="incomingCallTypeIcon" data-lucide="phone-call" class="w-3.5 h-3.5"></i>
+          </span>
+        </div>
+
+        <div class="space-y-1">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse">
+            Incoming Call Alert
+          </span>
+          <h3 id="incomingCallerName" class="text-lg font-black text-white">Student Aspirant</h3>
+          <p id="incomingCallerSubtitle" class="text-xs text-gray-400">Requesting 1:1 Consultation Session</p>
+        </div>
+
+        <div class="w-full grid grid-cols-2 gap-3 pt-2">
+          <button onclick="adminAcceptIncomingCall()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-extrabold text-xs rounded-2xl shadow-lg shadow-emerald-500/40 flex items-center justify-center gap-2 transition-all">
+            <i data-lucide="phone-call" class="w-4 h-4"></i>
+            <span>Uthayein (Accept)</span>
+          </button>
+          <button onclick="adminDeclineIncomingCall()" class="w-full py-3 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-extrabold text-xs rounded-2xl shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition-all">
+            <i data-lucide="phone-off" class="w-4 h-4"></i>
+            <span>Katyein (Decline)</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
     <!-- PREPSKM AI STUDY COPILOT & DOUBT SOLVER EXPANSIVE MODAL -->
     <!-- =================================================================== -->
     <div id="aiCopilotModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
@@ -3386,23 +3581,35 @@
       const DEFAULT_AVATAR_SVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z' clip-rule='evenodd'/%3E%3C/svg%3E";
 
       // 2. STATE MANAGEMENT & ROLE PERMISSIONS
-      const SUPER_ADMIN_EMAIL = "saurav586kumar@gmail.com";
+      const SUPER_ADMIN_EMAILS = [
+        "sumitiitair01@gmail.com",
+        "saurav586kumar@gmail.com",
+        "unfiltereddsumit@gmail.com"
+      ];
+      function isSuperAdminEmail(email) {
+        if (!email) return false;
+        const normalized = email.toLowerCase().trim();
+        return SUPER_ADMIN_EMAILS.some(e => e.toLowerCase() === normalized);
+      }
 
       // Load saved guest aspirant profile if exists
       let storedGuest = null;
+      let cachedAuthUser = null;
       try {
         const rawGuest = localStorage.getItem('prepskm_guest_profile');
         if (rawGuest) storedGuest = JSON.parse(rawGuest);
+        const rawAuth = localStorage.getItem('prepskm_auth_user');
+        if (rawAuth) cachedAuthUser = JSON.parse(rawAuth);
       } catch (e) {}
 
       // Students / Aspirants ALWAYS enter in student role by default (No admin leakage)
       let currentUser = {
-        uid: "guest-" + Math.random().toString(36).substring(2, 9),
-        email: null,
-        displayName: (storedGuest && storedGuest.name) ? storedGuest.name : "Aspirant Guest",
-        photoURL: (storedGuest && storedGuest.photoURL) ? storedGuest.photoURL : DEFAULT_AVATAR_SVG,
-        role: "student", // 'student' | 'mentor' | 'superadmin' (Owner is strictly saurav586kumar@gmail.com)
-        isGuest: true,
+        uid: (cachedAuthUser && cachedAuthUser.uid) ? cachedAuthUser.uid : ("guest-" + Math.random().toString(36).substring(2, 9)),
+        email: (cachedAuthUser && cachedAuthUser.email) ? cachedAuthUser.email : null,
+        displayName: (cachedAuthUser && cachedAuthUser.displayName) ? cachedAuthUser.displayName : ((storedGuest && storedGuest.name) ? storedGuest.name : "Aspirant Guest"),
+        photoURL: (cachedAuthUser && cachedAuthUser.photoURL) ? cachedAuthUser.photoURL : ((storedGuest && storedGuest.photoURL) ? storedGuest.photoURL : DEFAULT_AVATAR_SVG),
+        role: (cachedAuthUser && cachedAuthUser.email && isSuperAdminEmail(cachedAuthUser.email)) ? "superadmin" : "student",
+        isGuest: !cachedAuthUser,
         targetExam: (storedGuest && storedGuest.targetExam) ? storedGuest.targetExam : "JEE Main & Advanced"
       };
 
@@ -3832,7 +4039,7 @@
       // Role Detection & Strict Authorization
       function checkRoleForEmail(email) {
         if (!email) return 'student';
-        if (email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) return 'superadmin';
+        if (isSuperAdminEmail(email)) return 'superadmin';
         const isMentor = (state.mentors || []).some(m => m.email && m.email.toLowerCase() === email.toLowerCase());
         if (isMentor) return 'mentor';
         return 'student';
@@ -3851,8 +4058,11 @@
               photoURL: user.photoURL || DEFAULT_AVATAR_SVG,
               role: role,
               isGuest: false,
-              targetExam: state.userProfile.targetExams[0] || "JEE Main & Advanced"
+              targetExam: (state.userProfile && state.userProfile.targetExams) ? state.userProfile.targetExams[0] : "JEE Main & Advanced"
             };
+            try {
+              localStorage.setItem('prepskm_auth_user', JSON.stringify(currentUser));
+            } catch (e) {}
             closeGuestSignupReminder();
             closeGuestOnboardingModal();
             closeProfileAuthModal();
@@ -3874,6 +4084,9 @@
         if (auth) {
           try { auth.signOut(); } catch (e) {}
         }
+        try {
+          localStorage.removeItem('prepskm_auth_user');
+        } catch(e) {}
         currentUser = {
           uid: "guest-" + Math.random().toString(36).substring(2, 9),
           email: null,
@@ -4458,6 +4671,47 @@
             }
           }, err => console.warn(err));
         } catch(e) {}
+
+        // 5. Real-time Sections
+        try {
+          db.collection('sections').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const cloudSections = [];
+              snapshot.forEach(doc => cloudSections.push({ id: doc.id, ...doc.data() }));
+              if (cloudSections.length > 0) {
+                state.sections = cloudSections;
+                persistState();
+                renderDynamicSectionsUI();
+              }
+            }
+          }, err => console.warn(err));
+        } catch(e) {}
+
+        // 6. Real-time Mentors
+        try {
+          db.collection('mentors').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const cloudMentors = [];
+              snapshot.forEach(doc => cloudMentors.push({ id: doc.id, ...doc.data() }));
+              if (cloudMentors.length > 0) {
+                state.mentors = cloudMentors;
+                persistState();
+                renderMentorsDirectory();
+                renderAdminMentorsTable();
+              }
+            }
+          }, err => console.warn(err));
+        } catch(e) {}
+
+        // 7. Real-time Active Calls Signaling (For instant call ringing and Admin pickup)
+        try {
+          db.collection('activeCalls').doc('liveCall').onSnapshot(doc => {
+            if (doc.exists) {
+              const callData = doc.data();
+              handleLiveCallSignalingUpdate(callData);
+            }
+          }, err => console.warn("Call stream notice:", err));
+        } catch(e) {}
       }
 
       // File Upload Listeners
@@ -4526,9 +4780,15 @@
 
       // View Navigation Router with Strict Aspirant Protection
       function navigateView(viewName, subTab = null) {
+        // Automatically promote if user email matches authorized superadmin
+        if (currentUser.email && isSuperAdminEmail(currentUser.email) && currentUser.role !== 'superadmin') {
+          currentUser.role = 'superadmin';
+          updateRoleAndHeaderUI();
+        }
+
         // Enforce zero admin leaks to student aspirants
-        if (viewName === 'admin' && currentUser.role !== 'superadmin') {
-          showAppToast('Admin Access is strictly reserved for Owner (saurav586kumar@gmail.com).', 'error');
+        if (viewName === 'admin' && currentUser.role !== 'superadmin' && !isSuperAdminEmail(currentUser.email)) {
+          showAppToast('Admin Access is strictly reserved for Academic Directorate & Owner.', 'error');
           viewName = 'home';
         }
         if (viewName === 'mentor-studio' && currentUser.role !== 'mentor' && currentUser.role !== 'superadmin') {
@@ -5543,39 +5803,49 @@
           return;
         }
 
-        if (selectedPdfFile) {
-          link = URL.createObjectURL(selectedPdfFile);
-        }
-
-        if (!link) {
-          showAppToast("Please choose a .PDF file from your device or enter a download URL.", "error");
-          return;
-        }
-
         const secObj = state.sections.find(s => s.id === sectionId);
-        const newPdf = {
-          id: 'pdf-' + Date.now(),
-          title,
-          sectionId,
-          sectionName: secObj ? secObj.name : 'Notes',
-          exam,
-          subject,
-          downloadUrl: link,
-          isFileUpload: !!selectedPdfFile,
-          fileName: selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'),
-          createdAt: new Date().toISOString()
+
+        const savePdfRecord = (finalUrl, isFile) => {
+          const newPdf = {
+            id: 'pdf-' + Date.now(),
+            title,
+            sectionId,
+            sectionName: secObj ? secObj.name : 'Notes',
+            exam,
+            subject,
+            downloadUrl: finalUrl,
+            isFileUpload: isFile,
+            fileName: selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'),
+            createdAt: new Date().toISOString()
+          };
+
+          state.materials.unshift(newPdf);
+          persistState();
+          if (db) db.collection('materials').doc(newPdf.id).set(newPdf).catch(e => console.warn(e));
+
+          document.getElementById('newPdfTitle').value = '';
+          document.getElementById('newPdfLink').value = '';
+          clearSelectedPdfFile();
+          renderMaterialsList();
+          renderAdminPdfsTable();
+          showAppToast(`PDF "${title}" published and synced to all devices!`, 'success');
         };
 
-        state.materials.unshift(newPdf);
-        persistState();
-        if (db) db.collection('materials').doc(newPdf.id).set(newPdf).catch(e => {});
-
-        document.getElementById('newPdfTitle').value = '';
-        document.getElementById('newPdfLink').value = '';
-        clearSelectedPdfFile();
-        renderMaterialsList();
-        renderAdminPdfsTable();
-        showAppToast(`PDF "${title}" published successfully in file format!`, 'success');
+        if (selectedPdfFile) {
+          showAppToast("Processing PDF for cross-device sync...", "info");
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            savePdfRecord(e.target.result, true);
+          };
+          reader.onerror = () => {
+            savePdfRecord(URL.createObjectURL(selectedPdfFile), true);
+          };
+          reader.readAsDataURL(selectedPdfFile);
+        } else if (link) {
+          savePdfRecord(link, false);
+        } else {
+          showAppToast("Please choose a .PDF file from your device or enter a download URL.", "error");
+        }
       }
 
       let activeMaterialSectionId = 'ALL';
@@ -6329,7 +6599,7 @@
         updateMentorshipPricingUI(selectedMentorshipMinutes);
       }
 
-      // Flat ₹5 per minute calculator & dynamic UPI QR generation
+      // Mentorship Pass duration calculator & dynamic UPI QR generation
       function updateMentorshipPricingUI(mins) {
         const amount = mins * 5;
         document.getElementById('sliderMinutesDisplay').innerText = `${mins} minutes`;
@@ -6348,8 +6618,8 @@
           }
         });
 
-        // Dynamic UPI String: upi://pay?pa=saurav586kumar@okhdfcbank&pn=Prepskm&am=150&cu=INR&tn=PrepskmMentorship
-        const upiString = `upi://pay?pa=saurav586kumar@okhdfcbank&pn=Prepskm%20Mentorship&am=${amount}&cu=INR&tn=Prepskm-Mentorship-${mins}min`;
+        // Dynamic UPI String: upi://pay?pa=unfiltereddsumit@okhdfcbank&pn=Prepskm&am=150&cu=INR&tn=PrepskmMentorship
+        const upiString = `upi://pay?pa=unfiltereddsumit@okhdfcbank&pn=Prepskm%20Mentorship&am=${amount}&cu=INR&tn=Prepskm-Mentorship-${mins}min`;
 
         // Render QR Code
         const qrContainer = document.getElementById('upiQrCodeContainer');
@@ -6500,7 +6770,7 @@
 
             <div class="pt-3 border-t border-gray-100 space-y-2">
               <div class="flex items-center justify-between text-xs">
-                <span class="font-extrabold text-emerald-700">₹5 / min Consultation</span>
+                <span class="font-extrabold text-emerald-700">1:1 Verified Mentorship Session</span>
                 <span class="text-gray-400 text-[11px]">Instant Pass</span>
               </div>
               
@@ -6541,7 +6811,7 @@
       // ADMIN TAB SWITCHER & TOKEN AUTHENTICATOR
       // =====================================================================
       function switchAdminTab(tabKey) {
-        const tabs = ['cropper', 'sections', 'videos', 'mentors', 'authenticator'];
+        const tabs = ['livehub', 'cropper', 'sections', 'videos', 'mentors', 'authenticator'];
         tabs.forEach(t => {
           const content = document.getElementById(`adminTabContent-${t}`);
           if (content) content.classList.add('hidden');
@@ -6555,6 +6825,7 @@
         const activeBtn = document.getElementById(`admin-tab-${tabKey}`);
         if (activeBtn) activeBtn.className = "px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold";
 
+        if (tabKey === 'livehub') renderAdminLiveCommunications();
         if (tabKey === 'cropper') renderSavedQuestionsTable();
         if (tabKey === 'sections') { renderDynamicSectionsUI(); renderAdminPdfsTable(); }
         if (tabKey === 'mentors') renderAdminMentorsTable();
@@ -6913,10 +7184,10 @@
         lucide.createIcons();
       }
 
-      // Super Admin Appoint Mentor (Restricted exclusively to saurav586kumar@gmail.com)
+      // Super Admin Appoint Mentor (Restricted exclusively to Directorate / Super Admin)
       function submitAppointMentor() {
-        if (currentUser.role !== 'superadmin' && currentUser.email !== SUPER_ADMIN_EMAIL) {
-          showAppToast("Permission Denied: Only Owner (saurav586kumar@gmail.com) can appoint mentors.", "error");
+        if (currentUser.role !== 'superadmin' && !isSuperAdminEmail(currentUser.email)) {
+          showAppToast("Permission Denied: Only Directorate Super Admin can appoint mentors.", "error");
           return;
         }
 
@@ -6937,7 +7208,7 @@
           telegram: '@' + fullName.split(' ')[0].toLowerCase() + '_prep',
           categories: cats.split(',').map(s => s.trim()),
           bio: 'Appointed Prepskm Educator specializing in ' + cats,
-          experience: 'Verified by Owner (' + SUPER_ADMIN_EMAIL + ')',
+          experience: 'Verified Faculty by Academic Directorate',
           achievements: 'Prepskm Faculty Member',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
         };
@@ -7945,7 +8216,306 @@
         }
       }
 
-      async function startCall(callType = 'video', targetName = 'Saurav Kumar (Platform Owner)') {
+      let incomingActiveCall = null;
+      let adminCallHistory = [];
+      let adminMessageFilter = 'all';
+
+      function playIncomingRingtone() {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(440, ctx.currentTime);
+          osc2.frequency.setValueAtTime(480, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+          osc1.start();
+          osc2.start();
+          osc1.stop(ctx.currentTime + 0.6);
+          osc2.stop(ctx.currentTime + 0.6);
+        } catch(e) {}
+      }
+
+      function handleLiveCallSignalingUpdate(callData) {
+        if (!callData) return;
+        incomingActiveCall = callData;
+
+        // If call is ringing
+        if (callData.status === 'ringing') {
+          // If this user is an admin and not the caller, alert them!
+          const isAdmin = (currentUser.role === 'superadmin' || isSuperAdminEmail(currentUser.email));
+          if (isAdmin && callData.callerId !== currentUser.uid) {
+            playIncomingRingtone();
+            showIncomingCallModal(callData);
+            updateAdminLiveCallReceiverUI(callData);
+          }
+        } else if (callData.status === 'connected') {
+          const statusLabel = document.getElementById('callStatusLabel');
+          if (statusLabel) {
+            statusLabel.innerText = `Connected with Faculty (${callData.answeredBy || 'Academic Directorate'})`;
+          }
+          const incModal = document.getElementById('incomingCallModal');
+          if (incModal) incModal.classList.add('hidden');
+          updateAdminLiveCallReceiverUI(callData);
+        } else if (callData.status === 'declined' || callData.status === 'ended') {
+          const incModal = document.getElementById('incomingCallModal');
+          if (incModal) incModal.classList.add('hidden');
+          if (activeCallData.active) {
+            endActiveCall(false);
+          }
+          updateAdminLiveCallReceiverUI(null);
+        }
+      }
+
+      function showIncomingCallModal(callData) {
+        const modal = document.getElementById('incomingCallModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+
+        const nameEl = document.getElementById('incomingCallerName');
+        const subtitleEl = document.getElementById('incomingCallerSubtitle');
+        const avatarEl = document.getElementById('incomingCallerAvatar');
+        const iconEl = document.getElementById('incomingCallTypeIcon');
+
+        if (nameEl) nameEl.innerText = callData.callerName || 'Student Aspirant';
+        if (subtitleEl) subtitleEl.innerText = `${callData.callType === 'video' ? 'HD Video' : 'Audio'} Consultation Request • ${callData.callerEmail || 'Prepskm Student'}`;
+        if (avatarEl) avatarEl.src = callData.callerAvatar || DEFAULT_AVATAR_SVG;
+        if (iconEl) iconEl.setAttribute('data-lucide', callData.callType === 'video' ? 'video' : 'phone-call');
+        lucide.createIcons();
+      }
+
+      function updateAdminLiveCallReceiverUI(callData) {
+        const placeholder = document.getElementById('adminNoCallsPlaceholder');
+        const details = document.getElementById('adminRingingCallDetails');
+        const statusBadge = document.getElementById('adminLiveCallStatusBadge');
+        const countBadge = document.getElementById('adminLiveCallsCountBadge');
+
+        if (!callData || callData.status === 'ended' || callData.status === 'declined') {
+          if (placeholder) placeholder.classList.remove('hidden');
+          if (details) details.classList.add('hidden');
+          if (statusBadge) statusBadge.innerText = 'Listening for calls...';
+          if (countBadge) countBadge.classList.add('hidden');
+          return;
+        }
+
+        if (placeholder) placeholder.classList.add('hidden');
+        if (details) details.classList.remove('hidden');
+        if (statusBadge) statusBadge.innerText = `${callData.status.toUpperCase()} (${callData.callType})`;
+        if (countBadge) {
+          countBadge.classList.remove('hidden');
+          countBadge.innerText = callData.status === 'ringing' ? 'RINGING' : 'ACTIVE';
+        }
+
+        const nameEl = document.getElementById('adminCallerNameDisplay');
+        const emailEl = document.getElementById('adminCallerEmailDisplay');
+        const typeEl = document.getElementById('adminCallerTypeBadge');
+        const avatarEl = document.getElementById('adminCallerAvatarImg');
+
+        if (nameEl) nameEl.innerText = callData.callerName || 'Student';
+        if (emailEl) emailEl.innerText = callData.callerEmail || 'student@gmail.com';
+        if (typeEl) typeEl.innerText = (callData.callType || 'video').toUpperCase();
+        if (avatarEl) avatarEl.src = callData.callerAvatar || DEFAULT_AVATAR_SVG;
+      }
+
+      function adminAcceptIncomingCall() {
+        const callData = incomingActiveCall || {
+          callType: 'video',
+          callerName: 'Student Aspirant',
+          callerEmail: 'student@prepskm.edu'
+        };
+
+        if (db) {
+          db.collection('activeCalls').doc('liveCall').set({
+            ...callData,
+            status: 'connected',
+            answeredBy: currentUser.displayName || 'Academic Directorate',
+            answeredAt: Date.now()
+          }, { merge: true }).catch(e => console.warn(e));
+        }
+
+        addCallToHistoryLog({
+          callerName: callData.callerName || 'Student Aspirant',
+          callType: callData.callType || 'video',
+          time: new Date().toLocaleTimeString(),
+          status: 'Answered'
+        });
+
+        const incModal = document.getElementById('incomingCallModal');
+        if (incModal) incModal.classList.add('hidden');
+
+        startCall(callData.callType || 'video', callData.callerName || 'Student Aspirant', true);
+        showAppToast("Call picked up! Connected with student.", "success");
+      }
+
+      function adminDeclineIncomingCall() {
+        if (db) {
+          db.collection('activeCalls').doc('liveCall').set({
+            status: 'declined',
+            declinedAt: Date.now()
+          }, { merge: true }).catch(e => console.warn(e));
+        }
+        const incModal = document.getElementById('incomingCallModal');
+        if (incModal) incModal.classList.add('hidden');
+        updateAdminLiveCallReceiverUI(null);
+        showAppToast("Call declined.", "info");
+      }
+
+      function simulateIncomingTestCall(type = 'video') {
+        const testCall = {
+          id: 'test-' + Date.now(),
+          callerId: 'test-student-123',
+          callerName: 'Rohan Sharma (AIR 48 Aspirant)',
+          callerEmail: 'rohan.jee2026@gmail.com',
+          callerAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+          targetName: 'Academic Directorate',
+          callType: type,
+          status: 'ringing',
+          timestamp: Date.now()
+        };
+        handleLiveCallSignalingUpdate(testCall);
+        if (db) {
+          db.collection('activeCalls').doc('liveCall').set(testCall).catch(e => console.warn(e));
+        }
+        showAppToast(`Simulating incoming ${type.toUpperCase()} call alert...`, 'info');
+      }
+
+      function addCallToHistoryLog(entry) {
+        adminCallHistory.unshift(entry);
+        renderAdminCallHistory();
+      }
+
+      function renderAdminCallHistory() {
+        const list = document.getElementById('adminCallLogsList');
+        const count = document.getElementById('adminCallLogsCount');
+        if (!list) return;
+
+        if (count) count.innerText = `${adminCallHistory.length} logged`;
+
+        if (adminCallHistory.length === 0) {
+          list.innerHTML = `<div class="p-3 text-center text-gray-400">No consultation calls logged yet today.</div>`;
+          return;
+        }
+
+        list.innerHTML = adminCallHistory.map(c => `
+          <div class="p-2.5 rounded-xl bg-white border border-gray-200 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="p-1 rounded-lg ${c.callType === 'video' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}">
+                <i data-lucide="${c.callType === 'video' ? 'video' : 'phone'}" class="w-3.5 h-3.5"></i>
+              </span>
+              <div>
+                <div class="font-bold text-gray-900">${c.callerName}</div>
+                <div class="text-[10px] text-gray-400">${c.time} • ${c.callType.toUpperCase()} Call</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.status === 'Answered' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'}">${c.status}</span>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      }
+
+      function renderAdminLiveCommunications() {
+        renderAdminStudentMessages();
+        renderAdminCallHistory();
+      }
+
+      function setAdminMessageFilter(filter) {
+        adminMessageFilter = filter;
+        const btnAll = document.getElementById('btn-msg-filter-all');
+        const btnUnreplied = document.getElementById('btn-msg-filter-unreplied');
+        if (filter === 'all') {
+          if (btnAll) btnAll.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-600 text-white";
+          if (btnUnreplied) btnUnreplied.className = "px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-100";
+        } else {
+          if (btnAll) btnAll.className = "px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-100";
+          if (btnUnreplied) btnUnreplied.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-600 text-white";
+        }
+        renderAdminStudentMessages();
+      }
+
+      function renderAdminStudentMessages() {
+        const stream = document.getElementById('adminStudentMessagesStream');
+        if (!stream) return;
+
+        let msgs = [...(state.ownerDirectChats || [])];
+        if (adminMessageFilter === 'unreplied') {
+          msgs = msgs.filter(m => !m.isOwner);
+        }
+
+        if (msgs.length === 0) {
+          stream.innerHTML = `<div class="p-8 text-center text-gray-400">No student messages found in this filter.</div>`;
+          return;
+        }
+
+        stream.innerHTML = msgs.map(m => `
+          <div class="p-3.5 rounded-2xl border transition-all ${m.isOwner ? 'bg-blue-50/60 border-blue-200 ml-6' : 'bg-white border-gray-200 mr-6 shadow-xs'} space-y-1.5">
+            <div class="flex items-center justify-between text-[11px]">
+              <div class="flex items-center gap-2">
+                <img src="${m.senderAvatar || DEFAULT_AVATAR_SVG}" class="w-6 h-6 rounded-full object-cover border border-gray-200" alt="Avatar">
+                <span class="font-bold text-gray-900">${m.senderName}</span>
+                ${m.isOwner ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-100 text-blue-800">Faculty Directorate</span>` : `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-gray-100 text-gray-600">Aspirant Inquiry</span>`}
+              </div>
+              <span class="text-gray-400 text-[10px]">${formatRelativeTime(m.timestamp)}</span>
+            </div>
+            <div class="text-xs text-gray-800 leading-relaxed whitespace-pre-wrap pl-8">
+              ${m.text || ''}
+              ${m.imageUrl ? `
+                <div class="mt-2 rounded-xl overflow-hidden border border-gray-200 max-w-xs">
+                  <img src="${m.imageUrl}" class="w-full max-h-48 object-contain cursor-pointer" onclick="window.open('${m.imageUrl}', '_blank')" alt="Doubt Photo">
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `).join('');
+
+        stream.scrollTop = stream.scrollHeight;
+        lucide.createIcons();
+      }
+
+      function submitAdminReplyToStudent() {
+        const input = document.getElementById('adminReplyTextInput');
+        const text = input ? input.value.trim() : '';
+
+        if (!text) {
+          showAppToast("Please type a message reply.", "info");
+          return;
+        }
+
+        const replyMsg = {
+          id: "msg-" + Date.now(),
+          senderId: currentUser.uid || 'director-admin',
+          senderName: "Academic Directorate (@unfiltereddsumit)",
+          senderAvatar: currentUser.photoURL || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+          text: text,
+          imageUrl: null,
+          isOwner: true,
+          timestamp: new Date().toISOString()
+        };
+
+        state.ownerDirectChats.push(replyMsg);
+        persistState();
+
+        if (input) input.value = '';
+        renderAdminStudentMessages();
+        renderOwnerDirectChat();
+
+        if (db) {
+          const chatRoomId = currentUser.uid || 'guest-chat';
+          db.collection('ownerDirectChats').doc(chatRoomId).collection('messages').doc(replyMsg.id).set(replyMsg).catch(err => console.warn(err));
+          db.collection('communityChat').doc(replyMsg.id).set(replyMsg).catch(err => console.warn(err));
+        }
+
+        showAppToast("Faculty response dispatched to student successfully!", "success");
+      }
+
+      async function startCall(callType = 'video', targetName = 'Academic Directorate (@unfiltereddsumit)', isDirectAnswer = false) {
         activeCallData.active = true;
         activeCallData.callType = callType;
         activeCallData.targetName = targetName;
@@ -7973,6 +8543,22 @@
         modal.classList.remove('hidden');
         playCallSound('ring');
 
+        // Signaling write to Firestore
+        if (db && !isDirectAnswer) {
+          const callPayload = {
+            id: 'call-' + Date.now(),
+            callerId: currentUser.uid,
+            callerName: currentUser.displayName || 'Aspirant',
+            callerEmail: currentUser.email || 'guest@prepskm.edu',
+            callerAvatar: currentUser.photoURL || DEFAULT_AVATAR_SVG,
+            targetName: targetName,
+            callType: callType,
+            status: 'ringing',
+            timestamp: Date.now()
+          };
+          db.collection('activeCalls').doc('liveCall').set(callPayload).catch(e => console.warn(e));
+        }
+
         // Request camera feed if video call
         if (callType === 'video' && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           try {
@@ -7984,7 +8570,7 @@
             }
             if (selfFeedContainer) selfFeedContainer.classList.remove('hidden');
           } catch (err) {
-            console.warn("Camera permission not provided, continuing with simulated visualizer:", err);
+            console.warn("Camera permission note:", err);
             if (selfFeedContainer) selfFeedContainer.classList.add('hidden');
           }
         } else {
@@ -8089,7 +8675,7 @@
         lucide.createIcons();
       }
 
-      function endActiveCall() {
+      function endActiveCall(notifyFirestore = true) {
         if (activeCallData.timerInterval) clearInterval(activeCallData.timerInterval);
         if (activeCallData.localStream) {
           activeCallData.localStream.getTracks().forEach(t => t.stop());
@@ -8099,6 +8685,14 @@
         activeCallData.active = false;
         const modal = document.getElementById('callInterfaceModal');
         if (modal) modal.classList.add('hidden');
+
+        if (notifyFirestore && db) {
+          db.collection('activeCalls').doc('liveCall').set({
+            status: 'ended',
+            endedAt: Date.now()
+          }, { merge: true }).catch(e => console.warn(e));
+        }
+
         showAppToast(`Call with ${activeCallData.targetName} ended (${document.getElementById('callTimerDisplay')?.innerText || '00:00'})`, 'info');
       }
 
@@ -8844,10 +9438,16 @@
                 photoURL: user.photoURL || DEFAULT_AVATAR_SVG,
                 role: role,
                 isGuest: false,
-                targetExam: state.userProfile.targetExams[0] || "JEE Main & Advanced"
+                targetExam: (state.userProfile && state.userProfile.targetExams) ? state.userProfile.targetExams[0] : "JEE Main & Advanced"
               };
+              try {
+                localStorage.setItem('prepskm_auth_user', JSON.stringify(currentUser));
+              } catch(e) {}
             }
             updateRoleAndHeaderUI();
+            if (currentUser.role === 'superadmin') {
+              renderAdminLiveCommunications();
+            }
           });
         }
 
