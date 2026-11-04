@@ -201,6 +201,14 @@ export default function AdminControls() {
           eventType: 'live',
         });
       }
+      if (window.prepskmDb?.sendBroadcastNotification) {
+        await window.prepskmDb.sendBroadcastNotification({
+          title: '⏰ Live Mentorship Scheduled',
+          body: autoAlert,
+          category: 'live',
+          targetView: 'mentorship',
+        });
+      }
       setAlertBannerText(autoAlert);
       if (typeof window.showToast === 'function') {
         window.showToast(
@@ -215,6 +223,9 @@ export default function AdminControls() {
   // 4. Start Live Classroom Immediately & Open Full-Screen Host Studio
   const handleGoLiveNow = async () => {
     try {
+      const liveAlert =
+        alertBannerText.trim() ||
+        '🔴 Mentor Sumit is LIVE right now — Join the classroom!';
       await setDoc(
         doc(db, 'live_sessions', 'current'),
         {
@@ -224,9 +235,7 @@ export default function AdminControls() {
           roomName: liveRoomName.trim() || 'PrepskmLiveMentorshipSumit',
           mentorName: 'Sumit (@unfiltereddsumit)',
           scheduledAt: '',
-          alertMessage:
-            alertBannerText.trim() ||
-            '🔴 Mentor Sumit is LIVE right now — Join the classroom!',
+          alertMessage: liveAlert,
           thumbnailUrl: thumbnailPointer || thumbnailPreview || '',
           startedAt: new Date().toISOString(),
         },
@@ -239,6 +248,14 @@ export default function AdminControls() {
           subject: 'Live Mentorship',
           timeLabel: 'LIVE NOW',
           eventType: 'live',
+        });
+      }
+      if (window.prepskmDb?.sendBroadcastNotification) {
+        await window.prepskmDb.sendBroadcastNotification({
+          title: '🔴 LIVE NOW: ' + (liveTitle.trim() || 'Mentorship Session'),
+          body: liveAlert,
+          category: 'live',
+          targetView: 'mentorship',
         });
       }
       if (typeof window.showToast === 'function') {
@@ -269,9 +286,17 @@ export default function AdminControls() {
         { alertMessage: msg, updatedAt: new Date().toISOString() },
         { merge: true }
       );
+      if (window.prepskmDb?.sendBroadcastNotification) {
+        await window.prepskmDb.sendBroadcastNotification({
+          title: '📢 Announcement from Mentor Sumit',
+          body: msg,
+          category: 'announcement',
+          targetView: 'home',
+        });
+      }
       setAlertBannerText(msg);
       if (typeof window.showToast === 'function') {
-        window.showToast(`📢 Alert broadcasted to all students: "${msg}"`);
+        window.showToast(`📢 Notification broadcasted to all students: "${msg}"`);
       }
     } catch (err) {
       console.warn('Broadcast alert error:', err);
@@ -294,12 +319,12 @@ export default function AdminControls() {
     }
   };
 
-  // 6. Direct Cloud Study Material Upload via cloudStorage.js
+  // 6. Direct Cloud Study Material Upload via cloudStorage.js (Subject Only, No Chapter Selection Needed)
   const handleCloudPdfSubmit = async (e) => {
     e.preventDefault();
-    if (!pdfTitle.trim() || !pdfChapter.trim()) {
+    if (!pdfTitle.trim()) {
       if (typeof window.showToast === 'function') {
-        window.showToast('Please enter PDF Title and Chapter name.');
+        window.showToast('Please enter PDF Title.');
       }
       return;
     }
@@ -319,7 +344,7 @@ export default function AdminControls() {
         {
           title: pdfTitle.trim(),
           subject: pdfSubject,
-          chapter: pdfChapter.trim(),
+          chapter: `${pdfSubject} Study Material`,
           size: sizeMb,
           author: 'Sumit (@unfiltereddsumit)',
         },
@@ -331,6 +356,15 @@ export default function AdminControls() {
           );
         }
       );
+
+      if (window.prepskmDb?.sendBroadcastNotification) {
+        await window.prepskmDb.sendBroadcastNotification({
+          title: `📄 New ${pdfSubject} PDF Uploaded`,
+          body: `"${savedRecord.title}" is now available in Study Materials.`,
+          category: 'pdf',
+          targetView: 'materials',
+        });
+      }
 
       setPdfTitle('');
       setPdfChapter('');
@@ -482,7 +516,7 @@ export default function AdminControls() {
 
           <div>
             <label className="block text-[11px] font-bold text-indigo-200 mb-1">
-              Push / In-App Alert Banner Message
+              Push Notification &amp; In-App Alert Banner Message
             </label>
             <div className="flex items-center gap-1.5">
               <input
@@ -497,7 +531,7 @@ export default function AdminControls() {
                 onClick={handleSendBroadcastAlert}
                 className="px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shrink-0 cursor-pointer"
               >
-                📢 Notify
+                🔔 Push Notify
               </button>
               {alertBannerText && (
                 <button
@@ -533,7 +567,7 @@ export default function AdminControls() {
         </div>
       </div>
 
-      {/* 3. Cloud PDF Study Material Uploader (Chunked >18MB Safe Storage) */}
+      {/* 3. Cloud PDF Study Material Uploader (Subject-only, no Chapter input required) */}
       <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <div>
@@ -541,7 +575,7 @@ export default function AdminControls() {
               Cloud Storage Sync
             </span>
             <h3 className="text-base font-extrabold text-slate-900 mt-1">
-              Quick Cloud PDF Uploader (Large File Safe)
+              Quick Cloud PDF Uploader (Large File Safe • No Chapter Selection Required)
             </h3>
           </div>
         </div>
@@ -558,34 +592,25 @@ export default function AdminControls() {
               type="text"
               value={pdfTitle}
               onChange={(e) => setPdfTitle(e.target.value)}
-              placeholder="e.g., Rotational Motion Notes"
+              placeholder="e.g., Rotational Motion Formula Sheet"
               className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold"
             />
           </div>
 
           <div>
             <label className="block text-[11px] font-bold text-slate-600 mb-1">
-              Subject &amp; Chapter
+              Subject
             </label>
-            <div className="flex gap-1.5">
-              <select
-                value={pdfSubject}
-                onChange={(e) => setPdfSubject(e.target.value)}
-                className="px-2.5 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50"
-              >
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Biology">Biology</option>
-              </select>
-              <input
-                type="text"
-                value={pdfChapter}
-                onChange={(e) => setPdfChapter(e.target.value)}
-                placeholder="Chapter name"
-                className="w-full px-2.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold"
-              />
-            </div>
+            <select
+              value={pdfSubject}
+              onChange={(e) => setPdfSubject(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50"
+            >
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Biology">Biology</option>
+            </select>
           </div>
 
           <div>

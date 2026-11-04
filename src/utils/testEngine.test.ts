@@ -304,6 +304,9 @@ import {
   isAuthorizedAdmin,
   buildJitsiRoomName,
   normalizeStudyMaterialUrl,
+  stepSolutionIndex,
+  buildMockCertificateMetadata,
+  sanitizeLiveProviderLabel,
 } from './testEngine';
 
 test('Formula Blitz 60s CBT Rush: streak multiplier and high-score calculation', () => {
@@ -363,4 +366,35 @@ test('Study Material PDF URL sanitizer rejects custom File/Object instances', ()
     '#prepskm-local-file:pdf-999'
   );
 });
+
+test('Swipeable solution navigation, E-certificate metadata, and whitelabel sanitizer', () => {
+  assert.equal(stepSolutionIndex(0, 5, 'next'), 1);
+  assert.equal(stepSolutionIndex(4, 5, 'next'), 0);
+  assert.equal(stepSolutionIndex(0, 5, 'prev'), 4);
+  assert.equal(stepSolutionIndex(2, 5, 3), 3);
+
+  const cert = buildMockCertificateMetadata({
+    studentName: 'Aarav Verma',
+    studentEmail: 'aarav@gmail.com',
+    testTitle: 'JEE Main Full Syllabus Mock #1',
+    totalScore: 265,
+    maxScore: 300,
+    accuracy: 92,
+    percentile: 99.4,
+    dateStr: '2026-11-04',
+  });
+  assert.equal(cert.gradeBadge, 'All India Topper Distinction');
+  assert.equal(cert.studentEmail, 'aarav@gmail.com');
+  assert.ok(cert.certificateId.startsWith('PREPSKM-CERT-20261104-'));
+
+  assert.equal(
+    sanitizeLiveProviderLabel('Connected via Jitsi Meet & YouTube', false),
+    'Connected via Prepskm Live Stream & Prepskm HD Video'
+  );
+  assert.equal(
+    sanitizeLiveProviderLabel('Connected via Jitsi Meet', true),
+    'Connected via Jitsi Meet'
+  );
+});
+
 

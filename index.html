@@ -57,10 +57,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <!-- Jitsi Meet External API & Prepskm Cloud/Jitsi React SDK Bridge -->
-    <script src="https://meet.jit.si/external_api.js" async></script>
+    <script id="jitsi-external-api-head" src="https://meet.jit.si/external_api.js" async></script>
     <script type="module" src="/src/main.tsx"></script>
 
     <style>
+      /* Enhanced Vibrant Contrast & Readability Theme */
+      body {
+        background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 45%, #eef2ff 100%);
+        color: #0f172a;
+      }
       /* Custom subtle scrollbars & styles */
       ::-webkit-scrollbar {
         width: 6px;
@@ -145,13 +150,13 @@
       }
     </style>
   </head>
-  <body class="bg-gray-50 text-gray-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 pb-20 md:pb-6">
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 pb-20 md:pb-6">
 
     <!-- Global Non-Blocking Toast Notification Container -->
     <div id="globalToastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
     <!-- Top Sticky Header -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 gap-3">
           
@@ -201,6 +206,31 @@
               <span class="sm:hidden">AI</span>
             </button>
 
+            <!-- Real-Time Notification Bell Button & Dropdown -->
+            <div class="relative" id="headerNotificationWrapper">
+              <button id="headerNotificationBellBtn" onclick="toggleNotificationsPanel(event)" class="relative p-2 rounded-xl bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 transition-all shadow-xs" title="Live Alerts & Notifications">
+                <i data-lucide="bell" class="w-4 h-4"></i>
+                <span id="headerNotifUnreadBadge" class="hidden absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-red-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs">0</span>
+              </button>
+
+              <!-- Notifications Dropdown Panel -->
+              <div id="headerNotifDropdownPanel" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden">
+                <div class="px-4 py-3 bg-gradient-to-r from-blue-900 to-indigo-900 text-white flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="bell-ring" class="w-4 h-4 text-amber-300"></i>
+                    <span class="text-xs font-extrabold tracking-wide">Prepskm Live Notifications</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button onclick="enableBrowserPushNotifications()" class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 text-blue-100 transition-colors">Enable Alerts</button>
+                    <button onclick="markAllNotificationsRead()" class="text-[10px] font-bold text-amber-300 hover:underline">Mark Read</button>
+                  </div>
+                </div>
+                <div id="headerNotificationsList" class="max-h-80 overflow-y-auto divide-y divide-slate-100 p-2 space-y-1 text-xs">
+                  <div class="p-4 text-center text-slate-400">No new notifications yet.</div>
+                </div>
+              </div>
+            </div>
+
             <!-- Profile Avatar Logo Button (Opens Profile Auth / Settings Modal) -->
             <button id="headerProfileAvatarBtn" onclick="openProfileAuthModal()" class="relative flex items-center justify-center p-0.5 rounded-full ring-2 ring-blue-500/30 hover:ring-blue-600 transition-all bg-white hover:scale-105" title="Student Profile & Auth Settings">
               <img id="headerProfileLogoImg" src="" class="w-8 h-8 rounded-full object-cover bg-gray-100 p-0.5" alt="Profile">
@@ -227,6 +257,10 @@
           <button onclick="navigateView('home')" id="nav-btn-home" class="nav-tab active px-3.5 py-1.5 rounded-lg text-blue-700 bg-blue-50 font-semibold flex items-center gap-1.5 transition-all">
             <i data-lucide="home" class="w-4 h-4"></i>
             <span>Home</span>
+          </button>
+          <button onclick="navigateView('lectures')" id="nav-btn-lectures" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
+            <i data-lucide="tv" class="w-4 h-4 text-indigo-600"></i>
+            <span>Video Lectures</span>
           </button>
           <button onclick="navigateView('materials')" id="nav-btn-materials" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -692,6 +726,57 @@
       </section>
 
       <!-- =================================================================== -->
+      <!-- VIEW 2B: DEDICATED VIDEO LECTURES HUB (SUBJECT & CHAPTER FILTERED) -->
+      <!-- =================================================================== -->
+      <section id="view-lectures" class="hidden space-y-6">
+        <div class="bg-gradient-to-r from-indigo-950 via-blue-900 to-purple-950 text-white p-6 rounded-3xl border border-indigo-700/60 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-slate-950">Prepskm HD Classroom</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-blue-100 border border-white/20">Ad-Free Native Player</span>
+            </div>
+            <h1 class="text-2xl font-black tracking-tight text-white">Chapter-Wise Video Lectures & One-Shots</h1>
+            <p class="text-xs text-blue-100/90">Select Subject and Chapter to watch clean HD lectures with timestamp bookmarks and companion DPPs.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Subject Filter Dropdown -->
+            <select id="lecturesSubjectSelect" onchange="handleLecturesSubjectChange(this.value)" class="px-3.5 py-2 text-xs font-extrabold bg-white text-slate-900 border-2 border-indigo-300 rounded-xl shadow-sm focus:outline-none">
+              <option value="ALL">All Subjects</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Biology">Biology</option>
+            </select>
+
+            <!-- Chapter Filter Dropdown -->
+            <select id="lecturesChapterSelect" onchange="handleLecturesChapterChange(this.value)" class="px-3.5 py-2 text-xs font-extrabold bg-white text-slate-900 border-2 border-indigo-300 rounded-xl shadow-sm focus:outline-none">
+              <option value="ALL">All Chapters</option>
+            </select>
+
+            <button onclick="openCurriculumManagerModal()" class="admin-only hidden px-3 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black rounded-xl items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+              <span>Add Chapters</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Subject Quick Filter Pills -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1" id="lecturesSubjectPills">
+          <button onclick="handleLecturesSubjectChange('ALL')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow-sm transition-all" data-subj="ALL">All Subjects</button>
+          <button onclick="handleLecturesSubjectChange('Physics')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-blue-400 transition-all" data-subj="Physics">⚡ Physics</button>
+          <button onclick="handleLecturesSubjectChange('Chemistry')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 transition-all" data-subj="Chemistry">🧪 Chemistry</button>
+          <button onclick="handleLecturesSubjectChange('Mathematics')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-purple-400 transition-all" data-subj="Mathematics">📐 Mathematics</button>
+          <button onclick="handleLecturesSubjectChange('Biology')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-amber-400 transition-all" data-subj="Biology">🧬 Biology</button>
+        </div>
+
+        <!-- Dedicated Lectures Grid -->
+        <div id="dedicatedLecturesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Populated dynamically by renderDedicatedLecturesView() -->
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
       <!-- VIEW 3: NTA-STYLE CBT MOCK TEST ENGINE & FORMULA BLITZ RUSH -->
       <!-- =================================================================== -->
       <section id="view-mock-test" class="hidden space-y-6">
@@ -987,14 +1072,18 @@
             <div>
               <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-100 text-blue-800 rounded-full">Test Performance Analysis</span>
               <h1 class="text-2xl font-black text-gray-900 mt-1">Deep Mock Analytics & Scorecard</h1>
-              <p class="text-xs text-gray-500">Comprehensive diagnostic based on NTA percentile parameters</p>
+              <p class="text-xs text-gray-500">Comprehensive diagnostic based on NTA percentile parameters • Swipe through step-by-step solutions below</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button onclick="retakeMockTest()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-xl flex items-center gap-1.5">
-                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                <span>Retake Test</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="downloadMockTestCertificate()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-extrabold rounded-xl shadow-md flex items-center gap-1.5 transition-all">
+                <i data-lucide="award" class="w-4 h-4"></i>
+                <span>Download E-Certificate</span>
               </button>
-              <button onclick="navigateView('mock-test')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm">
+              <button onclick="retakeMockTest()" class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-xs font-extrabold rounded-xl flex items-center gap-1.5 transition-all">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Retake Same Test</span>
+              </button>
+              <button onclick="resetToMockSetupView()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm">
                 <span>New Test Setup</span>
               </button>
             </div>
@@ -1045,11 +1134,43 @@
             </div>
           </div>
 
+          <!-- Interactive Swipeable Solution Deck (Swipe Left/Right or Prev/Next) -->
+          <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-5 sm:p-6 border border-indigo-500/30 shadow-xl space-y-4" id="swipeableSolutionWrapper">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-400 text-slate-950">Interactive Solution Deck</span>
+                <h3 class="text-base font-extrabold text-white mt-1 flex items-center gap-2">
+                  <span>Swipe or Click to Inspect Step-by-Step Solutions</span>
+                </h3>
+                <p class="text-[11px] text-indigo-200">Swipe left/right on mobile or use Previous / Next buttons to review each question & solution.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="stepMockSolutionCard('prev')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-extrabold border border-white/15 transition-all">
+                  ← Prev Solution
+                </button>
+                <span id="swipeSolutionCounterBadge" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-black font-mono">
+                  1 / 1
+                </span>
+                <button onclick="stepMockSolutionCard('next')" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-extrabold shadow-md transition-all">
+                  Next Solution →
+                </button>
+              </div>
+            </div>
+
+            <!-- Question Number Pill Strip -->
+            <div id="swipeSolutionPillsStrip" class="flex items-center gap-1.5 overflow-x-auto pb-1"></div>
+
+            <!-- Active Swipeable Solution Card -->
+            <div id="swipeableSolutionStage" class="bg-white text-slate-900 rounded-2xl p-5 border border-slate-200 shadow-inner space-y-3 select-none">
+              <!-- Populated dynamically by renderSwipeableSolutionCard() -->
+            </div>
+          </div>
+
           <!-- Post-Test Detailed Solution Key with Cropped Explanation Images -->
           <div class="space-y-4">
             <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
               <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
-              <span>Post-Test Solution Key & Step-6 Explanation Cropper Reveal</span>
+              <span>All Questions Solution Key & Step-6 Explanation Cropper Reveal</span>
             </h3>
             <div id="reportSolutionsList" class="space-y-4">
               <!-- Dynamically rendered solutions -->
@@ -1610,7 +1731,7 @@
                   <div class="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <label class="block font-medium text-gray-700 mb-1">Subject</label>
-                      <select id="cropperSubject" class="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg bg-white">
+                      <select id="cropperSubject" onchange="syncCropperChaptersDropdown(this.value)" class="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg bg-white">
                         <option value="Physics">Physics</option>
                         <option value="Chemistry">Chemistry</option>
                         <option value="Mathematics">Mathematics</option>
@@ -1618,8 +1739,10 @@
                       </select>
                     </div>
                     <div>
-                      <label class="block font-medium text-gray-700 mb-1">Chapter Name</label>
-                      <input id="cropperChapter" type="text" value="Kinematics & Vectors" class="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg bg-white" />
+                      <label class="block font-medium text-gray-700 mb-1">Select Chapter</label>
+                      <select id="cropperChapter" class="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg bg-white">
+                        <option value="Kinematics & Vectors">Kinematics & Vectors</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1747,10 +1870,10 @@
             </div>
           </div>
 
-          <!-- PDF Uploader Form -->
+          <!-- PDF Uploader Form (No Chapter Name field required per user instruction) -->
           <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200 space-y-4">
-            <h3 class="text-sm font-bold text-gray-900">Upload New PDF Material</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+            <h3 class="text-sm font-bold text-gray-900">Upload New PDF Material (Subject-Level Cloud PDF)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
               <div>
                 <label class="block font-medium text-gray-700 mb-1">PDF Title *</label>
                 <input id="newPdfTitle" type="text" placeholder="e.g. Physics Formula Cheat Sheet 2027" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
@@ -1778,11 +1901,8 @@
                   <option value="Biology">Biology</option>
                 </select>
               </div>
-              <div>
-                <label class="block font-medium text-gray-700 mb-1">Chapter Name *</label>
-                <input id="newPdfChapter" type="text" placeholder="e.g. Rotational Motion / GOC" value="High-Yield Revision" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
-              </div>
-              <div class="sm:col-span-2 space-y-1.5">
+              <input id="newPdfChapter" type="hidden" value="Subject Complete Material" />
+              <div class="sm:col-span-2 md:col-span-4 space-y-1.5">
                 <label class="block font-medium text-gray-700">PDF Document File (.pdf) *</label>
                 <div class="flex flex-col sm:flex-row items-center gap-2">
                   <label class="cursor-pointer flex-1 w-full flex items-center justify-center gap-2 px-3.5 py-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-xl text-xs font-bold transition-all shadow-xs">
@@ -1835,8 +1955,8 @@
         <!-- ------------------------------------------------------------- -->
         <div id="adminTabContent-videos" class="hidden bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6">
           <div class="border-b border-gray-100 pb-3">
-            <h2 class="text-base font-bold text-gray-900">Video Uploading with Mentor Tagging</h2>
-            <p class="text-xs text-gray-500">Upload video links/embeds tagged to a specific mentor with companion PDF notes/DPPs.</p>
+            <h2 class="text-base font-bold text-gray-900">Video Lecture Uploader (Subject & Chapter Scoped)</h2>
+            <p class="text-xs text-gray-500">Select Subject and Chapter for each lecture and upload clean HD video streams with companion PDF notes/DPPs.</p>
           </div>
 
           <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200 space-y-4">
@@ -1852,8 +1972,8 @@
                 </select>
               </div>
               <div>
-                <label class="block font-medium text-gray-700 mb-1">Subject *</label>
-                <select id="videoUploadSubject" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl">
+                <label class="block font-medium text-gray-700 mb-1">Select Subject *</label>
+                <select id="videoUploadSubject" onchange="syncVideoUploadChaptersDropdown(this.value)" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl">
                   <option value="Physics">Physics</option>
                   <option value="Chemistry">Chemistry</option>
                   <option value="Mathematics">Mathematics</option>
@@ -1861,8 +1981,10 @@
                 </select>
               </div>
               <div>
-                <label class="block font-medium text-gray-700 mb-1">Chapter Name *</label>
-                <input id="videoUploadChapter" type="text" placeholder="e.g. Kinematics & Vectors" value="Kinematics & Vectors" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
+                <label class="block font-medium text-gray-700 mb-1">Select Chapter *</label>
+                <select id="videoUploadChapter" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl">
+                  <option value="Kinematics & Vectors">Kinematics & Vectors</option>
+                </select>
               </div>
               <div class="sm:col-span-2 space-y-1.5">
                 <label class="block font-medium text-gray-700">Video Lecture File (.mp4 / .webm) *</label>
@@ -1873,7 +1995,7 @@
                     <input id="videoUploadFileInput" type="file" accept="video/mp4,video/webm,video/*,.mp4,.webm" class="hidden" onchange="handleVideoFileSelected(event)" />
                   </label>
                   <span class="text-[11px] text-gray-400 font-bold uppercase">OR</span>
-                  <input id="videoUploadUrl" type="url" placeholder="Or enter YouTube / MP4 stream URL" class="flex-1 w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs" />
+                  <input id="videoUploadUrl" type="url" placeholder="Or enter direct HD Video Stream URL" class="flex-1 w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs" />
                 </div>
                 <div id="videoFilePreviewNotice" class="hidden text-[11px] text-emerald-800 font-semibold bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg flex items-center justify-between">
                   <div class="flex items-center gap-1.5 truncate">
@@ -2422,6 +2544,7 @@
 
               <!-- Info rows -->
               <div class="bg-white p-3 rounded-xl border border-gray-200 text-xs space-y-2">
+                <div class="flex justify-between items-center gap-2"><span class="text-gray-400 shrink-0">Gmail ID:</span> <strong id="cardEmailPreview" class="text-emerald-700 font-mono text-[11px] truncate">student@gmail.com</strong></div>
                 <div class="flex justify-between"><span class="text-gray-400">Telegram:</span> <strong id="cardTelegramPreview" class="text-blue-600 font-mono">@aspirant_prep</strong></div>
                 <div class="flex justify-between"><span class="text-gray-400">Daily Target:</span> <strong id="cardGoalPreview" class="text-gray-800">8 Hours / day</strong></div>
                 <div class="flex justify-between"><span class="text-gray-400">Auth UID:</span> <span id="cardUidShort" class="font-mono text-[10px] text-gray-500">uid-student</span></div>
@@ -3246,7 +3369,7 @@
 
             <div class="space-y-1 relative z-10">
               <h4 id="callRemoteNameSubtitle" class="font-extrabold text-base sm:text-lg text-white">Sumit (@unfiltereddsumit)</h4>
-              <p class="text-xs text-gray-400">1:1 Direct Consultation • High Fidelity Jitsi WebRTC Stream</p>
+              <p class="text-xs text-gray-400">1:1 Direct Consultation • High Fidelity Prepskm Encrypted Stream</p>
               
               <!-- Frequency Bars Visualizer Simulation -->
               <div class="flex items-center justify-center gap-1 pt-2 h-6">
@@ -3966,10 +4089,16 @@
         <span>Home</span>
       </button>
 
-      <!-- 2: Study Material -->
+      <!-- 2: Video Lectures -->
+      <button onclick="navigateView('lectures')" id="mob-btn-lectures" class="flex flex-col items-center justify-center gap-0.5 hover:text-gray-900 transition-colors flex-1 py-1">
+        <i data-lucide="tv" class="w-4 h-4"></i>
+        <span>Lectures</span>
+      </button>
+
+      <!-- 3: Study Material -->
       <button onclick="navigateView('materials')" id="mob-btn-materials" class="flex flex-col items-center justify-center gap-0.5 hover:text-gray-900 transition-colors flex-1 py-1">
         <i data-lucide="book-open" class="w-4 h-4"></i>
-        <span>Study Material</span>
+        <span>Materials</span>
       </button>
 
       <!-- 3: Test -->
@@ -5251,6 +5380,30 @@
         }).join('');
       }
 
+      function syncCropperChaptersDropdown(subjectVal) {
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+        const subj = subjectVal || document.getElementById('cropperSubject')?.value || 'Physics';
+        const chapters = (state.curriculum.chapters && state.curriculum.chapters[subj]) || ['Kinematics & Vectors', 'Core Concepts'];
+        const chSel = document.getElementById('cropperChapter');
+        if (chSel) {
+          const prev = chSel.value;
+          chSel.innerHTML = chapters.map(ch => `<option value="${ch}">${ch}</option>`).join('');
+          if (chapters.includes(prev)) chSel.value = prev;
+        }
+      }
+
+      function syncVideoUploadChaptersDropdown(subjectVal) {
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+        const subj = subjectVal || document.getElementById('videoUploadSubject')?.value || 'Physics';
+        const chapters = (state.curriculum.chapters && state.curriculum.chapters[subj]) || ['Kinematics & Vectors', 'Core Concepts'];
+        const chSel = document.getElementById('videoUploadChapter');
+        if (chSel) {
+          const prev = chSel.value;
+          chSel.innerHTML = chapters.map(ch => `<option value="${ch}">${ch}</option>`).join('');
+          if (chapters.includes(prev)) chSel.value = prev;
+        }
+      }
+
       function populateCurriculumDropdowns() {
         if (!state.curriculum) state.curriculum = loadSavedCurriculum();
 
@@ -5280,23 +5433,171 @@
           if (curVal) matSub.value = curVal;
         }
 
-        // 5. Refresh Cropper Subject Select & Video Upload Subject Select
+        // 5. Refresh Cropper Subject & Chapter Selects
         const cropSub = document.getElementById('cropperSubject');
         if (cropSub) {
           const curVal = cropSub.value;
           cropSub.innerHTML = state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
           if (state.curriculum.subjects.includes(curVal)) cropSub.value = curVal;
+          syncCropperChaptersDropdown(cropSub.value);
         }
+
+        // 6. Refresh Video Upload Subject & Chapter Selects
         const vidSub = document.getElementById('videoUploadSubject');
         if (vidSub) {
           const curVal = vidSub.value;
           vidSub.innerHTML = state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
           if (state.curriculum.subjects.includes(curVal)) vidSub.value = curVal;
+          syncVideoUploadChaptersDropdown(vidSub.value);
+        }
+
+        // 7. Refresh Dedicated Lectures Subject & Chapter Selects
+        const lecSub = document.getElementById('lecturesSubjectSelect');
+        if (lecSub) {
+          const curVal = lecSub.value || 'ALL';
+          lecSub.innerHTML = `<option value="ALL">All Subjects</option>` + state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+          lecSub.value = curVal;
+        }
+        if (typeof refreshLecturesChapterDropdown === 'function') {
+          refreshLecturesChapterDropdown();
         }
       }
 
+      // Real-Time Notifications State & UI
+      let appNotificationsList = [];
+      let lastSeenNotifTimestamp = Number(localStorage.getItem('prepskm_last_seen_notif_ts') || 0);
+
+      function renderHeaderNotificationsUI() {
+        const badge = document.getElementById('headerNotifUnreadBadge');
+        const listEl = document.getElementById('headerNotificationsList');
+        if (!listEl) return;
+
+        const unreadCount = appNotificationsList.filter(n => (Number(n.timestamp) || 0) > lastSeenNotifTimestamp).length;
+        if (badge) {
+          if (unreadCount > 0) {
+            badge.innerText = unreadCount > 9 ? '9+' : String(unreadCount);
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+        }
+
+        if (appNotificationsList.length === 0) {
+          listEl.innerHTML = `<div class="p-4 text-center text-slate-400">No new notifications yet.</div>`;
+          return;
+        }
+
+        listEl.innerHTML = appNotificationsList.slice(0, 20).map(n => {
+          const isUnread = (Number(n.timestamp) || 0) > lastSeenNotifTimestamp;
+          const timeStr = n.createdAt ? new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+          const targetView = n.targetView || (n.type === 'video' ? 'lectures' : n.type === 'pdf' ? 'materials' : n.type === 'mock' ? 'mock-test' : 'home');
+          return `
+            <div onclick="navigateView('${targetView}'); closeNotificationsPanel();" class="p-3 rounded-xl cursor-pointer transition-all flex items-start gap-2.5 ${isUnread ? 'bg-blue-50/90 border border-blue-200' : 'hover:bg-slate-50'}">
+              <div class="w-8 h-8 rounded-lg ${isUnread ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center shrink-0 font-bold text-xs">
+                🔔
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <span class="font-extrabold text-slate-900 text-xs truncate">${n.title || 'Prepskm Update'}</span>
+                  <span class="text-[10px] text-slate-400 shrink-0">${timeStr}</span>
+                </div>
+                <p class="text-[11px] text-slate-600 leading-snug mt-0.5">${n.message || ''}</p>
+                <span class="text-[9px] font-bold text-indigo-600 uppercase tracking-wider mt-1 inline-block">${n.author || 'Sumit (@unfiltereddsumit)'}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function toggleNotificationsPanel(e) {
+        if (e) e.stopPropagation();
+        const panel = document.getElementById('headerNotifDropdownPanel');
+        if (!panel) return;
+        const isHidden = panel.classList.contains('hidden');
+        if (isHidden) {
+          panel.classList.remove('hidden');
+          renderHeaderNotificationsUI();
+        } else {
+          panel.classList.add('hidden');
+        }
+      }
+
+      function closeNotificationsPanel() {
+        const panel = document.getElementById('headerNotifDropdownPanel');
+        if (panel) panel.classList.add('hidden');
+      }
+
+      function markAllNotificationsRead() {
+        lastSeenNotifTimestamp = Date.now();
+        try { localStorage.setItem('prepskm_last_seen_notif_ts', String(lastSeenNotifTimestamp)); } catch (e) {}
+        renderHeaderNotificationsUI();
+      }
+
+      function enableBrowserPushNotifications() {
+        if (!('Notification' in window)) {
+          showAppToast('Browser notifications are not supported on this device.', 'info');
+          return;
+        }
+        Notification.requestPermission().then(perm => {
+          if (perm === 'granted') {
+            showAppToast('Live Desktop & Mobile Push Notifications Enabled!', 'success');
+            new Notification('Prepskm Live Alerts Active', {
+              body: 'You will now receive instant alerts when @unfiltereddsumit goes live or uploads lectures/mocks.'
+            });
+          } else {
+            showAppToast('Notification permission was not granted.', 'info');
+          }
+        });
+      }
+
+      function pushAppNotification(title, message, type = 'announcement', targetView = 'home') {
+        const notif = {
+          id: 'notif-' + Date.now(),
+          title,
+          message,
+          type,
+          targetView,
+          author: 'Sumit (@unfiltereddsumit)',
+          createdAt: new Date().toISOString(),
+          timestamp: Date.now()
+        };
+        appNotificationsList = [notif, ...appNotificationsList.filter(item => item.id !== notif.id)];
+        renderHeaderNotificationsUI();
+        if (db) {
+          db.collection('notifications').doc(notif.id).set(notif).catch(() => {});
+        }
+        if (window.prepskmDb && window.prepskmDb.sendBroadcastNotification) {
+          window.prepskmDb.sendBroadcastNotification({ title, message, type }).catch(() => {});
+        }
+      }
+
+      document.addEventListener('click', (ev) => {
+        const wrapper = document.getElementById('headerNotificationWrapper');
+        if (wrapper && !wrapper.contains(ev.target)) {
+          closeNotificationsPanel();
+        }
+      });
+
       function initCloudRealtimeSync() {
         if (!db) return;
+
+        // 0. Real-time Notifications sync ('notifications')
+        try {
+          db.collection('notifications').orderBy('timestamp', 'desc').limit(25).onSnapshot(snap => {
+            const incoming = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            if (incoming.length > 0) {
+              const newest = incoming[0];
+              if (appNotificationsList.length > 0 && newest.id !== appNotificationsList[0]?.id && (Number(newest.timestamp) || 0) > lastSeenNotifTimestamp) {
+                showAppToast(`🔔 ${newest.title}: ${newest.message}`, 'info');
+                if ('Notification' in window && Notification.permission === 'granted') {
+                  try { new Notification(newest.title || 'Prepskm Alert', { body: newest.message || '' }); } catch (e) {}
+                }
+              }
+              appNotificationsList = incoming;
+              renderHeaderNotificationsUI();
+            }
+          }, () => {});
+        } catch (e) {}
 
         // 1. Curriculum hierarchy sync
         try {
@@ -5571,7 +5872,7 @@
           viewName = 'home';
         }
 
-        const views = ['home', 'materials', 'mock-test', 'mentorship', 'mentor-studio', 'admin', 'profile', 'forum', 'chat'];
+        const views = ['home', 'lectures', 'materials', 'mock-test', 'mentorship', 'mentor-studio', 'admin', 'profile', 'forum', 'chat'];
         views.forEach(v => {
           const sec = document.getElementById(`view-${v}`);
           if (sec) sec.classList.add('hidden');
@@ -5608,6 +5909,7 @@
 
         // Refresh dynamic UI elements for this view
         if (viewName === 'home') renderHomeChatPreviews();
+        if (viewName === 'lectures') renderDedicatedLecturesView();
         if (viewName === 'materials') renderMaterialsView();
         if (viewName === 'mentorship') renderMentorshipView();
         if (viewName === 'mentor-studio') renderMentorStudioView();
@@ -7449,6 +7751,15 @@
           </div>
         `).join('');
 
+        // Store lastEvaluatedMockResult for E-Certificate & Swipeable Solution Deck
+        window.lastEvaluatedMockResult = {
+          ...mockSubmissionRecord,
+          percentile: Number(perc),
+          studentEmail: currentUser.email || ''
+        };
+        currentSwipeSolutionIndex = 0;
+        renderSwipeableSolutionCard(0);
+
         // Detailed Post-Test Solution Key with Step 6 Cropped Explanation reveal
         const solContainer = document.getElementById('reportSolutionsList');
         solContainer.innerHTML = activeMockTestSession.questions.map((q, idx) => {
@@ -7496,9 +7807,259 @@
         checkTriggerGuestReminder('mock_completed');
       }
 
+      // Interactive Swipeable Solution Deck Functions
+      let currentSwipeSolutionIndex = 0;
+      let swipeTouchStartX = 0;
+
+      function renderSwipeableSolutionCard(index) {
+        if (!activeMockTestSession || !activeMockTestSession.questions || activeMockTestSession.questions.length === 0) return;
+        const questions = activeMockTestSession.questions;
+        const total = questions.length;
+        currentSwipeSolutionIndex = Math.max(0, Math.min(total - 1, index));
+        const q = questions[currentSwipeSolutionIndex];
+        const rec = cbtUserAnswers[q.id];
+        const userAns = rec?.selectedAnswer || "Not Attempted";
+        const isCorrect = String(userAns).trim().toUpperCase() === String(q.correctAnswer).trim().toUpperCase();
+
+        const counterEl = document.getElementById('swipeSolutionCounterBadge');
+        if (counterEl) counterEl.innerText = `${currentSwipeSolutionIndex + 1} / ${total}`;
+
+        const pillsEl = document.getElementById('swipeSolutionPillsStrip');
+        if (pillsEl) {
+          pillsEl.innerHTML = questions.map((item, idx) => {
+            const ans = cbtUserAnswers[item.id]?.selectedAnswer;
+            const ok = ans && String(ans).trim().toUpperCase() === String(item.correctAnswer).trim().toUpperCase();
+            const isActive = idx === currentSwipeSolutionIndex;
+            const colorCls = isActive
+              ? 'bg-amber-400 text-slate-950 ring-2 ring-white scale-105'
+              : !ans
+              ? 'bg-slate-800 text-slate-300'
+              : ok
+              ? 'bg-emerald-600 text-white'
+              : 'bg-red-600 text-white';
+            return `<button onclick="renderSwipeableSolutionCard(${idx})" class="w-8 h-8 rounded-xl text-xs font-black shrink-0 transition-all ${colorCls}">${idx + 1}</button>`;
+          }).join('');
+        }
+
+        const stageEl = document.getElementById('swipeableSolutionStage');
+        if (stageEl) {
+          stageEl.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-900 font-black text-xs">Question #${q.cbtIndex || (currentSwipeSolutionIndex + 1)}</span>
+                <span class="text-xs font-bold text-slate-600">${q.subject} • ${q.chapter}</span>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-extrabold ${isCorrect ? 'bg-emerald-100 text-emerald-800' : userAns === 'Not Attempted' ? 'bg-slate-200 text-slate-700' : 'bg-red-100 text-red-800'}">
+                ${isCorrect ? '✓ Correct (+4 Marks)' : userAns === 'Not Attempted' ? 'Unattempted (0 Marks)' : '✗ Incorrect (-1 Mark)'}
+              </span>
+            </div>
+
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              ${q.questionImg ? `<img src="${q.questionImg}" class="max-h-56 object-contain mx-auto" alt="Question" />` : `<div class="text-sm font-bold text-slate-900 leading-relaxed">${q.questionText}</div>`}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div class="p-3 rounded-xl border ${isCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-red-50 border-red-200 text-red-900'}">
+                <span class="block text-[10px] uppercase font-bold opacity-75">Your Marked Answer</span>
+                <strong class="text-sm font-black">${userAns}</strong>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950">
+                <span class="block text-[10px] uppercase font-bold opacity-75">Official Answer Key</span>
+                <strong class="text-sm font-black">${Array.isArray(q.correctAnswer) ? q.correctAnswer.join(', ') : q.correctAnswer}</strong>
+              </div>
+            </div>
+
+            <div class="bg-blue-50/90 p-4 rounded-xl border border-blue-200 space-y-1.5">
+              <div class="text-[11px] font-black uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
+                <span>💡 Detailed Step-by-Step Solution</span>
+              </div>
+              ${q.solutionImg ? `
+                <img src="${q.solutionImg}" class="max-h-60 object-contain rounded-lg bg-white p-1.5 border border-blue-100 mx-auto" alt="Solution" />
+              ` : `
+                <div class="text-xs text-blue-950 font-mono leading-relaxed">${q.explanation || 'Apply the fundamental conservation and kinematic equations for this chapter to isolate the unknown variable.'}</div>
+              `}
+            </div>
+          `;
+        }
+      }
+
+      function stepMockSolutionCard(direction) {
+        if (!activeMockTestSession || !activeMockTestSession.questions) return;
+        const total = activeMockTestSession.questions.length;
+        if (direction === 'next') {
+          renderSwipeableSolutionCard(Math.min(total - 1, currentSwipeSolutionIndex + 1));
+        } else {
+          renderSwipeableSolutionCard(Math.max(0, currentSwipeSolutionIndex - 1));
+        }
+      }
+
+      // Attach touch swipe left/right handlers on #swipeableSolutionStage
+      document.addEventListener('touchstart', (e) => {
+        const stage = document.getElementById('swipeableSolutionStage');
+        if (stage && stage.contains(e.target) && e.touches && e.touches[0]) {
+          swipeTouchStartX = e.touches[0].clientX;
+        }
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        const stage = document.getElementById('swipeableSolutionStage');
+        if (stage && stage.contains(e.target) && e.changedTouches && e.changedTouches[0]) {
+          const deltaX = e.changedTouches[0].clientX - swipeTouchStartX;
+          if (Math.abs(deltaX) > 45) {
+            if (deltaX < 0) stepMockSolutionCard('next');
+            else stepMockSolutionCard('prev');
+          }
+        }
+      }, { passive: true });
+
+      // Retake the EXACT same mock test without regenerating random questions
       function retakeMockTest() {
-        if (!activeMockTestSession) return;
-        launchMockTestEngine();
+        if (!activeMockTestSession || !activeMockTestSession.questions || activeMockTestSession.questions.length === 0) {
+          launchMockTestEngine();
+          return;
+        }
+        cbtUserAnswers = {};
+        activeMockTestSession.questions.forEach((q, idx) => {
+          cbtUserAnswers[q.id] = {
+            selectedAnswer: null,
+            status: idx === 0 ? 'not_answered' : 'not_visited',
+            timeSpentSeconds: 0
+          };
+        });
+        activeMockTestSession.remainingSeconds = (activeMockTestSession.durationMinutes || 45) * 60;
+        cbtCurrentQuestionIndex = 0;
+
+        document.getElementById('mockResultsView').classList.add('hidden');
+        document.getElementById('mockSetupView').classList.add('hidden');
+        document.getElementById('mockLiveInterface').classList.remove('hidden');
+
+        loadCbtQuestion(0);
+        renderCbtPalette();
+        startCbtCountdown();
+        showAppToast('Retaking the same Mock Test with fresh timer & answer sheet!', 'success');
+      }
+
+      function resetToMockSetupView() {
+        if (cbtTimerInterval) clearInterval(cbtTimerInterval);
+        document.getElementById('mockResultsView').classList.add('hidden');
+        document.getElementById('mockLiveInterface').classList.add('hidden');
+        document.getElementById('mockSetupView').classList.remove('hidden');
+      }
+
+      // Download Official High-Resolution E-Certificate PNG
+      function downloadMockTestCertificate() {
+        const res = window.lastEvaluatedMockResult || (state.mockResults && state.mockResults[0]);
+        if (!res) {
+          showAppToast('Complete a mock test first to generate your E-Certificate.', 'error');
+          return;
+        }
+
+        const studentName = (currentUser && currentUser.displayName) || res.studentName || 'Prepskm Aspirant';
+        const studentEmail = (currentUser && currentUser.email) || res.studentEmail || '';
+        const examLabel = res.exam || 'JEE / NEET';
+        const testTitle = res.seriesTitle || `${examLabel} All India CBT Mock`;
+        const scoreStr = `${res.totalScore} / ${res.maxScore}`;
+        const accStr = `${res.accuracy}%`;
+        const percStr = `${res.percentile || 95.0}%ile`;
+        const dateStr = new Date(res.submittedAt || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        const certId = `PSKM-${new Date().getFullYear()}-${String(res.id || Date.now()).slice(-6).toUpperCase()}`;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 820;
+        const ctx = canvas.getContext('2d');
+
+        // Background Gradient
+        const grad = ctx.createLinearGradient(0, 0, 1200, 820);
+        grad.addColorStop(0, '#0f172a');
+        grad.addColorStop(0.5, '#1e1b4b');
+        grad.addColorStop(1, '#1e3a8a');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 1200, 820);
+
+        // Gold Outer Border & Inner Frame
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(32, 32, 1136, 756);
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(48, 48, 1104, 724);
+
+        // Header Pill & Title
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('PREPSKM OFFICIAL ACADEMIC DIRECTORATE • CERTIFICATE OF EXCELLENCE', 600, 115);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 46px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('MOCK TEST PERFORMANCE CERTIFICATE', 600, 175);
+
+        ctx.fillStyle = '#93c5fd';
+        ctx.font = '500 20px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('This is proudly presented to', 600, 235);
+
+        // Student Name & Gmail
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = '800 44px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText(studentName.toUpperCase(), 600, 295);
+
+        if (studentEmail) {
+          ctx.fillStyle = '#cbd5e1';
+          ctx.font = '600 18px "JetBrains Mono", monospace';
+          ctx.fillText(`Verified Aspirant ID: ${studentEmail}`, 600, 330);
+        }
+
+        // Test Details
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText(`For successfully completing the ${testTitle}`, 600, 385);
+
+        // Metrics Boxes
+        const metrics = [
+          { label: 'TOTAL SCORE', val: scoreStr },
+          { label: 'ACCURACY RATE', val: accStr },
+          { label: 'EST. PERCENTILE', val: percStr },
+          { label: 'EXAM CATEGORY', val: examLabel }
+        ];
+        metrics.forEach((m, i) => {
+          const x = 130 + i * 240;
+          const y = 435;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+          ctx.fillRect(x, y, 220, 120);
+          ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(x, y, 220, 120);
+
+          ctx.fillStyle = '#93c5fd';
+          ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
+          ctx.fillText(m.label, x + 110, y + 42);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '800 28px "Plus Jakarta Sans", sans-serif';
+          ctx.fillText(m.val, x + 110, y + 86);
+        });
+
+        // Footer Signatures
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '600 16px "JetBrains Mono", monospace';
+        ctx.fillText(`Certificate ID: ${certId}`, 90, 680);
+        ctx.fillText(`Issued Date: ${dateStr}`, 90, 710);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'italic bold 26px "Plus Jakarta Sans", serif';
+        ctx.fillText('Sumit (@unfiltereddsumit)', 1110, 680);
+        ctx.fillStyle = '#93c5fd';
+        ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Lead Mentor & Founder, Prepskm (prepskm.in)', 1110, 710);
+
+        const link = document.createElement('a');
+        link.download = `${certId}_${studentName.replace(/\s+/g, '_')}_Certificate.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showAppToast('Official E-Certificate downloaded!', 'success');
       }
 
       // =====================================================================
@@ -7946,11 +8507,17 @@
         }
 
         document.getElementById('videoUploadTitle').value = '';
-        if (document.getElementById('videoUploadChapter')) document.getElementById('videoUploadChapter').value = '';
         document.getElementById('videoUploadUrl').value = '';
         clearSelectedVideoFile();
         renderFeaturedVideos();
-        showAppToast(`Video Lecture "${title}" saved to Cloud DB (video_lectures)!`, 'success');
+        renderDedicatedLecturesView();
+        pushAppNotification(
+          `🎬 New ${subject} Lecture: ${chapter}`,
+          `${title} is now available in the Video Lectures Hub.`,
+          'video',
+          'lectures'
+        );
+        showAppToast(`Video Lecture "${title}" (${subject} • ${chapter}) published & students notified!`, 'success');
       }
 
       let activeVideoForModal = null;
@@ -7973,7 +8540,7 @@
         const attachmentsContainer = document.getElementById('bigVideoAttachmentsList');
 
         if (titleEl) titleEl.innerText = video.title;
-        if (subExamEl) subExamEl.innerText = `${video.subject || 'Physics'} • ${video.exam || 'JEE Main'}`;
+        if (subExamEl) subExamEl.innerText = `${video.subject || 'Physics'} • ${video.chapter || 'Core Concepts'} • ${video.exam || 'JEE Main'}`;
         if (mentorNameEl) mentorNameEl.innerText = video.mentorName;
 
         const mentor = state.mentors.find(m => m.id === video.mentorId);
@@ -8059,9 +8626,158 @@
       }
 
       let activeVideoSubjectFilter = 'ALL';
+      let activeLecturesHubSubject = 'ALL';
+      let activeLecturesHubChapter = 'ALL';
+
       function filterVideosBySubject(subject) {
         activeVideoSubjectFilter = subject;
         renderFeaturedVideos();
+      }
+
+      function refreshLecturesChapterDropdown() {
+        if (!state.curriculum) state.curriculum = loadSavedCurriculum();
+        const chSelect = document.getElementById('lecturesChapterSelect');
+        if (!chSelect) return;
+
+        let chapters = [];
+        if (activeLecturesHubSubject === 'ALL') {
+          state.curriculum.subjects.forEach(s => {
+            (state.curriculum.chapters[s] || []).forEach(c => {
+              if (!chapters.includes(c)) chapters.push(c);
+            });
+          });
+        } else {
+          chapters = state.curriculum.chapters[activeLecturesHubSubject] || [];
+        }
+
+        chSelect.innerHTML = `<option value="ALL">All Chapters (${chapters.length})</option>` +
+          chapters.map(c => `<option value="${c}">${c}</option>`).join('');
+        if (activeLecturesHubChapter !== 'ALL' && chapters.includes(activeLecturesHubChapter)) {
+          chSelect.value = activeLecturesHubChapter;
+        } else {
+          activeLecturesHubChapter = 'ALL';
+          chSelect.value = 'ALL';
+        }
+      }
+
+      function handleLecturesSubjectChange(subject) {
+        activeLecturesHubSubject = subject || 'ALL';
+        activeLecturesHubChapter = 'ALL';
+        const subSelect = document.getElementById('lecturesSubjectSelect');
+        if (subSelect) subSelect.value = activeLecturesHubSubject;
+
+        document.querySelectorAll('.lecture-subj-pill').forEach(btn => {
+          if (btn.getAttribute('data-subj') === activeLecturesHubSubject) {
+            btn.className = 'lecture-subj-pill px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow-sm transition-all';
+          } else {
+            btn.className = 'lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-blue-400 transition-all';
+          }
+        });
+
+        refreshLecturesChapterDropdown();
+        renderDedicatedLecturesView();
+      }
+
+      function handleLecturesChapterChange(chapter) {
+        activeLecturesHubChapter = chapter || 'ALL';
+        renderDedicatedLecturesView();
+      }
+
+      function buildVideoCardHtml(v) {
+        const mentor = state.mentors.find(m => m.id === v.mentorId) || state.mentors[0];
+        const subjColor = (v.subject === 'Chemistry')
+          ? 'bg-emerald-600'
+          : (v.subject === 'Mathematics')
+          ? 'bg-purple-600'
+          : (v.subject === 'Biology')
+          ? 'bg-amber-600'
+          : 'bg-blue-600';
+
+        return `
+          <div class="bg-white rounded-2xl border-2 border-slate-200/90 hover:border-blue-500 p-4 space-y-3 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all">
+            <!-- Clickable Video Preview Card with Protected Play Overlay -->
+            <div onclick="openBigVideoPlayer('${v.id}')" class="aspect-video bg-slate-950 rounded-xl overflow-hidden relative cursor-pointer group shadow-md">
+              <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80" class="w-full h-full object-cover opacity-65 group-hover:opacity-45 group-hover:scale-105 transition-all duration-300" alt="${v.title}">
+              
+              <!-- Play Button Overlay -->
+              <div class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3 text-center">
+                <div class="w-12 h-12 rounded-full bg-blue-600 group-hover:bg-indigo-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+                </div>
+                <span class="text-[11px] font-extrabold text-white bg-slate-950/80 px-2.5 py-0.5 rounded-full backdrop-blur-xs border border-white/15">Play Prepskm HD Lecture</span>
+              </div>
+
+              <!-- Subject & Chapter Badges -->
+              <div class="absolute top-2 left-2 flex flex-wrap items-center gap-1 max-w-[75%]">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${subjColor} text-white shadow-xs">${v.subject || 'Physics'}</span>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/90 text-amber-300 truncate">${v.chapter || 'Core Concepts'}</span>
+              </div>
+              <div class="absolute top-2 right-2">
+                <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-black/75 text-emerald-400 flex items-center gap-1">
+                  <i data-lucide="shield-check" class="w-2.5 h-2.5"></i>
+                  <span>HD</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Title & Mentor with Verified Blue Tick -->
+            <div class="space-y-1.5">
+              <h4 onclick="openBigVideoPlayer('${v.id}')" class="font-extrabold text-sm text-slate-900 leading-snug line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors">
+                ${v.title}
+              </h4>
+              <div class="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg inline-block">
+                📖 Chapter: ${v.chapter || 'Core Concepts'}
+              </div>
+              
+              <div class="flex items-center gap-2 pt-1.5 border-t border-slate-100">
+                <img src="${mentor ? mentor.avatar : '/assets/aistudio/IMG_1422_c0b1f775.png'}" class="mentor-dynamic-avatar w-6 h-6 rounded-full object-cover border border-slate-300" alt="Mentor">
+                <div class="flex items-center gap-1 truncate text-[11px]">
+                  <span class="font-bold text-slate-800 truncate">${v.mentorName || 'Sumit (@unfiltereddsumit)'}</span>
+                  <span class="inline-flex items-center text-blue-600" title="Verified Prepskm Mentor">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Companion Files Summary & Big Player Trigger -->
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-[11px] text-slate-600 font-semibold flex items-center gap-1">
+                <i data-lucide="paperclip" class="w-3 h-3 text-indigo-500"></i>
+                <span>${v.companionPdfs ? v.companionPdfs.length : 0} Companion Notes</span>
+              </span>
+              <button onclick="openBigVideoPlayer('${v.id}')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors">
+                Watch Now
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderDedicatedLecturesView() {
+        const grid = document.getElementById('dedicatedLecturesGrid');
+        if (!grid) return;
+
+        let videos = state.videos || [];
+        if (activeLecturesHubSubject !== 'ALL') {
+          videos = videos.filter(v => (v.subject || 'Physics').toLowerCase() === activeLecturesHubSubject.toLowerCase());
+        }
+        if (activeLecturesHubChapter !== 'ALL') {
+          videos = videos.filter(v => (v.chapter || '').toLowerCase() === activeLecturesHubChapter.toLowerCase());
+        }
+
+        if (videos.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full p-10 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200 space-y-2">
+              <div class="text-base font-extrabold text-slate-800">No lectures found for this Subject / Chapter filter</div>
+              <p class="text-xs text-slate-500">Switch the Subject or Chapter filter above, or upload a new lecture from the Admin Studio.</p>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = videos.map(v => buildVideoCardHtml(v)).join('');
+        lucide.createIcons();
       }
 
       function renderFeaturedVideos() {
@@ -8082,67 +8798,7 @@
           return;
         }
 
-        container.innerHTML = videos.map(v => {
-          const mentor = state.mentors.find(m => m.id === v.mentorId) || state.mentors[0];
-          return `
-            <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3 flex flex-col justify-between shadow-xs hover:shadow-md transition-shadow">
-              
-              <!-- Clickable Video Preview Card with Protected Play Overlay -->
-              <div onclick="openBigVideoPlayer('${v.id}')" class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative cursor-pointer group shadow-sm">
-                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-300" alt="${v.title}">
-                
-                <!-- Play Button Overlay -->
-                <div class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3 text-center">
-                  <div class="w-12 h-12 rounded-full bg-blue-600/90 group-hover:bg-blue-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
-                  </div>
-                  <span class="text-[11px] font-bold text-white bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-xs">Watch Protected HD</span>
-                </div>
-
-                <!-- Subject & DRM Badge -->
-                <div class="absolute top-2 left-2 flex items-center gap-1">
-                  <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-blue-600 text-white shadow-xs">${v.subject || 'Physics'}</span>
-                </div>
-                <div class="absolute top-2 right-2">
-                  <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-black/70 text-emerald-400 flex items-center gap-1">
-                    <i data-lucide="lock" class="w-2.5 h-2.5"></i>
-                    <span>Protected</span>
-                  </span>
-                </div>
-              </div>
-
-              <!-- Title & Mentor with Verified Blue Tick -->
-              <div class="space-y-1.5">
-                <h4 onclick="openBigVideoPlayer('${v.id}')" class="font-bold text-xs sm:text-sm text-gray-900 leading-snug line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors">
-                  ${v.title}
-                </h4>
-                
-                <div class="flex items-center gap-2 pt-1 border-t border-gray-100">
-                  <img src="${mentor ? mentor.avatar : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80'}" class="w-6 h-6 rounded-full object-cover border border-gray-200" alt="Mentor">
-                  <div class="flex items-center gap-1 truncate text-[11px]">
-                    <span class="font-bold text-gray-800 truncate">${v.mentorName}</span>
-                    <!-- Verified Blue Tick -->
-                    <span class="inline-flex items-center text-blue-600" title="Verified Prepskm Mentor">
-                      <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Companion Files Summary & Big Player Trigger -->
-              <div class="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
-                <span class="text-[11px] text-gray-500 font-medium flex items-center gap-1">
-                  <i data-lucide="paperclip" class="w-3 h-3 text-gray-400"></i>
-                  <span>${v.companionPdfs ? v.companionPdfs.length : 0} Attached DPPs</span>
-                </span>
-                <button onclick="openBigVideoPlayer('${v.id}')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-bold transition-colors">
-                  Open Lecture
-                </button>
-              </div>
-
-            </div>
-          `;
-        }).join('');
+        container.innerHTML = videos.map(v => buildVideoCardHtml(v)).join('');
         lucide.createIcons();
       }
 
@@ -8323,14 +8979,14 @@
         const bioInp = document.getElementById('profileInputBio');
         const uidDisp = document.getElementById('profileUidDisplay');
 
-        if (nameInp) nameInp.value = p.name || '';
-        if (emailInp) emailInp.value = p.email || currentUser.email;
+        if (nameInp) nameInp.value = p.name || currentUser.displayName || '';
+        if (emailInp) emailInp.value = currentUser.email || p.email || 'Not signed in with Google yet';
         if (gradeInp) gradeInp.value = p.gradeLevel || 'Class 12';
         if (yearInp) yearInp.value = p.targetYear || '2027';
-        if (teleInp) teleInp.value = p.telegram || '@saurav_prep';
+        if (teleInp) teleInp.value = p.telegram || '@aspirant_prep';
         if (goalInp) goalInp.value = p.dailyGoalHours || 8;
         if (bioInp) bioInp.value = p.bio || '';
-        if (uidDisp) uidDisp.innerText = currentUser.uid || 'uid-saurav586';
+        if (uidDisp) uidDisp.innerText = currentUser.uid || 'uid-student';
 
         // Set checkboxes
         const checkboxes = document.querySelectorAll('input[name="targetExamCheckbox"]');
@@ -8347,7 +9003,8 @@
       }
 
       function updateProfileLiveCard() {
-        const name = document.getElementById('profileInputName')?.value || 'Aspirant';
+        const name = document.getElementById('profileInputName')?.value || currentUser.displayName || 'Aspirant';
+        const emailVal = currentUser.email || document.getElementById('profileInputEmail')?.value || 'Not signed in with Gmail';
         const grade = document.getElementById('profileInputGrade')?.value || 'Class 12';
         const year = document.getElementById('profileInputTargetYear')?.value || '2027';
         const tele = document.getElementById('profileInputTelegram')?.value || '@prep';
@@ -8357,6 +9014,8 @@
         const checkedExams = Array.from(document.querySelectorAll('input[name="targetExamCheckbox"]:checked')).map(c => c.value);
 
         const cardName = document.getElementById('cardNamePreview');
+        const cardEmail = document.getElementById('cardEmailPreview');
+        const emailInp = document.getElementById('profileInputEmail');
         const cardGrade = document.getElementById('cardGradePreview');
         const cardYear = document.getElementById('cardYearPreview');
         const cardExams = document.getElementById('cardExamsPreview');
@@ -8367,12 +9026,14 @@
         const cardAvatar = document.getElementById('cardAvatarPreview');
 
         if (cardName) cardName.innerText = name;
+        if (cardEmail) cardEmail.innerText = emailVal;
+        if (emailInp && currentUser.email) emailInp.value = currentUser.email;
         if (cardGrade) cardGrade.innerText = grade;
         if (cardYear) cardYear.innerText = `Target ${year}`;
         if (cardTele) cardTele.innerText = tele;
         if (cardGoal) cardGoal.innerText = `${goal} Hours / day`;
         if (cardBio) cardBio.innerText = `"${bio}"`;
-        if (cardUid) cardUid.innerText = currentUser.uid || 'uid-saurav586';
+        if (cardUid) cardUid.innerText = currentUser.uid || 'uid-student';
         if (cardAvatar) cardAvatar.src = currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
 
         if (cardExams) {
@@ -9574,10 +10235,15 @@
         const typeIcon = document.getElementById('callHeaderTypeIcon');
         const jitsiContainer = document.getElementById('jitsiMeetStageContainer');
 
+        const isSuperAdmin = isCurrentUserSuperAdmin();
         if (nameDisplay) nameDisplay.innerText = targetName;
         if (subtitleName) subtitleName.innerText = targetName;
         if (timerDisplay) timerDisplay.innerText = '00:00';
-        if (statusLabel) statusLabel.innerText = isGroupMentorship ? 'Jitsi Live Group Mentorship Connected' : (callType === 'video' ? 'Connecting Jitsi HD Video Call...' : 'Connecting Jitsi Audio Call...');
+        if (statusLabel) {
+          statusLabel.innerText = isGroupMentorship
+            ? (isSuperAdmin ? 'Admin Live Group Mentorship (Jitsi Engine)' : 'Prepskm Encrypted Live Classroom Connected')
+            : (callType === 'video' ? 'Connecting Prepskm HD Video Call...' : 'Connecting Prepskm Encrypted Audio Call...');
+        }
         if (switchLabel) switchLabel.innerText = callType === 'video' ? 'Audio Mode' : 'Video Mode';
         if (typeIcon) typeIcon.setAttribute('data-lucide', callType === 'video' ? 'video' : 'phone');
 
@@ -9620,7 +10286,11 @@
 
         setTimeout(() => {
           playCallSound('connect');
-          if (statusLabel) statusLabel.innerText = isGroupMentorship ? 'Live Mentorship Stream Active (Jitsi Meet)' : (callType === 'video' ? 'HD Video & Audio Connected (Jitsi Meet)' : 'Encrypted Audio Call Active (Jitsi Meet)');
+          if (statusLabel) {
+            statusLabel.innerText = isGroupMentorship
+              ? (isSuperAdmin ? 'Live Mentorship Stream Active (Admin Host)' : 'Prepskm Encrypted HD Stream Active')
+              : (callType === 'video' ? 'Prepskm HD Video & Audio Connected' : 'Prepskm Encrypted Audio Call Active');
+          }
         }, 1000);
 
         if (activeCallData.timerInterval) clearInterval(activeCallData.timerInterval);
@@ -9633,7 +10303,7 @@
 
         updateCallControlButtonsUI();
         lucide.createIcons();
-        showAppToast(`Joined Jitsi ${callType.toUpperCase()} Session: ${targetName}`, 'success');
+        showAppToast(`Joined Prepskm ${callType.toUpperCase()} Session: ${targetName}`, 'success');
       }
 
       function updateCallControlButtonsUI() {

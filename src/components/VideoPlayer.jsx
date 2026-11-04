@@ -15,6 +15,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { parseTimestampsInput } from '../services/db';
+import { resolveCloudFileUrl } from '../firebase';
 
 const DEFAULT_TIMESTAMPS = [
   { time: '00:00', seconds: 0, label: 'Introduction & Chapter Weightage' },
@@ -23,9 +24,35 @@ const DEFAULT_TIMESTAMPS = [
   { time: '21:45', seconds: 1305, label: 'NEET / JEE Main High-Speed Shortcut & PYQ Traps' },
 ];
 
+function normalizeEmbedStreamUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+  const trimmed = rawUrl.trim();
+  // Convert standard watch or short URLs into clean embed endpoints with JS API enabled
+  let videoId = '';
+  const watchMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  const shortMatch = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  const embedMatch = trimmed.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if (watchMatch) videoId = watchMatch[1];
+  else if (shortMatch) videoId = shortMatch[1];
+  else if (embedMatch) videoId = embedMatch[1];
+
+  if (videoId) {
+    const origin =
+      typeof window !== 'undefined' && window.location?.origin
+        ? encodeURIComponent(window.location.origin)
+        : '';
+    return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1${
+      origin ? `&origin=${origin}` : ''
+    }`;
+  }
+  return trimmed;
+}
+
 export default function VideoPlayer() {
   const [isOpen, setIsOpen] = useState(false);
   const [lecture, setLecture] = useState(null);
+  const [resolvedUrl, setResolvedUrl] = useState('');
+  const [isResolvingCloud, setIsResolvingCloud] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentSec, setCurrentSec] = useState(0);
   const [durationSec, setDurationSec] = useState(1800); // 30:00 default
@@ -38,10 +65,22 @@ export default function VideoPlayer() {
 
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const iframeRef = useRef(null);
   const lastTapRef = useRef({ time: 0, side: null });
 
+  const sendStreamCommand = (func, args = []) => {
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      try {
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func, args }),
+          '*'
+        );
+      } catch (_e) {}
+    }
+  };
+
   useEffect(() => {
-    window.openAdvancedVideoPlayer = (videoObjOrId) => {
+    window.openAdvancedVideoPlayer = async (videoObjOrId) => {
       let target = videoObjOrId;
       if (typeof videoObjOrId === 'string') {
         const list = window.state?.videos || [];
@@ -49,15 +88,10 @@ export default function VideoPlayer() {
           list.find((v) => String(v.id) === String(videoObjOrId)) || list[0];
       }
       if (!target) {
-        target = {
-          id: 'v-default',
-          title: 'Rotational Dynamics in 90 Minutes: Complete JEE/NEET One-Shot',
-          subject: 'Physics',
-          chapter: 'Rotational Motion',
-          mentorName: 'Sumit (@unfiltereddsumit)',
-          videoUrl: 'https://www.youtube.com/embed/b1t41Q3xRM8',
-          timestamps: DEFAULT_TIMESTAMPS,
-        };
+        if (typeof window.showToast === 'function') {
+          window.showToast('Please select or upload a video lecture first.');
+        }
+        return;
       }
       const parsedTs =
         Array.isArray(target.timestamps) && target.timestamps.length > 0
@@ -70,6 +104,22 @@ export default function VideoPlayer() {
       setCurrentSec(0);
       setIsPlaying(true);
       setIsOpen(true);
+
+      const raw = target.videoUrl || target.video_url || '';
+      if (raw.startsWith('#prepskm-cloud-file:')) {
+        setIsResolvingCloud(true);
+        try {
+          const dataUrl = await resolveCloudFileUrl(raw);
+          setResolvedUrl(dataUrl || '');
+        } catch (_e) {
+          setResolvedUrl('');
+        } finally {
+          setIsResolvingCloud(false);
+        }
+      } else {
+        setResolvedUrl(raw);
+        setIsResolvingCloud(false);
+      }
     };
 
     window.closeAdvancedVideoPlayer = () => {
@@ -78,10 +128,57 @@ export default function VideoPlayer() {
     };
   }, []);
 
-  // Simulated progress ticker when playing an embedded YouTube/stream lecture
+  // Sync play/pause with HTML5 <video> or embedded stream player
+  useEffect(() => {
+    if (!isOpen) return;
+    if (videoRef.current) {
+      try {
+        if (isPlaying) {
+          videoRef.current.play().catch(() => {});
+        } else {
+          videoRef.current.pause();
+        }
+      } catch (_e) {}
+    } else {
+      sendStreamCommand(isPlaying ? 'playVideo' : 'pauseVideo');
+    }
+  }, [isPlaying, isOpen]);
+
+  // Sync mute state
+  useEffect(() => {
+    if (!isOpen) return;
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    } else {
+      sendStreamCommand(isMuted ? 'mute' : 'unMute');
+    }
+  }, [isMuted, isOpen]);
+
+  // Sync playback speed
+  useEffect(() => {
+    if (!isOpen) return;
+    if (videoRef.current) {
+      videoRef.current.playbackRate = playbackSpeed;
+    } else {
+      sendStreamCommand('setPlaybackRate', [playbackSpeed]);
+    }
+  }, [playbackSpeed, isOpen]);
+
+  // Progress ticker for stream lectures
   useEffect(() => {
     if (!isOpen || !isPlaying) return;
     const interval = setInterval(() => {
+      if (videoRef.current && !Number.isNaN(videoRef.current.currentTime)) {
+        setCurrentSec(videoRef.current.currentTime);
+        if (
+          videoRef.current.duration &&
+          !Number.isNaN(videoRef.current.duration) &&
+          videoRef.current.duration > 0
+        ) {
+          setDurationSec(videoRef.current.duration);
+        }
+        return;
+      }
       setCurrentSec((prev) => {
         const next = prev + playbackSpeed;
         return next >= durationSec ? 0 : next;
@@ -106,6 +203,8 @@ export default function VideoPlayer() {
         try {
           videoRef.current.currentTime = next;
         } catch (_e) {}
+      } else {
+        sendStreamCommand('seekTo', [Math.floor(next), true]);
       }
       return next;
     });
@@ -119,8 +218,11 @@ export default function VideoPlayer() {
     if (videoRef.current) {
       try {
         videoRef.current.currentTime = tsSeconds;
-        videoRef.current.play();
+        videoRef.current.play().catch(() => {});
       } catch (_e) {}
+    } else {
+      sendStreamCommand('seekTo', [Math.floor(tsSeconds), true]);
+      sendStreamCommand('playVideo');
     }
   };
 
@@ -161,19 +263,15 @@ export default function VideoPlayer() {
     }
   };
 
-  const rawUrl = lecture.videoUrl || lecture.video_url || '';
+  const activeUrl = resolvedUrl || lecture.videoUrl || lecture.video_url || '';
   const isDirectVideo =
-    rawUrl.endsWith('.mp4') ||
-    rawUrl.endsWith('.webm') ||
-    rawUrl.startsWith('data:video');
+    activeUrl.endsWith('.mp4') ||
+    activeUrl.endsWith('.webm') ||
+    activeUrl.endsWith('.ogg') ||
+    activeUrl.startsWith('data:video') ||
+    activeUrl.startsWith('blob:');
 
-  let youtubeEmbedUrl = rawUrl;
-  if (rawUrl.includes('youtube.com/embed/')) {
-    const base = rawUrl.split('?')[0];
-    youtubeEmbedUrl = `${base}?autoplay=${isPlaying ? 1 : 0}&mute=${
-      isMuted ? 1 : 0
-    }&start=${Math.floor(currentSec)}&rel=0&modestbranding=1`;
-  }
+  const streamEmbedUrl = normalizeEmbedStreamUrl(activeUrl);
 
   const timestamps = lecture.timestamps || DEFAULT_TIMESTAMPS;
   const activeChapter =
@@ -212,7 +310,7 @@ export default function VideoPlayer() {
           boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85)',
         }}
       >
-        {/* Top Lecture Header */}
+        {/* Top Lecture Header (Zero YouTube/YT Branding) */}
         <div
           style={{
             padding: '12px 18px',
@@ -224,7 +322,7 @@ export default function VideoPlayer() {
             gap: '12px',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <span
               style={{
                 background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
@@ -236,7 +334,7 @@ export default function VideoPlayer() {
                 textTransform: 'uppercase',
               }}
             >
-              {lecture.subject || 'Physics'} • PW / YT Smart Player
+              {lecture.subject || 'Physics'} • {lecture.chapter || 'Core Concept'} • Prepskm HD Player
             </span>
             <h3
               style={{
@@ -320,27 +418,63 @@ export default function VideoPlayer() {
                 userSelect: 'none',
               }}
             >
-              {isDirectVideo ? (
-                <video
-                  ref={videoRef}
-                  src={rawUrl}
-                  autoPlay
-                  muted={isMuted}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                />
-              ) : (
-                <iframe
-                  src={youtubeEmbedUrl}
-                  title={lecture.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+              {isResolvingCloud ? (
+                <div
                   style={{
                     width: '100%',
                     height: '100%',
-                    border: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    color: '#c7d2fe',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                  }}
+                >
+                  <span>Loading Cloud HD Lecture Stream...</span>
+                </div>
+              ) : isDirectVideo ? (
+                <video
+                  ref={videoRef}
+                  src={activeUrl}
+                  autoPlay
+                  playsInline
+                  muted={isMuted}
+                  onLoadedMetadata={(e) => {
+                    if (e.currentTarget.duration && !Number.isNaN(e.currentTarget.duration)) {
+                      setDurationSec(Math.round(e.currentTarget.duration));
+                    }
+                  }}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              ) : (
+                /* Whitelabeled Stream Container: scaled slightly to crop out any third-party top/bottom branding bars */
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: '-52px 0 -52px 0',
                     pointerEvents: 'none',
                   }}
-                />
+                >
+                  <iframe
+                    ref={iframeRef}
+                    src={streamEmbedUrl}
+                    title={lecture.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    onLoad={() => {
+                      if (isPlaying) sendStreamCommand('playVideo');
+                    }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                </div>
               )}
 
               {/* Double-Tap 10s Skip Ripple Feedback */}
@@ -373,7 +507,7 @@ export default function VideoPlayer() {
                   position: 'absolute',
                   top: '12px',
                   left: '12px',
-                  background: 'rgba(15, 23, 42, 0.82)',
+                  background: 'rgba(15, 23, 42, 0.88)',
                   backdropFilter: 'blur(8px)',
                   border: '1px solid rgba(255,255,255,0.15)',
                   padding: '5px 12px',
@@ -396,7 +530,7 @@ export default function VideoPlayer() {
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'rgba(2, 6, 23, 0.45)',
+                    background: 'rgba(2, 6, 23, 0.65)',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -422,7 +556,7 @@ export default function VideoPlayer() {
                     style={{
                       fontSize: '11px',
                       fontWeight: 800,
-                      background: 'rgba(0,0,0,0.65)',
+                      background: 'rgba(0,0,0,0.75)',
                       padding: '4px 10px',
                       borderRadius: '999px',
                     }}

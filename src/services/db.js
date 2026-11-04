@@ -398,6 +398,45 @@ export async function respondToRaiseHand(
   }
 }
 
+export function subscribeToNotifications(callback) {
+  try {
+    const q = query(
+      collection(db, 'notifications'),
+      orderBy('createdAt', 'desc'),
+      limit(40)
+    );
+    return onSnapshot(
+      q,
+      (snap) => {
+        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        callback(list);
+      },
+      () => {}
+    );
+  } catch (_e) {
+    return () => {};
+  }
+}
+
+export async function sendBroadcastNotification(payload) {
+  const id = `notif-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const record = {
+    id,
+    title: (payload.title || 'New Prepskm Update').trim(),
+    body: (payload.body || '').trim(),
+    category: payload.category || 'general',
+    targetView: payload.targetView || 'home',
+    author: payload.author || 'Sumit (@unfiltereddsumit)',
+    createdAt: new Date().toISOString(),
+  };
+  try {
+    await setDoc(doc(db, 'notifications', id), record);
+  } catch (err) {
+    console.warn('sendBroadcastNotification fallback:', err);
+  }
+  return record;
+}
+
 if (typeof window !== 'undefined') {
   window.prepskmDb = {
     DEFAULT_VERIFIED_MENTORS,
@@ -416,6 +455,9 @@ if (typeof window !== 'undefined') {
     subscribeToRaiseHands,
     submitRaiseHandRequest,
     respondToRaiseHand,
+    subscribeToNotifications,
+    sendBroadcastNotification,
   };
 }
+
 

@@ -43,8 +43,10 @@ export default function LiveClassroom() {
   // Orientation & Tab State
   const [orientationMode, setOrientationMode] = useState('portrait'); // 'portrait' | 'landscape'
   const [activeBottomTab, setActiveBottomTab] = useState('chat'); // 'chat' | 'polls' | 'info'
-  const [showLandscapeOverlay, setShowLandscapeOverlay] = useState(true);
+  const [showSidePanel, setShowSidePanel] = useState(true); // Works in both Portrait & Landscape so students can hide chat/panels and watch video only
   const [isWebRtcStageMounted, setIsWebRtcStageMounted] = useState(false);
+  const [stageScriptState, setStageScriptState] = useState('ready'); // 'loading' | 'ready' | 'error'
+  const [stageRetryCount, setStageRetryCount] = useState(0);
 
   // Live Polls State
   const [activePoll, setActivePoll] = useState(DEFAULT_POLL);
@@ -69,6 +71,27 @@ export default function LiveClassroom() {
   });
 
   const chatScrollRef = useRef(null);
+
+  // Verify Jitsi Meet External API readiness with retry support when mounting WebRTC stage
+  useEffect(() => {
+    if (!isWebRtcStageMounted) return;
+    let cancelled = false;
+    const checkScript = async () => {
+      setStageScriptState('loading');
+      if (typeof window.ensureJitsiScriptLoaded === 'function') {
+        const ok = await window.ensureJitsiScriptLoaded();
+        if (!cancelled) {
+          setStageScriptState(ok ? 'ready' : 'error');
+        }
+      } else {
+        setStageScriptState('ready');
+      }
+    };
+    checkScript();
+    return () => {
+      cancelled = true;
+    };
+  }, [isWebRtcStageMounted, stageRetryCount]);
 
   useEffect(() => {
     const syncIdentity = () => {
@@ -208,6 +231,9 @@ export default function LiveClassroom() {
       id: currentUser.id,
       name: currentUser.name
     });
+    if (typeof window.showToast === 'function') {
+      window.showToast('✋ Join Request sent to Lead Mentor Sumit!');
+    }
   };
 
   const handleHostHandDecision = async (studentId, decision) => {
@@ -325,8 +351,8 @@ export default function LiveClassroom() {
     0
   );
 
-  // Seamless Player UI: Students NEVER see raw Jitsi branding/links by default.
-  // Only mount the WebRTC stage iframe if a student's Raise Hand is accepted onto stage AND they click join audio/video, or if Host explicitly toggles WebRTC camera.
+  // Seamless Whitelabeled Player UI:
+  // Nobody except Admin knows what external bridge powers the WebRTC stage.
   const jitsiRoom = (activeSession.roomName || 'PrepskmLiveMentorshipSumit').replace(
     /[^a-zA-Z0-9]/g,
     ''
@@ -335,10 +361,12 @@ export default function LiveClassroom() {
     'config.prejoinPageEnabled=false',
     'config.prejoinConfig.enabled=false',
     'config.disableDeepLinking=true',
+    'config.hideConferenceSubject=true',
     'config.startWithAudioMuted=false',
     'config.startWithVideoMuted=false',
     'interfaceConfig.SHOW_JITSI_WATERMARK=false',
     'interfaceConfig.SHOW_BRAND_WATERMARK=false',
+    'interfaceConfig.SHOW_WATERMARK_FOR_GUESTS=false',
     'interfaceConfig.MOBILE_APP_PROMO=false',
     `userInfo.displayName="${encodeURIComponent(currentUser.name)}"`
   ].join('&');
@@ -373,7 +401,7 @@ export default function LiveClassroom() {
                     isConcluded ? 'bg-slate-400' : 'bg-white animate-pulse'
                   }`}
                 />
-                {isConcluded ? 'SESSION ENDED' : 'LIVE CLASSROOM'}
+                {isConcluded ? 'SESSION ENDED' : 'PREPSKM LIVE STREAM'}
               </span>
               <span className="text-[11px] font-bold text-indigo-300 truncate">
                 Lead Mentor: {mentor.name || 'Sumit'} ({mentor.handle || '@unfiltereddsumit'})
@@ -385,8 +413,22 @@ export default function LiveClassroom() {
           </div>
         </div>
 
-        {/* Orientation Switcher & Host Controls */}
+        {/* Orientation Switcher, Distraction-Free Video Toggle & Host Controls */}
         <div className="flex items-center gap-1.5 flex-wrap">
+          {/* Universal Hide/Show Chat & Side Panels Toggle (Works in both Portrait & Landscape) */}
+          <button
+            type="button"
+            onClick={() => setShowSidePanel((prev) => !prev)}
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${
+              !showSidePanel
+                ? 'bg-emerald-600 text-white border-emerald-400 shadow'
+                : 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
+            }`}
+            title="Hide or show Chat & Polls so you can watch only the lecture video"
+          >
+            {showSidePanel ? '👁️ Hide Chat (Video Only)' : '💬 Show Chat & Polls'}
+          </button>
+
           {/* Orientation Mode Toggle (Portrait vs Landscape Fullscreen) */}
           <div className="inline-flex items-center bg-slate-800/90 p-0.5 rounded-lg border border-slate-700">
             <button
@@ -415,7 +457,7 @@ export default function LiveClassroom() {
             </button>
           </div>
 
-          {/* Mentor God-Mode Controls */}
+          {/* Mentor God-Mode Controls (Strictly Admin Only) */}
           {isAdmin && (
             <div className="flex items-center gap-1.5 flex-wrap">
               <button
@@ -434,7 +476,7 @@ export default function LiveClassroom() {
                     : 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700'
                 }`}
               >
-                {activeSession.isRaiseHandBlocked ? '✋ Hands Blocked' : '✋ Block Raise Hand'}
+                {activeSession.isRaiseHandBlocked ? '✋ Requests Locked' : '✋ Lock Join Requests'}
               </button>
               <button
                 type="button"
@@ -471,15 +513,15 @@ export default function LiveClassroom() {
         </div>
       </div>
 
-      {/* Host On-Screen Toast for Pending Raise Hand Requests */}
+      {/* Host On-Screen Toast for Pending Join Requests */}
       {isAdmin && pendingHands.length > 0 && (
         <div className="bg-indigo-950/95 border-b border-indigo-500/40 px-4 py-2 flex flex-wrap items-center justify-between gap-2 shrink-0">
           <div className="flex items-center gap-2 text-xs font-bold text-indigo-200">
             <span className="text-base animate-bounce">✋</span>
             <span>
-              Student Raise Hand Request ({pendingHands.length}):{' '}
-              <strong className="text-white">{pendingHands[0].studentName}</strong> wants to join
-              stage with audio/video!
+              Student Live Join Request ({pendingHands.length}):{' '}
+              <strong className="text-white">{pendingHands[0].studentName}</strong> requested to join
+              interactive stage!
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -488,7 +530,7 @@ export default function LiveClassroom() {
               onClick={() => handleHostHandDecision(pendingHands[0].studentId, 'accepted')}
               className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow"
             >
-              ✓ Accept to Stage
+              ✓ Approve Join Request
             </button>
             <button
               type="button"
@@ -507,12 +549,12 @@ export default function LiveClassroom() {
           orientationMode === 'landscape' ? 'flex-row' : 'flex-col lg:flex-row'
         }`}
       >
-        {/* Video Stage Area (Native PW / YouTube Live Style Wrapper) */}
+        {/* Video Stage Area (Whitelabeled Prepskm Native Stream) */}
         <div
           className={`relative bg-black flex flex-col justify-between overflow-hidden ${
-            orientationMode === 'landscape'
-              ? 'w-full h-full'
-              : 'w-full h-[44vh] sm:h-[50vh] lg:h-full lg:flex-1 shrink-0'
+            orientationMode === 'landscape' || !showSidePanel
+              ? 'w-full h-full flex-1'
+              : 'w-full h-[46vh] sm:h-[52vh] lg:h-full lg:flex-1 shrink-0'
           }`}
         >
           {isConcluded ? (
@@ -540,13 +582,63 @@ export default function LiveClassroom() {
               </button>
             </div>
           ) : isWebRtcStageMounted && isAcceptedOnStage ? (
-            <div className="relative w-full h-full">
-              <iframe
-                title="Prepskm Interactive Stage"
-                src={jitsiEmbedUrl}
-                allow="camera; microphone; fullscreen; display-capture; autoplay"
-                className="w-full h-full border-0"
-              />
+            <div className="relative w-full h-full flex items-center justify-center bg-slate-950">
+              {stageScriptState === 'loading' && (
+                <div className="flex flex-col items-center justify-center p-6 text-center space-y-3">
+                  <div className="w-10 h-10 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin" />
+                  <p className="text-xs font-black text-white">
+                    Connecting to Prepskm Interactive Stage...
+                  </p>
+                </div>
+              )}
+
+              {stageScriptState === 'error' && (
+                <div className="flex flex-col items-center justify-center p-6 text-center space-y-3 max-w-sm">
+                  <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs font-black">
+                    Interactive Stage Connection Interrupted
+                  </span>
+                  <p className="text-xs text-slate-300">
+                    The external live stream script took too long to respond. Click below to retry or return to the Smartboard lecture view.
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setStageRetryCount((c) => c + 1)}
+                      className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black"
+                    >
+                      🔄 Retry Stage Connection
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsWebRtcStageMounted(false)}
+                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold"
+                    >
+                      Back to Smartboard
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {stageScriptState === 'ready' && (
+                <div className="relative w-full h-full overflow-hidden">
+                  <iframe
+                    title="Prepskm Interactive Stage"
+                    src={jitsiEmbedUrl}
+                    allow="camera; microphone; fullscreen; display-capture; autoplay"
+                    className="w-full h-full border-0"
+                  />
+                  {/* Whitelabel Shield Overlay on top-left corner so students never see any external domain/provider watermark */}
+                  {!isAdmin && (
+                    <div className="pointer-events-none select-none absolute top-2 left-2 z-20 px-3 py-1.5 rounded-xl bg-slate-950/95 border border-indigo-500/30 flex items-center gap-2 shadow-lg">
+                      <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                      <span className="text-[11px] font-black text-white">
+                        Prepskm Encrypted Live Stage
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={() => setIsWebRtcStageMounted(false)}
@@ -556,14 +648,14 @@ export default function LiveClassroom() {
               </button>
             </div>
           ) : (
-            /* Native PhysicsWallah / YouTube Live Classroom Smartboard Stream */
+            /* Whitelabeled Prepskm Native Live Classroom Smartboard Stream */
             <div className="relative w-full h-full flex flex-col justify-between bg-gradient-to-br from-slate-950 via-[#0b132b] to-indigo-950 p-4 sm:p-6 select-none overflow-hidden">
               {/* Top Overlay Inside Video Player */}
               <div className="flex items-center justify-between gap-2 z-10">
                 <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
                   <span className="text-[11px] font-black tracking-wider uppercase text-white">
-                    LIVE SMARTBOARD
+                    PREPSKM LIVE SMARTBOARD
                   </span>
                   <span className="text-[11px] text-slate-300 font-semibold">• 1080p60 HD</span>
                 </div>
@@ -603,7 +695,7 @@ export default function LiveClassroom() {
                 </div>
 
                 {/* Picture-in-Picture Lead Mentor Sumit Camera Feed */}
-                <div className="mt-3 flex items-center justify-between gap-3 pt-2 border-t border-slate-800/80">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800/80">
                   <div className="flex items-center gap-2.5">
                     <img
                       src={mentor.avatarUrl || '/assets/aistudio/IMG_1422_c0b1f775.png'}
@@ -618,18 +710,34 @@ export default function LiveClassroom() {
                         </span>
                       </div>
                       <div className="text-[11px] text-slate-400">
-                        Audio & Smartboard Stream Active
+                        Prepskm Native HD Broadcast Active
                       </div>
                     </div>
                   </div>
 
-                  {isAcceptedOnStage && (
+                  {isAcceptedOnStage ? (
                     <button
                       type="button"
                       onClick={() => setIsWebRtcStageMounted(true)}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-lg"
+                      className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-lg cursor-pointer"
                     >
-                      🎙️ Join Interactive Stage Cam/Mic
+                      {isAdmin
+                        ? '🎥 Open Host Camera & Screen Broadcast'
+                        : '🎙️ Join Approved Live Audio/Video Stage'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={
+                        activeSession.isRaiseHandBlocked ||
+                        myHandRequest?.status === 'pending'
+                      }
+                      onClick={handleRaiseHandClick}
+                      className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-black shadow-lg cursor-pointer"
+                    >
+                      {myHandRequest?.status === 'pending'
+                        ? '✋ Join Request Pending Approval...'
+                        : '✋ Request to Join Interactive Live Stage'}
                     </button>
                   )}
                 </div>
@@ -648,7 +756,7 @@ export default function LiveClassroom() {
                 ))}
               </div>
 
-              {/* Bottom Player Controls: Reactions + Student Raise Hand + Landscape Overlay Toggle */}
+              {/* Bottom Player Controls: Reactions + Student Join Request + Hide/Show Chat Toggle */}
               <div className="flex flex-wrap items-center justify-between gap-2 z-10 pt-2">
                 {/* Quick Reaction Bar */}
                 <div className="flex items-center gap-1.5 bg-slate-900/85 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/10">
@@ -665,7 +773,7 @@ export default function LiveClassroom() {
                   ))}
                 </div>
 
-                {/* Student Raise Hand / Stage Control */}
+                {/* Student Request to Join + Distraction-Free Video Only Toggle */}
                 <div className="flex items-center gap-2">
                   {!isAdmin && (
                     <button
@@ -687,32 +795,30 @@ export default function LiveClassroom() {
                       }`}
                     >
                       {isAcceptedOnStage
-                        ? '🎙️ Stage Mic Unlocked'
+                        ? '🎙️ Stage Access Approved'
                         : myHandRequest?.status === 'pending'
                         ? '✋ Request Sent (Waiting for Sumit...)'
                         : activeSession.isRaiseHandBlocked
-                        ? '✋ Join Requests Blocked'
+                        ? '✋ Join Requests Locked'
                         : 'Request to Join ✋'}
                     </button>
                   )}
 
-                  {orientationMode === 'landscape' && (
-                    <button
-                      type="button"
-                      onClick={() => setShowLandscapeOverlay((prev) => !prev)}
-                      className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/15 text-xs font-bold text-white"
-                    >
-                      {showLandscapeOverlay ? 'Hide Chat/Polls' : 'Show Chat/Polls'}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setShowSidePanel((prev) => !prev)}
+                    className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/15 text-xs font-bold text-white cursor-pointer"
+                  >
+                    {showSidePanel ? 'Hide Chat/Polls' : 'Show Chat/Polls'}
+                  </button>
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* Interactive Tabbed Panel (Bottom in Portrait Mode, Translucent Overlay in Landscape Mode) */}
-        {(orientationMode === 'portrait' || showLandscapeOverlay) && (
+        {/* Interactive Tabbed Panel (Can be hidden in both Portrait & Landscape for pure lecture viewing) */}
+        {showSidePanel && (
           <div
             className={`flex flex-col bg-slate-900/95 border-t lg:border-t-0 lg:border-l border-slate-800 ${
               orientationMode === 'landscape'

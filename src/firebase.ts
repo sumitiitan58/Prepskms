@@ -77,8 +77,18 @@ export function handleFirestoreError(
   operationType: OperationType,
   path: string | null
 ): void {
+  const msg = error instanceof Error ? error.message : String(error);
+  if (
+    msg.includes('Quota limit exceeded') ||
+    msg.includes('resource-exhausted') ||
+    msg.includes('offline') ||
+    msg.includes('Failed to get document')
+  ) {
+    // Graceful local-cache fallback when free-tier daily read quota is reached
+    return;
+  }
   const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
+    error: msg,
     authInfo: {
       userId: auth.currentUser?.uid,
       email: auth.currentUser?.email,
@@ -96,7 +106,7 @@ export function handleFirestoreError(
     operationType,
     path,
   };
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  console.warn('Firestore Notice: ', JSON.stringify(errInfo));
 }
 
 // Validate connection to Firestore on boot

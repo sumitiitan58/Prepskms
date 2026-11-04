@@ -12,70 +12,37 @@ import {
 import { db } from '../firebase';
 import { collection, onSnapshot, query, limit } from 'firebase/firestore';
 
-const DEFAULT_TEST_HISTORY = [
-  {
-    id: 'res-1',
-    testTitle: 'All India JEE Main Full Syllabus CBT #1',
-    date: '2026-10-20',
-    score: 164,
-    maxScore: 300,
-    accuracy: 76,
-    percentile: 96.4,
-    airRank: 4120,
-    avgTimePerQ: '1.9m',
-    physics: 58,
-    chemistry: 62,
-    mathematics: 44,
-  },
-  {
-    id: 'res-2',
-    testTitle: 'High-Weightage Mechanics & Electrostatics Part Test',
-    date: '2026-10-25',
-    score: 186,
-    maxScore: 300,
-    accuracy: 81,
-    percentile: 98.1,
-    airRank: 2180,
-    avgTimePerQ: '1.7m',
-    physics: 68,
-    chemistry: 64,
-    mathematics: 54,
-  },
-  {
-    id: 'res-3',
-    testTitle: 'Prepskm Rank Booster CBT Mock #3 (Curated by Sumit)',
-    date: '2026-10-30',
-    score: 204,
-    maxScore: 300,
-    accuracy: 85,
-    percentile: 99.1,
-    airRank: 940,
-    avgTimePerQ: '1.6m',
-    physics: 74,
-    chemistry: 70,
-    mathematics: 60,
-  },
-  {
-    id: 'res-4',
-    testTitle: 'All India JEE Main Full Syllabus Mock #4',
-    date: '2026-11-03',
-    score: 218,
-    maxScore: 300,
-    accuracy: 88,
-    percentile: 99.4,
-    airRank: 612,
-    avgTimePerQ: '1.5m',
-    physics: 80,
-    chemistry: 72,
-    mathematics: 66,
-  },
-];
-
 export default function TestAnalytics() {
-  const [results, setResults] = useState(DEFAULT_TEST_HISTORY);
+  const [results, setResults] = useState([]);
   const [selectedStream, setSelectedStream] = useState('JEE'); // 'JEE' | 'NEET'
 
   useEffect(() => {
+    const syncFromWindowState = () => {
+      const localList = Array.isArray(window.state?.mockResults)
+        ? window.state.mockResults
+        : [];
+      if (localList.length > 0) {
+        const mapped = localList.map((data, idx) => ({
+          id: data.id || `local-res-${idx}`,
+          testTitle: data.testTitle || 'Official Prepskm CBT Mock',
+          date: (data.createdAt || new Date().toISOString()).slice(0, 10),
+          score: Number(data.totalScore ?? 0),
+          maxScore: Number(data.maxScore ?? 300),
+          accuracy: Number(data.accuracy ?? 0),
+          percentile: Number(data.percentile ?? 0),
+          airRank: Number(data.airRank ?? 1500),
+          avgTimePerQ: data.avgTimePerQ || '1.5m',
+          physics: Number(data.physicsScore ?? Math.round((data.totalScore || 0) * 0.36)),
+          chemistry: Number(data.chemistryScore ?? Math.round((data.totalScore || 0) * 0.34)),
+          mathematics: Number(data.mathsScore ?? Math.round((data.totalScore || 0) * 0.3)),
+        }));
+        setResults(mapped.slice(-10));
+      }
+    };
+
+    syncFromWindowState();
+    const timer = setInterval(syncFromWindowState, 2000);
+
     const q = query(collection(db, 'mock_results'), limit(20));
     const unsub = onSnapshot(
       q,
@@ -88,44 +55,66 @@ export default function TestAnalytics() {
               id: d.id,
               testTitle: data.testTitle || 'Official Prepskm CBT Mock',
               date: (data.createdAt || new Date().toISOString()).slice(0, 10),
-              score: Number(data.totalScore ?? 198),
+              score: Number(data.totalScore ?? 0),
               maxScore: Number(data.maxScore ?? 300),
-              accuracy: Number(data.accuracy ?? 84),
-              percentile: Number(data.percentile ?? 98.6),
+              accuracy: Number(data.accuracy ?? 0),
+              percentile: Number(data.percentile ?? 0),
               airRank: Number(data.airRank ?? 1240),
-              avgTimePerQ: data.avgTimePerQ || '1.6m',
-              physics: Number(data.physicsScore ?? 72),
-              chemistry: Number(data.chemistryScore ?? 68),
-              mathematics: Number(data.mathsScore ?? 58),
+              avgTimePerQ: data.avgTimePerQ || '1.5m',
+              physics: Number(data.physicsScore ?? Math.round((data.totalScore || 0) * 0.36)),
+              chemistry: Number(data.chemistryScore ?? Math.round((data.totalScore || 0) * 0.34)),
+              mathematics: Number(data.mathsScore ?? Math.round((data.totalScore || 0) * 0.3)),
             });
           });
-          setResults([...DEFAULT_TEST_HISTORY, ...remote].slice(-6));
+          setResults(remote.slice(-10));
         }
       },
       () => {}
     );
-    return () => unsub();
+    return () => {
+      clearInterval(timer);
+      unsub();
+    };
   }, []);
 
-  const latest = results[results.length - 1] || DEFAULT_TEST_HISTORY[0];
-  const avgAccuracy = Math.round(
-    results.reduce((acc, r) => acc + (r.accuracy || 80), 0) / results.length
-  );
+  const latest = results[results.length - 1] || {
+    id: 'empty',
+    testTitle: 'No Mock Test Attempted Yet',
+    date: new Date().toISOString().slice(0, 10),
+    score: 0,
+    maxScore: 300,
+    accuracy: 0,
+    percentile: 0,
+    airRank: 0,
+    avgTimePerQ: '0.0m',
+    physics: 0,
+    chemistry: 0,
+    mathematics: 0,
+  };
+  const avgAccuracy =
+    results.length > 0
+      ? Math.round(
+          results.reduce((acc, r) => acc + (r.accuracy || 0), 0) / results.length
+        )
+      : 0;
 
   // Build SVG polyline points for Score Trend
   const chartWidth = 520;
   const chartHeight = 140;
-  const points = results
-    .map((r, idx) => {
-      const x =
-        results.length === 1
-          ? chartWidth / 2
-          : 30 + (idx / (results.length - 1)) * (chartWidth - 60);
-      const ratio = Math.min(1, Math.max(0, r.score / (r.maxScore || 300)));
-      const y = chartHeight - 24 - ratio * (chartHeight - 48);
-      return `${x},${y}`;
-    })
-    .join(' ');
+  const points =
+    results.length > 0
+      ? results
+          .map((r, idx) => {
+            const x =
+              results.length === 1
+                ? chartWidth / 2
+                : 30 + (idx / (results.length - 1)) * (chartWidth - 60);
+            const ratio = Math.min(1, Math.max(0, r.score / (r.maxScore || 300)));
+            const y = chartHeight - 24 - ratio * (chartHeight - 48);
+            return `${x},${y}`;
+          })
+          .join(' ')
+      : `30,${chartHeight - 24} ${chartWidth - 30},${chartHeight - 24}`;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-sm space-y-6">

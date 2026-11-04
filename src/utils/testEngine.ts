@@ -578,3 +578,91 @@ export function normalizeStudyMaterialUrl(
   }
   return `#prepskm-local-file:${fallbackId}`;
 }
+
+/**
+ * 13. Swipeable Solution Navigator for Mock Test Results
+ */
+export function stepSolutionIndex(
+  currentIndex: number,
+  totalQuestions: number,
+  direction: 'next' | 'prev' | number
+): number {
+  if (totalQuestions <= 0) return 0;
+  if (typeof direction === 'number') {
+    return Math.max(0, Math.min(totalQuestions - 1, Math.floor(direction)));
+  }
+  if (direction === 'next') {
+    return (currentIndex + 1) % totalQuestions;
+  }
+  return (currentIndex - 1 + totalQuestions) % totalQuestions;
+}
+
+/**
+ * 14. E-Certificate Metadata Builder for Completed Mock Tests
+ */
+export interface MockCertificateMetadata {
+  certificateId: string;
+  studentName: string;
+  studentEmail: string;
+  testTitle: string;
+  scoreLabel: string;
+  accuracyLabel: string;
+  percentileLabel: string;
+  gradeBadge: string;
+  issuedDate: string;
+  signedBy: string;
+}
+
+export function buildMockCertificateMetadata(params: {
+  studentName?: string;
+  studentEmail?: string;
+  testTitle?: string;
+  totalScore: number;
+  maxScore: number;
+  accuracy: number;
+  percentile: number;
+  dateStr?: string;
+}): MockCertificateMetadata {
+  const safeMax = Math.max(1, params.maxScore || 300);
+  const ratio = Math.max(0, Math.min(1, params.totalScore / safeMax));
+  let gradeBadge = 'Distinguished Aspirant';
+  if (ratio >= 0.85 || params.percentile >= 98) {
+    gradeBadge = 'All India Topper Distinction';
+  } else if (ratio >= 0.65 || params.percentile >= 90) {
+    gradeBadge = 'Merit Scholar Excellence';
+  }
+  const cleanDate = params.dateStr || new Date().toISOString().slice(0, 10);
+  const hashSeed = Math.abs(
+    Math.round((params.totalScore + 17) * 137 + safeMax * 19 + (params.accuracy || 0) * 11)
+  );
+  return {
+    certificateId: `PREPSKM-CERT-${cleanDate.replace(/-/g, '')}-${hashSeed}`,
+    studentName: (params.studentName || 'Prepskm Aspirant').trim(),
+    studentEmail: (params.studentEmail || '').trim(),
+    testTitle: (params.testTitle || 'Official Prepskm CBT Mock Test').trim(),
+    scoreLabel: `${params.totalScore} / ${safeMax}`,
+    accuracyLabel: `${Math.round(params.accuracy || 0)}%`,
+    percentileLabel: `${Number(params.percentile || 0).toFixed(1)}%ile`,
+    gradeBadge,
+    issuedDate: cleanDate,
+    signedBy: 'Sumit (@unfiltereddsumit) • Lead Mentor, Prepskm',
+  };
+}
+
+/**
+ * 15. Whitelabel Provider Sanitizer (hides Jitsi / YouTube provider names from non-admin students)
+ */
+export function sanitizeLiveProviderLabel(
+  rawText: string,
+  isAdmin: boolean
+): string {
+  if (!rawText) return '';
+  if (isAdmin) return rawText;
+  return rawText
+    .replace(/jitsi\s*meet/gi, 'Prepskm Live Stream')
+    .replace(/jitsi/gi, 'Prepskm Live')
+    .replace(/meet\.jit\.si/gi, 'live.prepskm.in')
+    .replace(/youtube/gi, 'Prepskm HD Video')
+    .replace(/\bYT\b/g, 'Prepskm HD');
+}
+

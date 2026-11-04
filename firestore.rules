@@ -90,11 +90,17 @@ service cloud.firestore {
     // 5. Live Mentorship Sessions, Classroom Chat & Active Calls
     match /live_sessions/{sessionId} {
       allow read, write: if true;
+      match /{document=**} {
+        allow read, write: if true;
+      }
     }
     match /live_classroom_messages/{msgId} {
       allow read, write: if true;
     }
     match /activeCalls/{callId} {
+      allow read, write: if true;
+    }
+    match /notifications/{notifId} {
       allow read, write: if true;
     }
 
