@@ -25,6 +25,14 @@ export default function PDFViewerModal() {
 
       setMaterial(mat);
       setIsOpen(true);
+      window.__isPdfModalOpen = true;
+      try {
+        window.history.pushState(
+          { modal: 'pdf', path: window.location.pathname },
+          '',
+          window.location.pathname
+        );
+      } catch (_e) {}
       setDownloadSuccess(false);
       setLoading(true);
 
@@ -47,7 +55,10 @@ export default function PDFViewerModal() {
     };
 
     window.openInAppPdfViewer = window.openInAppPdfModal;
-    window.closeInAppPdfModal = () => setIsOpen(false);
+    window.closeInAppPdfModal = () => {
+      window.__isPdfModalOpen = false;
+      setIsOpen(false);
+    };
     window.closeInAppPdfViewer = window.closeInAppPdfModal;
 
     window.downloadMaterialDirectlyToDevice = async (item) => {

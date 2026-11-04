@@ -104,6 +104,14 @@ export default function VideoPlayer() {
       setCurrentSec(0);
       setIsPlaying(true);
       setIsOpen(true);
+      window.__isVideoModalOpen = true;
+      try {
+        window.history.pushState(
+          { modal: 'video', path: window.location.pathname },
+          '',
+          window.location.pathname
+        );
+      } catch (_e) {}
 
       const raw = target.videoUrl || target.video_url || '';
       if (raw.startsWith('#prepskm-cloud-file:')) {
@@ -123,6 +131,7 @@ export default function VideoPlayer() {
     };
 
     window.closeAdvancedVideoPlayer = () => {
+      window.__isVideoModalOpen = false;
       setIsOpen(false);
       setIsPlaying(false);
     };

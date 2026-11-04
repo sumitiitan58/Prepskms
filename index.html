@@ -61,10 +61,10 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <style>
-      /* Enhanced Vibrant Contrast & Readability Theme */
+      /* Professional Deep Slate & Royal Indigo/Violet EdTech Theme */
       body {
-        background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 45%, #eef2ff 100%);
-        color: #0f172a;
+        background: #0B0F19;
+        color: #f8fafc;
       }
       /* Custom subtle scrollbars & styles */
       ::-webkit-scrollbar {
@@ -72,14 +72,14 @@
         height: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #f8fafc;
+        background: #0B0F19;
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
+        background: #1E293B;
         border-radius: 9999px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
+        background: #4F46E5;
       }
       .cropper-view-box,
       .cropper-face {
@@ -148,15 +148,35 @@
       .streak-badge-glow {
         animation: streakBadgeGlow 2.5s ease-in-out infinite;
       }
+      /* Deep Slate Card Overrides for Consistent Dark EdTech Surface */
+      header.sticky {
+        background-color: rgba(11, 15, 25, 0.94) !important;
+        border-color: #1E293B !important;
+      }
+      #view-home > .bg-white,
+      #view-materials > .bg-white,
+      #view-mock-test > .bg-white,
+      #publishedMockTestsSection,
+      #mockTestSetupView {
+        background-color: #151D2F !important;
+        border-color: #1E293B !important;
+        color: #f8fafc !important;
+      }
+      #view-home > .bg-white h2,
+      #view-materials > .bg-white h1,
+      #publishedMockTestsSection h2,
+      #mockTestSetupView h1 {
+        color: #ffffff !important;
+      }
     </style>
   </head>
-  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 pb-20 md:pb-6">
+  <body class="bg-[#0B0F19] text-slate-100 font-sans antialiased selection:bg-indigo-500/30 selection:text-white pb-20 md:pb-6">
 
     <!-- Global Non-Blocking Toast Notification Container -->
     <div id="globalToastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
     <!-- Top Sticky Header -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all">
+    <header class="sticky top-0 z-40 bg-[#0B0F19]/95 backdrop-blur-md border-b border-[#1E293B] shadow-md transition-all">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 gap-3">
           
@@ -253,18 +273,18 @@
         </div>
 
         <!-- Desktop Navigation Bar & Dynamic Permanent Sections -->
-        <nav class="hidden md:flex items-center gap-1 border-t border-gray-100 py-2 overflow-x-auto text-sm font-medium text-gray-600">
-          <button onclick="navigateView('home')" id="nav-btn-home" class="nav-tab active px-3.5 py-1.5 rounded-lg text-blue-700 bg-blue-50 font-semibold flex items-center gap-1.5 transition-all">
-            <i data-lucide="home" class="w-4 h-4"></i>
+        <nav class="hidden md:flex items-center gap-1 border-t border-[#1E293B] py-2 overflow-x-auto text-xs font-semibold text-slate-300">
+          <button onclick="navigateView('home')" id="nav-btn-home" class="nav-tab active px-3 py-1.5 rounded-lg text-white bg-[#4F46E5] font-bold flex items-center gap-1.5 transition-all">
+            <i data-lucide="home" class="w-3.5 h-3.5"></i>
             <span>Home</span>
           </button>
-          <button onclick="navigateView('lectures')" id="nav-btn-lectures" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
-            <i data-lucide="tv" class="w-4 h-4 text-indigo-600"></i>
-            <span>Video Lectures</span>
+          <button onclick="navigateView('lectures')" id="nav-btn-lectures" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <i data-lucide="tv" class="w-3.5 h-3.5 text-[#3B82F6]"></i>
+            <span>Videos</span>
           </button>
-          <button onclick="navigateView('materials')" id="nav-btn-materials" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
-            <i data-lucide="book-open" class="w-4 h-4"></i>
-            <span>Study Materials</span>
+          <button onclick="navigateView('materials')" id="nav-btn-materials" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span>Notes & PDFs</span>
           </button>
           
           <!-- Dynamic Sections Injected Here -->
@@ -272,21 +292,29 @@
             <!-- E.g., PYQs, Revision Notes, Formula Sheets, Mind Maps -->
           </div>
 
-          <button onclick="navigateView('mock-test')" id="nav-btn-mock-test" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
-            <i data-lucide="timer" class="w-4 h-4"></i>
-            <span>NTA Mock Engine</span>
+          <button onclick="navigateView('mock-test', 'cbt')" id="nav-btn-mock-test" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Mock Tests</span>
           </button>
-          <button onclick="navigateView('chat')" id="nav-btn-chat" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
-            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
-            <span>Live Doubt & Calls</span>
+          <button onclick="navigateView('mock-test', 'analytics')" id="nav-btn-analytics" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-[#10B981]"></i>
+            <span>Test Analytics</span>
           </button>
-          <button onclick="navigateView('mentorship')" id="nav-btn-mentorship" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
-            <i data-lucide="users" class="w-4 h-4"></i>
-            <span>1:1 Mentorship</span>
+          <button onclick="navigateView('live')" id="nav-btn-live" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <span class="w-2 h-2 rounded-full bg-[#EF4444] animate-pulse"></span>
+            <span>Live Classroom</span>
           </button>
-          <button onclick="navigateView('forum')" id="nav-btn-forum" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
-            <i data-lucide="messages-square" class="w-4 h-4 text-indigo-600"></i>
-            <span>Discussion Forum</span>
+          <button onclick="navigateView('chat')" id="nav-btn-chat" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Doubt & Calls</span>
+          </button>
+          <button onclick="navigateView('mentorship')" id="nav-btn-mentorship" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <i data-lucide="users" class="w-3.5 h-3.5 text-violet-400"></i>
+            <span>1:1 Mentors</span>
+          </button>
+          <button onclick="navigateView('forum')" id="nav-btn-forum" class="nav-tab px-3 py-1.5 rounded-lg hover:text-white hover:bg-[#151D2F] flex items-center gap-1.5 transition-all">
+            <i data-lucide="messages-square" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span>Forum</span>
           </button>
           <button onclick="navigateView('profile')" id="nav-btn-profile" class="nav-tab px-3.5 py-1.5 rounded-lg hover:text-gray-900 hover:bg-gray-100 flex items-center gap-1.5 transition-all">
             <i data-lucide="user-circle" class="w-4 h-4 text-blue-600"></i>
@@ -577,8 +605,8 @@
             </button>
           </div>
 
-          <div id="featuredVideosGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Dynamically populated video cards -->
+          <div id="featuredVideosGrid" class="grid grid-cols-2 gap-3">
+            <!-- Dynamically populated compact 2-per-row video cards -->
           </div>
         </div>
 
@@ -719,8 +747,11 @@
           <!-- Dynamically populated -->
         </div>
 
-        <!-- PDF Materials Grid -->
-        <div id="materialsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- React StudyMaterials Component Mount (2-Column Compact Cloud PDFs) -->
+        <div id="reactStudyMaterialsMount"></div>
+
+        <!-- PDF Materials Grid (Compact 2-per-row Layout) -->
+        <div id="materialsGrid" class="grid grid-cols-2 gap-3">
           <!-- Dynamically populated cards -->
         </div>
       </section>
@@ -729,19 +760,22 @@
       <!-- VIEW 2B: DEDICATED VIDEO LECTURES HUB (SUBJECT & CHAPTER FILTERED) -->
       <!-- =================================================================== -->
       <section id="view-lectures" class="hidden space-y-6">
-        <div class="bg-gradient-to-r from-indigo-950 via-blue-900 to-purple-950 text-white p-6 rounded-3xl border border-indigo-700/60 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- React VideoLectures Component Mount (2-Column Compact Video Lectures) -->
+        <div id="reactVideoLecturesMount"></div>
+
+        <div class="bg-gradient-to-r from-indigo-950 via-blue-900 to-purple-950 text-white p-5 rounded-3xl border border-indigo-700/60 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div class="space-y-1.5">
             <div class="flex items-center gap-2">
               <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-slate-950">Prepskm HD Classroom</span>
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-blue-100 border border-white/20">Ad-Free Native Player</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-blue-100 border border-white/20">2-Column Compact Grid</span>
             </div>
-            <h1 class="text-2xl font-black tracking-tight text-white">Chapter-Wise Video Lectures & One-Shots</h1>
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white">Chapter-Wise Video Lectures & One-Shots</h1>
             <p class="text-xs text-blue-100/90">Select Subject and Chapter to watch clean HD lectures with timestamp bookmarks and companion DPPs.</p>
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5">
             <!-- Subject Filter Dropdown -->
-            <select id="lecturesSubjectSelect" onchange="handleLecturesSubjectChange(this.value)" class="px-3.5 py-2 text-xs font-extrabold bg-white text-slate-900 border-2 border-indigo-300 rounded-xl shadow-sm focus:outline-none">
+            <select id="lecturesSubjectSelect" onchange="handleLecturesSubjectChange(this.value)" class="px-3.5 py-2 text-xs font-extrabold bg-[#0B0F19] text-white border border-[#1E293B] rounded-xl shadow-sm focus:outline-none">
               <option value="ALL">All Subjects</option>
               <option value="Physics">Physics</option>
               <option value="Chemistry">Chemistry</option>
@@ -750,7 +784,7 @@
             </select>
 
             <!-- Chapter Filter Dropdown -->
-            <select id="lecturesChapterSelect" onchange="handleLecturesChapterChange(this.value)" class="px-3.5 py-2 text-xs font-extrabold bg-white text-slate-900 border-2 border-indigo-300 rounded-xl shadow-sm focus:outline-none">
+            <select id="lecturesChapterSelect" onchange="handleLecturesChapterChange(this.value)" class="px-3.5 py-2 text-xs font-extrabold bg-[#0B0F19] text-white border border-[#1E293B] rounded-xl shadow-sm focus:outline-none">
               <option value="ALL">All Chapters</option>
             </select>
 
@@ -763,15 +797,15 @@
 
         <!-- Subject Quick Filter Pills -->
         <div class="flex items-center gap-2 overflow-x-auto pb-1" id="lecturesSubjectPills">
-          <button onclick="handleLecturesSubjectChange('ALL')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow-sm transition-all" data-subj="ALL">All Subjects</button>
-          <button onclick="handleLecturesSubjectChange('Physics')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-blue-400 transition-all" data-subj="Physics">⚡ Physics</button>
-          <button onclick="handleLecturesSubjectChange('Chemistry')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 transition-all" data-subj="Chemistry">🧪 Chemistry</button>
-          <button onclick="handleLecturesSubjectChange('Mathematics')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-purple-400 transition-all" data-subj="Mathematics">📐 Mathematics</button>
-          <button onclick="handleLecturesSubjectChange('Biology')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-amber-400 transition-all" data-subj="Biology">🧬 Biology</button>
+          <button onclick="handleLecturesSubjectChange('ALL')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-extrabold bg-[#4F46E5] text-white shadow-sm transition-all" data-subj="ALL">All Subjects</button>
+          <button onclick="handleLecturesSubjectChange('Physics')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-[#151D2F] text-slate-200 border border-[#1E293B] hover:border-blue-400 transition-all" data-subj="Physics">⚡ Physics</button>
+          <button onclick="handleLecturesSubjectChange('Chemistry')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-[#151D2F] text-slate-200 border border-[#1E293B] hover:border-emerald-400 transition-all" data-subj="Chemistry">🧪 Chemistry</button>
+          <button onclick="handleLecturesSubjectChange('Mathematics')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-[#151D2F] text-slate-200 border border-[#1E293B] hover:border-purple-400 transition-all" data-subj="Mathematics">📐 Mathematics</button>
+          <button onclick="handleLecturesSubjectChange('Biology')" class="lecture-subj-pill px-4 py-2 rounded-xl text-xs font-bold bg-[#151D2F] text-slate-200 border border-[#1E293B] hover:border-amber-400 transition-all" data-subj="Biology">🧬 Biology</button>
         </div>
 
-        <!-- Dedicated Lectures Grid -->
-        <div id="dedicatedLecturesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Dedicated Lectures Grid (Compact 2-per-row Layout) -->
+        <div id="dedicatedLecturesGrid" class="grid grid-cols-2 gap-3">
           <!-- Populated dynamically by renderDedicatedLecturesView() -->
         </div>
       </section>
@@ -5862,6 +5896,17 @@
           updateRoleAndHeaderUI();
         }
 
+        if (viewName === 'live') {
+          if (typeof joinGroupLiveMentorshipSession === 'function') {
+            joinGroupLiveMentorshipSession();
+          }
+          return;
+        }
+        if (viewName === 'analytics') {
+          viewName = 'mock-test';
+          subTab = 'analytics';
+        }
+
         // Enforce zero admin leaks to student aspirants: trigger master PIN modal if unauthenticated
         if (viewName === 'admin' && !isAdmin) {
           openAdminSecretAuthModal();
@@ -5873,13 +5918,14 @@
         }
 
         const views = ['home', 'lectures', 'materials', 'mock-test', 'mentorship', 'mentor-studio', 'admin', 'profile', 'forum', 'chat'];
-        views.forEach(v => {
+        const navIds = [...views, 'analytics', 'live'];
+        navIds.forEach(v => {
           const sec = document.getElementById(`view-${v}`);
           if (sec) sec.classList.add('hidden');
           const navBtn = document.getElementById(`nav-btn-${v}`);
           if (navBtn) {
-            navBtn.classList.remove('text-blue-700', 'bg-blue-50', 'font-semibold');
-            navBtn.classList.add('hover:text-gray-900', 'hover:bg-gray-100');
+            navBtn.classList.remove('text-blue-700', 'bg-blue-50', 'font-semibold', 'text-white', 'bg-[#4F46E5]', 'font-bold');
+            navBtn.classList.add('hover:text-white', 'hover:bg-[#151D2F]');
           }
           const mobBtn = document.getElementById(`mob-btn-${v}`);
           if (mobBtn) {
@@ -5891,10 +5937,11 @@
         const activeSec = document.getElementById(`view-${viewName}`);
         if (activeSec) activeSec.classList.remove('hidden');
 
-        const activeNav = document.getElementById(`nav-btn-${viewName}`);
+        const targetNavId = (viewName === 'mock-test' && subTab === 'analytics') ? 'analytics' : viewName;
+        const activeNav = document.getElementById(`nav-btn-${targetNavId}`);
         if (activeNav) {
-          activeNav.classList.add('text-blue-700', 'bg-blue-50', 'font-semibold');
-          activeNav.classList.remove('hover:text-gray-900', 'hover:bg-gray-100');
+          activeNav.classList.add('text-white', 'bg-[#4F46E5]', 'font-bold');
+          activeNav.classList.remove('hover:text-white', 'hover:bg-[#151D2F]');
         }
 
         const activeMob = document.getElementById(`mob-btn-${viewName}`);
@@ -5905,6 +5952,12 @@
 
         if (viewName === 'admin' && subTab) {
           switchAdminTab(subTab);
+        }
+
+        if (viewName === 'mock-test' && subTab) {
+          window.dispatchEvent(new CustomEvent('prepskm-route-change', {
+            detail: { viewId: 'mock-test', subTab, path: subTab === 'analytics' ? '/analytics' : '/tests' }
+          }));
         }
 
         // Refresh dynamic UI elements for this view
@@ -7081,22 +7134,30 @@
         }
 
         grid.innerHTML = list.map(m => `
-          <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between text-[11px] font-bold">
-                <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100 uppercase">${m.sectionName}</span>
-                <span class="px-2 py-0.5 rounded bg-gray-100 text-gray-600">${m.exam}</span>
-              </div>
-              <h3 class="font-bold text-sm text-gray-900 leading-snug">${m.title}</h3>
-              <div class="text-xs text-gray-500 font-medium">Subject: <span class="text-gray-800 font-semibold">${m.subject}</span></div>
+          <div class="bg-[#151D2F] rounded-2xl border border-[#1E293B] hover:border-[#4F46E5] p-2.5 sm:p-3 shadow-sm hover:shadow-lg transition-all flex items-center gap-2.5 sm:gap-3">
+            <!-- Left Compact 16:9 Thumbnail (~74px - 88px width) -->
+            <div onclick="openPrepskmCloudPdf('${m.id}', event)" class="relative w-[74px] sm:w-[88px] aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-[#0B0F19] via-indigo-950 to-[#151D2F] border border-[#1E293B] shrink-0 flex flex-col items-center justify-center cursor-pointer group">
+              <i data-lucide="file-text" class="w-4 h-4 text-[#3B82F6] group-hover:scale-110 transition-transform"></i>
+              <span class="text-[8px] font-black uppercase tracking-wider text-indigo-300 mt-0.5">PDF</span>
             </div>
 
-            <div class="pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
-              <button onclick="openPrepskmCloudPdf('${m.id}', event)" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer">
-                <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
-                <span>Read &amp; Download PDF</span>
-              </button>
-              <span class="text-[11px] text-gray-400">By Sumit (@unfiltereddsumit)</span>
+            <!-- Right Metadata & Action Button -->
+            <div class="flex-1 min-w-0 flex flex-col justify-between gap-1.5">
+              <div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#3B82F6]/20 text-blue-300 border border-blue-500/30">${m.subject || 'Physics'}</span>
+                  <span class="text-[9px] text-slate-400 truncate">${m.sectionName || m.exam || 'Notes'}</span>
+                </div>
+                <h3 onclick="openPrepskmCloudPdf('${m.id}', event)" class="font-bold text-xs text-white leading-snug line-clamp-2 mt-1 cursor-pointer hover:text-indigo-300">${m.title}</h3>
+              </div>
+
+              <div class="flex items-center justify-between gap-1.5 pt-1 border-t border-[#1E293B]/80">
+                <button onclick="openPrepskmCloudPdf('${m.id}', event)" class="px-2.5 py-1 bg-[#4F46E5] hover:bg-indigo-500 text-white rounded-lg text-[10px] font-extrabold shadow-xs flex items-center gap-1 transition-colors cursor-pointer">
+                  <i data-lucide="eye" class="w-3 h-3"></i>
+                  <span>Preview PDF</span>
+                </button>
+                <span class="text-[9px] text-slate-400 truncate hidden sm:inline">@unfiltereddsumit</span>
+              </div>
             </div>
           </div>
         `).join('');
@@ -7642,6 +7703,7 @@
         let totalTimeSec = 0;
         const subjectScores = {};
 
+        const chapterMistakes = {};
         activeMockTestSession.questions.forEach(q => {
           if (!subjectScores[q.subject]) {
             subjectScores[q.subject] = { score: 0, maxScore: 0, correct: 0, incorrect: 0 };
@@ -7674,6 +7736,8 @@
               incorrectCount++;
               subjectScores[q.subject].score -= 1;
               subjectScores[q.subject].incorrect += 1;
+              const chName = q.chapter || `${q.subject} Core Concepts`;
+              chapterMistakes[chName] = (chapterMistakes[chName] || 0) + 1;
             }
           }
         });
@@ -7682,7 +7746,7 @@
         const accuracy = attemptedCount > 0 ? Math.round((correctCount / attemptedCount) * 100) : 0;
         const avgTimeMin = (totalTimeSec / (activeMockTestSession.questions.length * 60)).toFixed(1);
 
-        // Save evaluated score submission to Cloud DB ('mock_results')
+        // Save evaluated score submission to Cloud DB ('mock_results' & 'student_results')
         const mockSubmissionRecord = {
           id: 'res-' + Date.now(),
           uid: currentUser.uid || 'guest',
@@ -7697,12 +7761,16 @@
           incorrectCount,
           attemptedCount,
           totalTimeSec,
+          subjectScores,
+          chapterMistakes,
           submittedAt: new Date().toISOString()
         };
         state.mockResults = state.mockResults || [];
         state.mockResults.unshift(mockSubmissionRecord);
         persistState();
-        if (db) {
+        if (window.prepskmFirebase && window.prepskmFirebase.saveStudentTestResult) {
+          window.prepskmFirebase.saveStudentTestResult(mockSubmissionRecord).catch(e => console.warn(e));
+        } else if (db) {
           db.collection('mock_results').doc(mockSubmissionRecord.id).set(mockSubmissionRecord).catch(e => console.warn(e));
         }
 
@@ -8684,71 +8752,51 @@
       }
 
       function buildVideoCardHtml(v) {
-        const mentor = state.mentors.find(m => m.id === v.mentorId) || state.mentors[0];
         const subjColor = (v.subject === 'Chemistry')
-          ? 'bg-emerald-600'
+          ? 'bg-[#10B981]/20 text-emerald-300 border-emerald-500/30'
           : (v.subject === 'Mathematics')
-          ? 'bg-purple-600'
+          ? 'bg-violet-500/20 text-violet-300 border-violet-500/30'
           : (v.subject === 'Biology')
-          ? 'bg-amber-600'
-          : 'bg-blue-600';
+          ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+          : 'bg-[#3B82F6]/20 text-blue-300 border-blue-500/30';
+
+        const thumbUrl = v.thumbnail_url || v.thumbnailUrl || 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&auto=format&fit=crop&q=80';
+        const markerCount = Array.isArray(v.timestamps) ? v.timestamps.length : 0;
 
         return `
-          <div class="bg-white rounded-2xl border-2 border-slate-200/90 hover:border-blue-500 p-4 space-y-3 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all">
-            <!-- Clickable Video Preview Card with Protected Play Overlay -->
-            <div onclick="openBigVideoPlayer('${v.id}')" class="aspect-video bg-slate-950 rounded-xl overflow-hidden relative cursor-pointer group shadow-md">
-              <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80" class="w-full h-full object-cover opacity-65 group-hover:opacity-45 group-hover:scale-105 transition-all duration-300" alt="${v.title}">
-              
-              <!-- Play Button Overlay -->
-              <div class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3 text-center">
-                <div class="w-12 h-12 rounded-full bg-blue-600 group-hover:bg-indigo-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                  <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+          <div class="bg-[#151D2F] rounded-2xl border border-[#1E293B] hover:border-[#4F46E5] p-2.5 sm:p-3 flex items-center gap-2.5 sm:gap-3 shadow-sm hover:shadow-xl transition-all group">
+            <!-- Left Small 16:9 Thumbnail (~76px - 90px width) -->
+            <div onclick="openBigVideoPlayer('${v.id}')" class="relative w-[76px] sm:w-[90px] aspect-video bg-[#0B0F19] rounded-xl overflow-hidden shrink-0 cursor-pointer border border-[#1E293B]">
+              <img src="${thumbUrl}" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-300" alt="${v.title}">
+              <div class="absolute inset-0 bg-black/35 flex items-center justify-center">
+                <div class="w-6 h-6 rounded-full bg-[#4F46E5] text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                  <i data-lucide="play" class="w-3 h-3 fill-current ml-0.5"></i>
                 </div>
-                <span class="text-[11px] font-extrabold text-white bg-slate-950/80 px-2.5 py-0.5 rounded-full backdrop-blur-xs border border-white/15">Play Prepskm HD Lecture</span>
+              </div>
+              <span class="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-black/80 text-[8px] font-mono text-emerald-400">HD</span>
+            </div>
+
+            <!-- Right Metadata & Action Button -->
+            <div class="flex-1 min-w-0 flex flex-col justify-between gap-1.5">
+              <div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-bold border ${subjColor}">${v.subject || 'Physics'}</span>
+                  <span class="text-[9px] text-slate-400 truncate">${v.chapter || 'Core Concepts'}</span>
+                </div>
+                <h4 onclick="openBigVideoPlayer('${v.id}')" class="font-bold text-xs text-white leading-snug line-clamp-2 mt-1 cursor-pointer group-hover:text-indigo-300 transition-colors">
+                  ${v.title}
+                </h4>
               </div>
 
-              <!-- Subject & Chapter Badges -->
-              <div class="absolute top-2 left-2 flex flex-wrap items-center gap-1 max-w-[75%]">
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${subjColor} text-white shadow-xs">${v.subject || 'Physics'}</span>
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/90 text-amber-300 truncate">${v.chapter || 'Core Concepts'}</span>
-              </div>
-              <div class="absolute top-2 right-2">
-                <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-black/75 text-emerald-400 flex items-center gap-1">
-                  <i data-lucide="shield-check" class="w-2.5 h-2.5"></i>
-                  <span>HD</span>
+              <div class="flex items-center justify-between gap-1.5 pt-1 border-t border-[#1E293B]/80">
+                <button onclick="openBigVideoPlayer('${v.id}')" class="px-2.5 py-1 bg-[#4F46E5] hover:bg-indigo-500 text-white rounded-lg text-[10px] font-extrabold shadow-xs flex items-center gap-1 transition-colors cursor-pointer">
+                  <i data-lucide="play" class="w-2.5 h-2.5 fill-current"></i>
+                  <span>Watch</span>
+                </button>
+                <span class="text-[9px] text-slate-400 truncate">
+                  ${markerCount > 0 ? `⏱ ${markerCount} markers` : (v.mentorName || '@unfiltereddsumit')}
                 </span>
               </div>
-            </div>
-
-            <!-- Title & Mentor with Verified Blue Tick -->
-            <div class="space-y-1.5">
-              <h4 onclick="openBigVideoPlayer('${v.id}')" class="font-extrabold text-sm text-slate-900 leading-snug line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors">
-                ${v.title}
-              </h4>
-              <div class="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg inline-block">
-                📖 Chapter: ${v.chapter || 'Core Concepts'}
-              </div>
-              
-              <div class="flex items-center gap-2 pt-1.5 border-t border-slate-100">
-                <img src="${mentor ? mentor.avatar : '/assets/aistudio/IMG_1422_c0b1f775.png'}" class="mentor-dynamic-avatar w-6 h-6 rounded-full object-cover border border-slate-300" alt="Mentor">
-                <div class="flex items-center gap-1 truncate text-[11px]">
-                  <span class="font-bold text-slate-800 truncate">${v.mentorName || 'Sumit (@unfiltereddsumit)'}</span>
-                  <span class="inline-flex items-center text-blue-600" title="Verified Prepskm Mentor">
-                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Companion Files Summary & Big Player Trigger -->
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span class="text-[11px] text-slate-600 font-semibold flex items-center gap-1">
-                <i data-lucide="paperclip" class="w-3 h-3 text-indigo-500"></i>
-                <span>${v.companionPdfs ? v.companionPdfs.length : 0} Companion Notes</span>
-              </span>
-              <button onclick="openBigVideoPlayer('${v.id}')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors">
-                Watch Now
-              </button>
             </div>
           </div>
         `;

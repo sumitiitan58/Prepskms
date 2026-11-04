@@ -397,4 +397,83 @@ test('Swipeable solution navigation, E-certificate metadata, and whitelabel sani
   );
 });
 
+import {
+  resolvePlatformRoute,
+  getStrictStudentJitsiConfig,
+  identifyWeakChaptersFromMistakes,
+} from './testEngine';
+
+test('Multi-page HTML5 browser history route resolution', () => {
+  assert.deepEqual(resolvePlatformRoute('/'), {
+    viewId: 'home',
+    subTab: null,
+    canonicalPath: '/',
+  });
+  assert.deepEqual(resolvePlatformRoute('/videos'), {
+    viewId: 'lectures',
+    subTab: null,
+    canonicalPath: '/videos',
+  });
+  assert.deepEqual(resolvePlatformRoute('/notes'), {
+    viewId: 'materials',
+    subTab: null,
+    canonicalPath: '/notes',
+  });
+  assert.deepEqual(resolvePlatformRoute('/tests'), {
+    viewId: 'mock-test',
+    subTab: 'cbt',
+    canonicalPath: '/tests',
+  });
+  assert.deepEqual(resolvePlatformRoute('/analytics'), {
+    viewId: 'mock-test',
+    subTab: 'analytics',
+    canonicalPath: '/analytics',
+  });
+  assert.deepEqual(resolvePlatformRoute('/live'), {
+    viewId: 'live',
+    subTab: null,
+    canonicalPath: '/live',
+  });
+  assert.deepEqual(resolvePlatformRoute('/admin'), {
+    viewId: 'admin',
+    subTab: null,
+    canonicalPath: '/admin',
+  });
+});
+
+test('Strict Student Jitsi Meet viewer config disables whiteboard and limits toolbar', () => {
+  const defaultStudentCfg = getStrictStudentJitsiConfig(false);
+  assert.equal(defaultStudentCfg.startWithAudioMuted, true);
+  assert.equal(defaultStudentCfg.startWithVideoMuted, true);
+  assert.equal(defaultStudentCfg.prejoinPageEnabled, false);
+  assert.equal(defaultStudentCfg.whiteboard.enabled, false);
+  assert.deepEqual(defaultStudentCfg.toolbarButtons, ['chat', 'raisehand', 'fullscreen']);
+
+  const approvedStageCfg = getStrictStudentJitsiConfig(true);
+  assert.equal(approvedStageCfg.whiteboard.enabled, false);
+  assert.deepEqual(approvedStageCfg.toolbarButtons, [
+    'microphone',
+    'camera',
+    'chat',
+    'raisehand',
+    'fullscreen',
+  ]);
+});
+
+test('Chapter-level weakness identifier aggregates negative marks lost and sorts descending', () => {
+  const history = [
+    { chapterMistakes: { 'Rotational Dynamics': 3, 'Electrostatics': 1 } },
+    { chapterMistakes: { 'Rotational Dynamics': 2, 'Thermodynamics': 2 } },
+  ];
+  const weakTags = identifyWeakChaptersFromMistakes(history);
+  assert.equal(weakTags.length, 3);
+  assert.equal(weakTags[0].chapter, 'Rotational Dynamics');
+  assert.equal(weakTags[0].mistakes, 5);
+  assert.equal(weakTags[0].severity, 'CRITICAL');
+  assert.equal(weakTags[1].chapter, 'Thermodynamics');
+  assert.equal(weakTags[1].mistakes, 2);
+  assert.equal(weakTags[1].severity, 'MODERATE');
+});
+
+
 

@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { JitsiMeeting } from '@jitsi/react-sdk';
 import LiveClassroom from './components/LiveClassroom.jsx';
-import AdminControls from './components/AdminControls.jsx';
 import SubscriptionModal from './components/SubscriptionModal.jsx';
 import VideoPlayer from './components/VideoPlayer.jsx';
 import PDFViewerModal from './components/PDFViewerModal.jsx';
-import TestAnalytics from './components/TestAnalytics.jsx';
+import StudentViewer from './components/StudentViewer.jsx';
+import TeacherHost from './components/TeacherHost.jsx';
+import AppRoutes from './router/AppRoutes.jsx';
+import './services/firebase.js';
 import './services/cloudStorage.js';
 import './services/db.js';
 import './services/razorpay.js';
@@ -93,11 +94,6 @@ export default function App() {
     'idle' | 'loading' | 'ready' | 'error'
   >('idle');
   const [jitsiRetryCount, setJitsiRetryCount] = useState(0);
-  const [adminMountTarget, setAdminMountTarget] = useState<HTMLElement | null>(
-    null
-  );
-  const [analyticsMountTarget, setAnalyticsMountTarget] =
-    useState<HTMLElement | null>(null);
 
   const verifyOrLoadJitsi = useCallback(async () => {
     if (typeof window.JitsiMeetExternalAPI === 'function') {
@@ -111,8 +107,9 @@ export default function App() {
         setJitsiScriptStatus('ready');
         return true;
       }
-      // Remove broken script tag before retrying
-      const existing = document.querySelector(`script[src="${JITSI_SCRIPT_URL}"]`);
+      const existing = document.querySelector(
+        `script[src="${JITSI_SCRIPT_URL}"]`
+      );
       if (existing && existing.parentNode) {
         existing.parentNode.removeChild(existing);
       }
@@ -127,19 +124,6 @@ export default function App() {
   }, [verifyOrLoadJitsi, jitsiRetryCount]);
 
   useEffect(() => {
-    const locateMounts = () => {
-      const adminEl = document.getElementById('adminReactControlMount');
-      if (adminEl && adminEl !== adminMountTarget) {
-        setAdminMountTarget(adminEl);
-      }
-      const analyticsEl = document.getElementById('testAnalyticsMount');
-      if (analyticsEl && analyticsEl !== analyticsMountTarget) {
-        setAnalyticsMountTarget(analyticsEl);
-      }
-    };
-    locateMounts();
-    const timer = setInterval(locateMounts, 1000);
-
     window.mountJitsiSession = async (config: JitsiSessionConfig) => {
       const target = document.getElementById('jitsiMeetStageContainer');
       setPortalTarget(target);
@@ -166,26 +150,24 @@ export default function App() {
     };
 
     return () => {
-      clearInterval(timer);
       delete window.mountJitsiSession;
       delete window.unmountJitsiSession;
       delete window.triggerJitsiRaiseHand;
     };
-  }, [adminMountTarget, analyticsMountTarget, verifyOrLoadJitsi]);
+  }, [verifyOrLoadJitsi]);
 
   return (
     <>
+      <AppRoutes />
       {createPortal(<LiveClassroom />, document.body)}
       {createPortal(<SubscriptionModal />, document.body)}
       {createPortal(<VideoPlayer />, document.body)}
       {createPortal(<PDFViewerModal />, document.body)}
-      {adminMountTarget && createPortal(<AdminControls />, adminMountTarget)}
-      {analyticsMountTarget &&
-        createPortal(<TestAnalytics />, analyticsMountTarget)}
+
       {session &&
         portalTarget &&
         createPortal(
-          <div className="w-full h-full min-h-[340px] bg-gray-950 relative overflow-hidden flex flex-col items-center justify-center">
+          <div className="w-full h-full min-h-[340px] bg-[#0B0F19] relative overflow-hidden flex flex-col items-center justify-center">
             {jitsiScriptStatus === 'loading' && (
               <div className="flex flex-col items-center justify-center p-6 text-center space-y-3">
                 <div className="w-10 h-10 rounded-full border-3 border-indigo-500 border-t-transparent animate-spin" />
@@ -216,59 +198,28 @@ export default function App() {
               </div>
             )}
 
-            {jitsiScriptStatus === 'ready' && (
-              <JitsiMeeting
-                domain="meet.jit.si"
-                roomName={session.roomName}
-                configOverwrite={{
-                  startWithAudioMuted: Boolean(session.isStudent),
-                  startWithVideoMuted: Boolean(session.isAudioOnly),
-                  prejoinPageEnabled: false,
-                  disableDeepLinking: true,
-                  hideConferenceSubject: Boolean(session.isStudent),
-                  subject: session.subject || 'Prepskm Live Mentorship',
-                  toolbarButtons: session.isStudent
-                    ? ['microphone', 'camera', 'raisehand', 'tileview', 'hangup']
-                    : [
-                        'microphone',
-                        'camera',
-                        'desktop',
-                        'chat',
-                        'raisehand',
-                        'tileview',
-                        'hangup',
-                      ],
-                }}
-                interfaceConfigOverwrite={{
-                  MOBILE_APP_PROMO: false,
-                  SHOW_JITSI_WATERMARK: false,
-                  SHOW_BRAND_WATERMARK: false,
-                  SHOW_WATERMARK_FOR_GUESTS: false,
-                  SHOW_CHROME_EXTENSION_BANNER: false,
-                  TOOLBAR_ALWAYS_VISIBLE: true,
-                }}
-                userInfo={{
-                  displayName: session.displayName || 'Prepskm Aspirant',
-                  email: session.email || 'aspirant@prepskm.in',
-                }}
-                onApiReady={(externalApi) => {
-                  window.activeJitsiApi = externalApi;
-                  externalApi.addEventListener('readyToClose', () => {
-                    if (session.onEnd) session.onEnd();
-                  });
-                }}
-                getIFrameRef={(iframeRef) => {
-                  iframeRef.style.height = '100%';
-                  iframeRef.style.width = '100%';
-                  iframeRef.style.minHeight = '340px';
-                  iframeRef.style.border = '0';
-                }}
-              />
-            )}
+            {jitsiScriptStatus === 'ready' &&
+              (session.isStudent ? (
+                <StudentViewer
+                  roomName={session.roomName}
+                  studentName={session.displayName || 'Prepskm Aspirant'}
+                  studentEmail={session.email || 'aspirant@prepskm.in'}
+                  subject={session.subject || 'Prepskm Live Mentorship'}
+                  hasStagePermission={false}
+                  onLeave={session.onEnd}
+                />
+              ) : (
+                <TeacherHost
+                  roomName={session.roomName}
+                  mentorName={session.displayName || 'Sumit (@unfiltereddsumit)'}
+                  mentorEmail={session.email || 'sumitk31207@gmail.com'}
+                  subject={session.subject || 'Prepskm Live Mentorship'}
+                  onEndSession={session.onEnd}
+                />
+              ))}
           </div>,
           portalTarget
         )}
     </>
   );
 }
-

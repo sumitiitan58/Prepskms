@@ -666,3 +666,99 @@ export function sanitizeLiveProviderLabel(
     .replace(/\bYT\b/g, 'Prepskm HD');
 }
 
+/**
+ * 16. HTML5 Browser History Route Resolver for Multi-Page Navigation
+ */
+export interface PlatformRouteResolution {
+  viewId: string;
+  subTab: string | null;
+  canonicalPath: string;
+}
+
+export function resolvePlatformRoute(pathname: string): PlatformRouteResolution {
+  const clean = (pathname || '/').replace(/\/+$/, '') || '/';
+  const lower = clean.toLowerCase();
+
+  const map: Record<string, PlatformRouteResolution> = {
+    '/': { viewId: 'home', subTab: null, canonicalPath: '/' },
+    '/home': { viewId: 'home', subTab: null, canonicalPath: '/' },
+    '/videos': { viewId: 'lectures', subTab: null, canonicalPath: '/videos' },
+    '/lectures': { viewId: 'lectures', subTab: null, canonicalPath: '/videos' },
+    '/notes': { viewId: 'materials', subTab: null, canonicalPath: '/notes' },
+    '/materials': { viewId: 'materials', subTab: null, canonicalPath: '/notes' },
+    '/tests': { viewId: 'mock-test', subTab: 'cbt', canonicalPath: '/tests' },
+    '/mock-test': { viewId: 'mock-test', subTab: 'cbt', canonicalPath: '/tests' },
+    '/analytics': { viewId: 'mock-test', subTab: 'analytics', canonicalPath: '/analytics' },
+    '/live': { viewId: 'live', subTab: null, canonicalPath: '/live' },
+    '/mentors': { viewId: 'mentorship', subTab: null, canonicalPath: '/mentors' },
+    '/mentorship': { viewId: 'mentorship', subTab: null, canonicalPath: '/mentors' },
+    '/admin': { viewId: 'admin', subTab: null, canonicalPath: '/admin' },
+    '/forum': { viewId: 'forum', subTab: null, canonicalPath: '/forum' },
+    '/chat': { viewId: 'chat', subTab: null, canonicalPath: '/chat' },
+    '/profile': { viewId: 'profile', subTab: null, canonicalPath: '/profile' },
+  };
+
+  return map[lower] || { viewId: 'home', subTab: null, canonicalPath: '/' };
+}
+
+/**
+ * 17. Strict Student Viewer Jitsi Meet Config Builder
+ */
+export interface StrictStudentJitsiConfig {
+  startWithAudioMuted: boolean;
+  startWithVideoMuted: boolean;
+  prejoinPageEnabled: boolean;
+  whiteboard: { enabled: boolean };
+  toolbarButtons: string[];
+}
+
+export function getStrictStudentJitsiConfig(
+  hasStagePermission: boolean = false
+): StrictStudentJitsiConfig {
+  return {
+    startWithAudioMuted: true,
+    startWithVideoMuted: true,
+    prejoinPageEnabled: false,
+    whiteboard: { enabled: false },
+    toolbarButtons: hasStagePermission
+      ? ['microphone', 'camera', 'chat', 'raisehand', 'fullscreen']
+      : ['chat', 'raisehand', 'fullscreen'],
+  };
+}
+
+/**
+ * 18. Chapter-Level Weakness Identifier from Negative Marks Lost
+ */
+export interface WeakChapterTag {
+  chapter: string;
+  mistakes: number;
+  negativeMarksLost: number;
+  severity: 'CRITICAL' | 'MODERATE';
+}
+
+export function identifyWeakChaptersFromMistakes(
+  results: Array<{ chapterMistakes?: Record<string, number> }>
+): WeakChapterTag[] {
+  const aggregate: Record<string, number> = {};
+  (results || []).forEach((r) => {
+    if (r && r.chapterMistakes && typeof r.chapterMistakes === 'object') {
+      Object.entries(r.chapterMistakes).forEach(([ch, count]) => {
+        const num = Number(count) || 0;
+        if (num > 0) {
+          aggregate[ch] = (aggregate[ch] || 0) + num;
+        }
+      });
+    }
+  });
+
+  return Object.entries(aggregate)
+    .map(([chapter, mistakes]) => ({
+      chapter,
+      mistakes,
+      negativeMarksLost: mistakes,
+      severity: (mistakes >= 4 ? 'CRITICAL' : 'MODERATE') as 'CRITICAL' | 'MODERATE',
+    }))
+    .sort((a, b) => b.mistakes - a.mistakes);
+}
+
+

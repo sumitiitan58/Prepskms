@@ -10,6 +10,8 @@ import {
   subscribeToMentorProfile,
   DEFAULT_MENTOR_PROFILE
 } from '../services/db';
+import StudentViewer from './StudentViewer.jsx';
+import TeacherHost from './TeacherHost.jsx';
 
 const DEFAULT_POLL = {
   id: 'poll-default-1',
@@ -173,10 +175,26 @@ export default function LiveClassroom() {
   function wOpenSetup() {
     const w = window;
     const openFn = () => {
+      w.__isLiveClassroomOpen = true;
       setIsOpen(true);
+      if (w.location.pathname !== '/live') {
+        try {
+          w.history.pushState(
+            { modal: 'live', path: '/live' },
+            '',
+            '/live'
+          );
+        } catch (_e) {}
+      }
     };
     const closeFn = () => {
+      w.__isLiveClassroomOpen = false;
       setIsOpen(false);
+      if (w.location.pathname === '/live') {
+        try {
+          w.history.replaceState({ path: '/', view: 'home' }, '', '/');
+        } catch (_e) {}
+      }
     };
     w.openReactLiveClassroom = openFn;
     w.closeReactLiveClassroom = closeFn;
@@ -581,8 +599,8 @@ export default function LiveClassroom() {
                 Return to Dashboard
               </button>
             </div>
-          ) : isWebRtcStageMounted && isAcceptedOnStage ? (
-            <div className="relative w-full h-full flex items-center justify-center bg-slate-950">
+          ) : isWebRtcStageMounted ? (
+            <div className="relative w-full h-full flex items-center justify-center bg-[#0B0F19]">
               {stageScriptState === 'loading' && (
                 <div className="flex flex-col items-center justify-center p-6 text-center space-y-3">
                   <div className="w-10 h-10 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin" />
@@ -620,21 +638,27 @@ export default function LiveClassroom() {
               )}
 
               {stageScriptState === 'ready' && (
-                <div className="relative w-full h-full overflow-hidden">
-                  <iframe
-                    title="Prepskm Interactive Stage"
-                    src={jitsiEmbedUrl}
-                    allow="camera; microphone; fullscreen; display-capture; autoplay"
-                    className="w-full h-full border-0"
-                  />
-                  {/* Whitelabel Shield Overlay on top-left corner so students never see any external domain/provider watermark */}
-                  {!isAdmin && (
-                    <div className="pointer-events-none select-none absolute top-2 left-2 z-20 px-3 py-1.5 rounded-xl bg-slate-950/95 border border-indigo-500/30 flex items-center gap-2 shadow-lg">
-                      <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                      <span className="text-[11px] font-black text-white">
-                        Prepskm Encrypted Live Stage
-                      </span>
-                    </div>
+                <div className="relative w-full h-full overflow-hidden flex flex-col">
+                  {isAdmin ? (
+                    <TeacherHost
+                      roomName={jitsiRoom}
+                      mentorName={mentor.name || 'Sumit (@unfiltereddsumit)'}
+                      mentorEmail="sumitk31207@gmail.com"
+                      subject={activeSession.title}
+                      onMuteAllStudents={handleToggleMuteChat}
+                      onEndSession={handleEndOrRestartBroadcast}
+                    />
+                  ) : (
+                    <StudentViewer
+                      roomName={jitsiRoom}
+                      studentName={currentUser.name || 'Prepskm Aspirant'}
+                      studentEmail={currentUser.email || 'aspirant@prepskm.in'}
+                      subject={activeSession.title}
+                      hasStagePermission={Boolean(isAcceptedOnStage)}
+                      isHandRaised={myHandRequest?.status === 'pending'}
+                      onRaiseHand={handleRaiseHandClick}
+                      onLeave={() => setIsWebRtcStageMounted(false)}
+                    />
                   )}
                 </div>
               )}
@@ -642,7 +666,7 @@ export default function LiveClassroom() {
               <button
                 type="button"
                 onClick={() => setIsWebRtcStageMounted(false)}
-                className="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700"
+                className="absolute bottom-3 right-3 z-30 px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 cursor-pointer shadow-lg"
               >
                 Return to Smartboard View
               </button>
@@ -715,31 +739,33 @@ export default function LiveClassroom() {
                     </div>
                   </div>
 
-                  {isAcceptedOnStage ? (
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setIsWebRtcStageMounted(true)}
                       className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-lg cursor-pointer"
                     >
                       {isAdmin
-                        ? '🎥 Open Host Camera & Screen Broadcast'
-                        : '🎙️ Join Approved Live Audio/Video Stage'}
+                        ? '🎥 Launch Host Broadcast & Whiteboard'
+                        : '📺 Open Live Jitsi Stream (Read-Only Viewer)'}
                     </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={
-                        activeSession.isRaiseHandBlocked ||
-                        myHandRequest?.status === 'pending'
-                      }
-                      onClick={handleRaiseHandClick}
-                      className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-black shadow-lg cursor-pointer"
-                    >
-                      {myHandRequest?.status === 'pending'
-                        ? '✋ Join Request Pending Approval...'
-                        : '✋ Request to Join Interactive Live Stage'}
-                    </button>
-                  )}
+
+                    {!isAdmin && !isAcceptedOnStage && (
+                      <button
+                        type="button"
+                        disabled={
+                          activeSession.isRaiseHandBlocked ||
+                          myHandRequest?.status === 'pending'
+                        }
+                        onClick={handleRaiseHandClick}
+                        className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-black shadow-lg cursor-pointer"
+                      >
+                        {myHandRequest?.status === 'pending'
+                          ? '✋ Hand Raised...'
+                          : '✋ Raise Hand'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
