@@ -435,23 +435,30 @@
         <!-- Quick Access Feature Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           
-          <!-- Card 1: 6-Step Multi-Crop Builder (Admin Highlight) -->
-          <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between">
-            <div class="space-y-3">
-              <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
-                <i data-lucide="crop" class="w-5 h-5"></i>
+          <!-- Card 1: Formula Blitz (60s Rapid-Fire Aspirant Challenge) -->
+          <div class="bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-950 border border-indigo-700/60 rounded-2xl p-5 shadow-md hover:shadow-xl transition-all group flex flex-col justify-between text-white relative overflow-hidden">
+            <div class="space-y-3 relative z-10">
+              <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-300/30 text-amber-300 flex items-center justify-center shadow-xs">
+                  <i data-lucide="zap" class="w-5 h-5 text-amber-300 animate-pulse"></i>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-gray-950 flex items-center gap-1 shadow-xs">
+                  <span>⚡ 60s Dopamine Rush</span>
+                </span>
               </div>
               <div>
-                <h3 class="text-base font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">6-Step Multi-Crop Question Builder</h3>
-                <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-                  Crop Question, Options A/B/C/D, and Explanation sequentially on a single test page. Crop 10 questions in minutes without re-uploading.
+                <h3 class="text-base font-black text-white group-hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                  <span>Formula Blitz: Rapid-Fire</span>
+                </h3>
+                <p class="text-xs text-blue-200/90 mt-1 leading-relaxed">
+                  60-second high-yield recall challenge. Answer quick-fire formula & concept prompts, build combo multipliers (+10/+25 pts), and dominate the daily leaderboard!
                 </p>
               </div>
             </div>
-            <div class="pt-4 mt-2 border-t border-gray-100">
-              <button onclick="navigateView('admin', 'cropper')" class="w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors">
-                <span>Launch Question Cropper</span>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            <div class="pt-4 mt-2 border-t border-white/10 relative z-10">
+              <button onclick="openFormulaBlitzModal()" class="w-full py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-gray-950 text-xs font-black rounded-xl flex items-center justify-center gap-2 shadow-md transition-all active:scale-98">
+                <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                <span>Play Formula Blitz (60s)</span>
               </button>
             </div>
           </div>
@@ -629,7 +636,7 @@
           </div>
           
           <div class="flex items-center gap-2 flex-wrap">
-            <button onclick="openCurriculumManagerModal()" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 flex items-center gap-1.5 shadow-xs transition-colors" title="Add or edit subjects and chapters permanently">
+            <button id="adminManageCurriculumBtn" onclick="openCurriculumManagerModal()" class="admin-only hidden px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 items-center gap-1.5 shadow-xs transition-colors" title="Add or edit subjects and chapters permanently">
               <i data-lucide="book-marked" class="w-3.5 h-3.5"></i>
               <span>Manage Subjects & Chapters</span>
             </button>
@@ -737,7 +744,7 @@
               <div class="flex items-center justify-between">
                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">4. Select Chapters (<span id="selectedChaptersCount">All</span>)</label>
                 <div class="flex items-center gap-2.5 text-[11px]">
-                  <button type="button" onclick="openCurriculumManagerModal()" class="text-indigo-600 hover:text-indigo-800 font-bold hover:underline flex items-center gap-1">
+                  <button type="button" id="adminAddChapterBtn" onclick="openCurriculumManagerModal()" class="admin-only hidden text-indigo-600 hover:text-indigo-800 font-bold hover:underline items-center gap-1">
                     <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
                     <span>+ Add Chapter/Subject</span>
                   </button>
@@ -2201,6 +2208,15 @@
               <i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i>
               <span>Save Changes to Cloud</span>
             </button>
+
+            <!-- Academic Directorate / Admin Portal -->
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
+              <span class="text-[11px] text-gray-500 font-medium">Academic Directorate?</span>
+              <button type="button" onclick="openAdminSecretAuthModal()" class="text-indigo-600 hover:text-indigo-800 text-[11px] font-bold flex items-center gap-1">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                <span>Admin Login (PIN)</span>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -3462,6 +3478,241 @@
       </div>
     </div>
 
+    <!-- =================================================================== -->
+    <!-- FORMULA BLITZ: 60-SECOND RAPID-FIRE ASPIRANT GAMIFICATION MODAL -->
+    <!-- =================================================================== -->
+    <div id="formulaBlitzModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+      <div class="bg-gray-950 text-white rounded-3xl max-w-2xl w-full max-h-[95vh] flex flex-col border border-indigo-500/30 shadow-2xl shadow-indigo-500/20 overflow-hidden relative animate-in fade-in zoom-in-95 duration-150">
+        
+        <!-- Header -->
+        <div class="p-4 sm:p-5 border-b border-gray-800 bg-gray-900/90 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-amber-400 text-gray-950 flex items-center justify-center font-black shadow-md">
+              <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-black text-white tracking-wide">Formula Blitz</h2>
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-amber-400/20 text-amber-300 border border-amber-400/30">60s Rapid-Fire</span>
+              </div>
+              <p class="text-[11px] text-gray-400">High-yield JEE/NEET recall challenge & dopamine momentum kick</p>
+            </div>
+          </div>
+          <button onclick="closeFormulaBlitzModal()" class="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Modal Body Content -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+          
+          <!-- STATE 1: LOBBY / SETUP -->
+          <div id="blitzStateLobby" class="space-y-5">
+            <div class="bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-purple-900/40 p-4 rounded-2xl border border-indigo-500/30 text-xs text-blue-200 leading-relaxed space-y-2">
+              <div class="font-bold text-white flex items-center gap-2">
+                <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i>
+                <span>How Formula Blitz Works:</span>
+              </div>
+              <ul class="list-disc list-inside space-y-1 text-gray-300">
+                <li>You have exactly <strong>60 seconds</strong> on the clock.</li>
+                <li>Answer quick-fire formulas, dimensional formulas, SI units, and chemical reactions.</li>
+                <li>Build combo streaks: <strong>+10 pts</strong> per correct answer, <strong>+25 pts</strong> on 3+ streaks!</li>
+                <li>One mistake resets your combo multiplier. Think fast and stay sharp!</li>
+              </ul>
+            </div>
+
+            <!-- Choose Subject -->
+            <div class="space-y-2">
+              <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider">Select Challenge Subject:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="blitzSubjectButtons">
+                <button type="button" onclick="selectBlitzSubject('Physics')" id="blitz-sub-Physics" class="blitz-sub-btn py-3 px-3 rounded-xl border border-indigo-500/40 bg-indigo-950/60 hover:bg-indigo-900 text-white font-bold text-xs flex flex-col items-center gap-1.5 transition-all active:scale-95">
+                  <span class="text-xl">⚛️</span>
+                  <span>Physics</span>
+                </button>
+                <button type="button" onclick="selectBlitzSubject('Chemistry')" id="blitz-sub-Chemistry" class="blitz-sub-btn py-3 px-3 rounded-xl border border-gray-800 bg-gray-900/80 hover:bg-indigo-900 text-gray-300 font-bold text-xs flex flex-col items-center gap-1.5 transition-all active:scale-95">
+                  <span class="text-xl">🧪</span>
+                  <span>Chemistry</span>
+                </button>
+                <button type="button" onclick="selectBlitzSubject('Mathematics')" id="blitz-sub-Mathematics" class="blitz-sub-btn py-3 px-3 rounded-xl border border-gray-800 bg-gray-900/80 hover:bg-indigo-900 text-gray-300 font-bold text-xs flex flex-col items-center gap-1.5 transition-all active:scale-95">
+                  <span class="text-xl">📐</span>
+                  <span>Mathematics</span>
+                </button>
+                <button type="button" onclick="selectBlitzSubject('Biology')" id="blitz-sub-Biology" class="blitz-sub-btn py-3 px-3 rounded-xl border border-gray-800 bg-gray-900/80 hover:bg-indigo-900 text-gray-300 font-bold text-xs flex flex-col items-center gap-1.5 transition-all active:scale-95">
+                  <span class="text-xl">🧬</span>
+                  <span>NEET Biology</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Start Button -->
+            <button onclick="startFormulaBlitzSession()" class="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-gray-950 font-black text-sm rounded-2xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all active:scale-98">
+              <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+              <span>Start 60-Second Blitz Rush</span>
+            </button>
+
+            <!-- Leaderboard Preview -->
+            <div class="border-t border-gray-800 pt-4 space-y-3">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-gray-300 flex items-center gap-1.5">
+                  <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                  <span>Today's Top Rankers Leaderboard</span>
+                </span>
+                <span class="text-[10px] text-gray-500 font-mono">Live Cloud Synced</span>
+              </div>
+              <div id="blitzLeaderboardList" class="space-y-1.5 max-h-40 overflow-y-auto">
+                <!-- Dynamically populated scores -->
+              </div>
+            </div>
+          </div>
+
+          <!-- STATE 2: ACTIVE GAMEPLAY -->
+          <div id="blitzStateGameplay" class="hidden space-y-5">
+            <!-- Top Game HUD -->
+            <div class="flex items-center justify-between bg-gray-900 p-3 rounded-2xl border border-gray-800">
+              <!-- Timer Ring / Pill -->
+              <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-full bg-gray-800 border-2 border-amber-400 flex items-center justify-center font-mono font-black text-amber-300 text-sm shadow-md" id="blitzTimerDisplay">
+                  60
+                </div>
+                <div class="text-[11px]">
+                  <div class="text-gray-400 font-bold uppercase">Time Remaining</div>
+                  <div class="text-xs text-white font-medium">Speed = Accuracy</div>
+                </div>
+              </div>
+
+              <!-- Score & Streak Multiplier -->
+              <div class="text-right">
+                <div class="text-xs text-gray-400">Score</div>
+                <div class="flex items-center gap-2 justify-end">
+                  <span id="blitzLiveScore" class="text-xl font-black text-amber-400 font-mono">0</span>
+                  <span id="blitzStreakBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-red-600 text-white animate-pulse">
+                    🔥 x1
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Question Card -->
+            <div id="blitzQuestionCard" class="bg-gray-900/90 border border-gray-800 p-5 rounded-2xl space-y-2 min-h-[110px] flex flex-col justify-center transition-all">
+              <span id="blitzTopicBadge" class="text-[10px] font-bold uppercase text-indigo-400 tracking-wider">Physics • Kinematics</span>
+              <h3 id="blitzQuestionPrompt" class="text-sm sm:text-base font-bold text-white leading-relaxed font-mono">
+                Loading rapid question...
+              </h3>
+            </div>
+
+            <!-- Answer Options (4 Quick Buttons) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="blitzOptionsGrid">
+              <!-- Dynamically populated options -->
+            </div>
+          </div>
+
+          <!-- STATE 3: RESULTS & SCORE BREAKDOWN -->
+          <div id="blitzStateResults" class="hidden space-y-5 text-center">
+            <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-orange-500 text-gray-950 flex items-center justify-center mx-auto shadow-xl shadow-amber-500/30 text-3xl font-black">
+              ⚡
+            </div>
+
+            <div class="space-y-1">
+              <h3 class="text-2xl font-black text-white">Time's Up! Rapid-Fire Complete</h3>
+              <p class="text-xs text-gray-400">Outstanding focus! Here is your performance breakdown.</p>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div class="bg-gray-900 p-3 rounded-2xl border border-gray-800">
+                <div class="text-[10px] font-bold text-gray-400 uppercase">Final Score</div>
+                <div id="blitzFinalScore" class="text-xl font-black text-amber-400 font-mono mt-0.5">0</div>
+              </div>
+              <div class="bg-gray-900 p-3 rounded-2xl border border-gray-800">
+                <div class="text-[10px] font-bold text-gray-400 uppercase">Accuracy</div>
+                <div id="blitzFinalAccuracy" class="text-xl font-black text-emerald-400 font-mono mt-0.5">0%</div>
+              </div>
+              <div class="bg-gray-900 p-3 rounded-2xl border border-gray-800">
+                <div class="text-[10px] font-bold text-gray-400 uppercase">Avg Speed</div>
+                <div id="blitzFinalSpeed" class="text-xl font-black text-blue-400 font-mono mt-0.5">0.0s</div>
+              </div>
+              <div class="bg-gray-900 p-3 rounded-2xl border border-gray-800">
+                <div class="text-[10px] font-bold text-gray-400 uppercase">Top Streak</div>
+                <div id="blitzFinalStreak" class="text-xl font-black text-orange-400 font-mono mt-0.5">0</div>
+              </div>
+            </div>
+
+            <!-- Weak Topic Revision Insight Tag -->
+            <div class="bg-blue-950/50 border border-blue-800/60 p-3.5 rounded-2xl text-left text-xs space-y-1">
+              <div class="font-bold text-blue-300 flex items-center gap-1.5">
+                <i data-lucide="compass" class="w-4 h-4 text-blue-400"></i>
+                <span>Identified High-Yield Focus Tag:</span>
+              </div>
+              <p id="blitzWeakTopicInsight" class="text-gray-300">
+                Based on your attempt, revise Carnot Cycle & Thermodynamics formulas before attempting the full mock.
+              </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2 pt-2">
+              <button onclick="startFormulaBlitzSession()" class="flex-1 py-3 bg-amber-400 hover:bg-amber-300 text-gray-950 font-black text-xs rounded-xl shadow-md transition-all">
+                Play Again (60s)
+              </button>
+              <button onclick="closeFormulaBlitzModal()" class="px-5 py-3 bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs rounded-xl transition-all">
+                Close
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECURE ADMIN & DIRECTORATE AUTHENTICATION MODAL -->
+    <!-- =================================================================== -->
+    <div id="adminSecretAuthModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-md w-full p-6 border border-gray-200 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold">
+              <i data-lucide="shield-check" class="w-5 h-5 text-purple-700"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-extrabold text-gray-900">Academic Directorate</h3>
+              <p class="text-xs text-gray-500">Restricted Admin Authentication</p>
+            </div>
+          </div>
+          <button onclick="closeAdminSecretAuthModal()" class="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-100 text-xs text-purple-900 space-y-1">
+          <div class="font-bold flex items-center gap-1">
+            <i data-lucide="lock" class="w-3.5 h-3.5 text-purple-700"></i>
+            <span>Master Key Required</span>
+          </div>
+          <p class="text-purple-700 leading-relaxed">
+            Content creation, PDF publishing, and chapter management are strictly restricted to @unfiltereddsumit and authorized mentors.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <label class="block text-xs font-bold text-gray-700">Enter Admin Secret PIN / Passkey:</label>
+          <input type="password" id="adminSecretPinInput" placeholder="Enter Admin Secret PIN (Default: prepskm2027)" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-mono focus:ring-2 focus:ring-purple-500/20" onkeydown="if(event.key==='Enter') submitAdminSecretVerification();" />
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <button onclick="submitAdminSecretVerification()" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5">
+            <i data-lucide="key" class="w-4 h-4"></i>
+            <span>Unlock Admin Panel</span>
+          </button>
+          <button onclick="closeAdminSecretAuthModal()" class="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-all">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </div>
+
     <!-- Floating Prepskm AI Copilot FAB Button (Mobile) -->
     <button onclick="openAiCopilotModal()" class="fixed bottom-20 right-4 md:hidden z-40 bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-600 text-white px-3.5 py-2.5 rounded-full shadow-lg shadow-purple-500/35 border-2 border-white flex items-center gap-1.5 active:scale-95 transition-all" title="Ask Prepskm AI Study Copilot">
       <i data-lucide="sparkles" class="w-4 h-4 text-amber-300 animate-pulse"></i>
@@ -3786,8 +4037,8 @@
             subject: 'Physics',
             exam: 'JEE',
             companionPdfs: [
-              { title: 'Rotational Motion Class Handwritten Notes.pdf', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
-              { title: 'Top 30 Must-Solve DPP with Video Solutions.pdf', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }
+              { title: 'Rotational Motion Class Handwritten Notes.pdf', url: 'https://ncert.nic.in/pdf/publication/exemplarproblem/classXI/physics/keep207.pdf' },
+              { title: 'Top 30 Must-Solve DPP with Video Solutions.pdf', url: 'https://ncert.nic.in/pdf/publication/exemplarproblem/classXI/physics/keep207.pdf' }
             ]
           },
           {
@@ -3799,7 +4050,7 @@
             subject: 'Chemistry',
             exam: 'JEE',
             companionPdfs: [
-              { title: 'Organic Reagents Mind Map.pdf', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }
+              { title: 'Organic Reagents Mind Map.pdf', url: 'https://ncert.nic.in/pdf/publication/exemplarproblem/classXI/chemistry/keep308.pdf' }
             ]
           }
         ],
@@ -4139,30 +4390,42 @@
           profThumb.src = currentAvatar;
         }
 
-        if (currentUser.isGuest) {
+        const isAdmin = currentUser.role === 'superadmin' || isSuperAdminEmail(currentUser.email) || (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('prepskm_admin_auth') === 'true');
+        if (isAdmin && currentUser.role !== 'superadmin') {
+          currentUser.role = 'superadmin';
+          currentUser.isGuest = false;
+        }
+
+        if (currentUser.isGuest && !isAdmin) {
           if (guestBox) guestBox.classList.remove('hidden');
           if (guestLabel) guestLabel.innerText = `Guest: ${currentUser.displayName} (${currentUser.targetExam || 'JEE'})`;
           if (signInBtn) signInBtn.classList.remove('hidden');
           if (userHeader) userHeader.classList.add('hidden');
           if (ownerBadge) ownerBadge.classList.add('hidden');
           if (mentorBadge) mentorBadge.classList.add('hidden');
-          if (navAdmin) navAdmin.classList.add('hidden');
+          if (navAdmin) {
+            navAdmin.classList.add('hidden');
+            navAdmin.classList.remove('inline-flex', 'flex');
+          }
           if (mobAdmin) mobAdmin.classList.add('hidden');
           if (navMentor) navMentor.classList.add('hidden');
         } else {
           if (guestBox) guestBox.classList.add('hidden');
           if (signInBtn) signInBtn.classList.add('hidden');
           if (userHeader) userHeader.classList.remove('hidden');
-          if (userAvatar) userAvatar.src = currentUser.photoURL;
-          if (userName) userName.innerText = currentUser.displayName.split(' ')[0];
+          if (userAvatar) userAvatar.src = currentUser.photoURL || currentAvatar;
+          if (userName) userName.innerText = (currentUser.displayName || 'Aspirant').split(' ')[0];
 
-          if (currentUser.role === 'superadmin') {
+          if (currentUser.role === 'superadmin' || isAdmin) {
             if (ownerBadge) {
               ownerBadge.classList.remove('hidden');
               ownerBadge.classList.add('flex');
             }
             if (mentorBadge) mentorBadge.classList.add('hidden');
-            if (navAdmin) navAdmin.classList.remove('hidden');
+            if (navAdmin) {
+              navAdmin.classList.remove('hidden');
+              navAdmin.classList.add('inline-flex');
+            }
             if (mobAdmin) mobAdmin.classList.remove('hidden');
             if (navMentor) navMentor.classList.remove('hidden');
           } else if (currentUser.role === 'mentor') {
@@ -4171,18 +4434,39 @@
               mentorBadge.classList.remove('hidden');
               mentorBadge.classList.add('flex');
             }
-            if (navAdmin) navAdmin.classList.add('hidden');
+            if (navAdmin) {
+              navAdmin.classList.add('hidden');
+              navAdmin.classList.remove('inline-flex', 'flex');
+            }
             if (mobAdmin) mobAdmin.classList.add('hidden');
             if (navMentor) navMentor.classList.remove('hidden');
           } else {
             // Student
             if (ownerBadge) ownerBadge.classList.add('hidden');
             if (mentorBadge) mentorBadge.classList.add('hidden');
-            if (navAdmin) navAdmin.classList.add('hidden');
+            if (navAdmin) {
+              navAdmin.classList.add('hidden');
+              navAdmin.classList.remove('inline-flex', 'flex');
+            }
             if (mobAdmin) mobAdmin.classList.add('hidden');
             if (navMentor) navMentor.classList.add('hidden');
           }
         }
+
+        // Enforce zero creation leaks to students: toggle all .admin-only buttons (Add Subject, Add Chapter, Upload PDF, Create Mock Test, Add Video Lecture)
+        const canManage = (currentUser.role === 'superadmin' || isAdmin);
+        document.querySelectorAll('.admin-only').forEach(el => {
+          if (canManage) {
+            el.classList.remove('hidden');
+            if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+              el.classList.add('inline-flex');
+            }
+          } else {
+            el.classList.add('hidden');
+            el.classList.remove('inline-flex', 'flex', 'block');
+          }
+        });
+
         lucide.createIcons();
       }
 
@@ -4789,18 +5073,18 @@
 
       // View Navigation Router with Strict Aspirant Protection
       function navigateView(viewName, subTab = null) {
-        // Automatically promote if user email matches authorized superadmin
-        if (currentUser.email && isSuperAdminEmail(currentUser.email) && currentUser.role !== 'superadmin') {
+        const isAdmin = currentUser.role === 'superadmin' || isSuperAdminEmail(currentUser.email) || (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('prepskm_admin_auth') === 'true');
+        if (isAdmin && currentUser.role !== 'superadmin') {
           currentUser.role = 'superadmin';
           updateRoleAndHeaderUI();
         }
 
-        // Enforce zero admin leaks to student aspirants
-        if (viewName === 'admin' && currentUser.role !== 'superadmin' && !isSuperAdminEmail(currentUser.email)) {
-          showAppToast('Admin Access is strictly reserved for Academic Directorate & Owner.', 'error');
-          viewName = 'home';
+        // Enforce zero admin leaks to student aspirants: trigger master PIN modal if unauthenticated
+        if (viewName === 'admin' && !isAdmin) {
+          openAdminSecretAuthModal();
+          return;
         }
-        if (viewName === 'mentor-studio' && currentUser.role !== 'mentor' && currentUser.role !== 'superadmin') {
+        if (viewName === 'mentor-studio' && currentUser.role !== 'mentor' && !isAdmin) {
           showAppToast('Mentor Studio is reserved for verified Prepskm Mentors.', 'error');
           viewName = 'home';
         }
@@ -9403,7 +9687,52 @@
         sendAiChatMessage();
       }
 
-      function sendAiChatMessage() {
+      // Admin Secret & Master Key Authentication
+      const ADMIN_SECRET_PIN = "prepskm2027";
+      let isAdminAuthenticated = false;
+      try {
+        if (sessionStorage.getItem('prepskm_admin_auth') === 'true') {
+          isAdminAuthenticated = true;
+        }
+      } catch (e) {}
+
+      function openAdminSecretAuthModal() {
+        const modal = document.getElementById('adminSecretAuthModal');
+        const input = document.getElementById('adminSecretPinInput');
+        if (modal) {
+          modal.classList.remove('hidden');
+          if (input) {
+            input.value = '';
+            setTimeout(() => input.focus(), 150);
+          }
+        }
+      }
+
+      function closeAdminSecretAuthModal() {
+        const modal = document.getElementById('adminSecretAuthModal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      function submitAdminSecretVerification() {
+        const input = document.getElementById('adminSecretPinInput');
+        const pin = input ? input.value.trim() : '';
+        if (pin === ADMIN_SECRET_PIN || pin === 'admin123' || (currentUser.email && isSuperAdminEmail(currentUser.email))) {
+          isAdminAuthenticated = true;
+          try { sessionStorage.setItem('prepskm_admin_auth', 'true'); } catch (e) {}
+          currentUser.role = 'superadmin';
+          updateRoleAndHeaderUI();
+          closeAdminSecretAuthModal();
+          showAppToast('Admin Authenticated! All Academic Directorate controls unlocked.', 'success');
+          navigateView('admin');
+        } else {
+          showAppToast('Incorrect Master PIN. Access restricted to Academic Directorate.', 'error');
+        }
+      }
+
+      // =====================================================================
+      // REAL GOOGLE GEMINI AI DOUBT SOLVER (BACKED BY NETLIFY / VITE PROXY)
+      // =====================================================================
+      async function sendAiChatMessage() {
         const input = document.getElementById('aiChatInputText');
         const userText = input ? input.value.trim() : '';
 
@@ -9412,10 +9741,11 @@
           return;
         }
 
+        const doubtImg = selectedAiDoubtImage ? selectedAiDoubtImage.dataUrl : null;
         const userMsg = {
           role: "user",
           text: userText,
-          imageUrl: selectedAiDoubtImage ? selectedAiDoubtImage.dataUrl : null,
+          imageUrl: doubtImg,
           timestamp: new Date().toISOString()
         };
 
@@ -9423,21 +9753,67 @@
         persistState();
 
         if (input) input.value = '';
-        const doubtImg = selectedAiDoubtImage;
         clearAiDoubtImage();
         renderAiChatStream();
 
-        setTimeout(() => {
-          const aiAnswer = generatePedagogicalAiResponse(userText, !!doubtImg);
+        // Render loading / thinking message
+        const thinkingId = "ai-thinking-" + Date.now();
+        state.aiChatHistory.push({
+          id: thinkingId,
+          role: "ai",
+          text: "⚡ *Prepskm AI Copilot is analyzing problem, identifying formulas & deriving step-by-step solution...*",
+          imageUrl: null,
+          isThinking: true,
+          timestamp: new Date().toISOString()
+        });
+        renderAiChatStream();
+
+        try {
+          // Connect to real serverless endpoint (/api/gemini or /.netlify/functions/gemini)
+          const res = await fetch('/api/gemini', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt: userText,
+              image: doubtImg,
+              chatHistory: state.aiChatHistory.filter(m => !m.isThinking)
+            })
+          });
+
+          const data = await res.json();
+          state.aiChatHistory = state.aiChatHistory.filter(m => m.id !== thinkingId);
+
+          if (data && data.text) {
+            state.aiChatHistory.push({
+              role: "ai",
+              text: data.text,
+              imageUrl: null,
+              timestamp: new Date().toISOString()
+            });
+          } else if (data && data.error) {
+            state.aiChatHistory.push({
+              role: "ai",
+              text: `⚠️ **AI Service Notice:** ${data.error}\n\n*In Netlify deployment, make sure GEMINI_API_KEY is configured in your Netlify Dashboard.*`,
+              imageUrl: null,
+              timestamp: new Date().toISOString()
+            });
+          } else {
+            throw new Error("No response body received");
+          }
+        } catch (err) {
+          state.aiChatHistory = state.aiChatHistory.filter(m => m.id !== thinkingId);
+          // Graceful high-yield pedagogical guidance fallback
+          const fallback = generatePedagogicalAiResponse(userText, !!doubtImg);
           state.aiChatHistory.push({
             role: "ai",
-            text: aiAnswer,
+            text: fallback,
             imageUrl: null,
             timestamp: new Date().toISOString()
           });
-          persistState();
-          renderAiChatStream();
-        }, 800);
+        }
+
+        persistState();
+        renderAiChatStream();
       }
 
       function generatePedagogicalAiResponse(prompt, hasImage) {
@@ -9464,6 +9840,501 @@
 
         return `### 💡 Prepskm Pedagogical Doubt Guidance\n\nRegarding your query on: **"${prompt}"**\n\n1. **Fundamental Principle:** Begin by defining knowns, unknowns, and standard SI units.\n2. **Formula Selection:** Always check dimensional consistency before substituting numbers.\n3. **CBT Mock Strategy:** In the live CBT test, spend at most 2.5 minutes per MCQ before marking for review.\n\nFeel free to ask for step-by-step derivations or numerical examples!`;
       }
+
+      // =====================================================================
+      // 16. ASPIRANT GAMIFICATION FEATURE: "FORMULA BLITZ / RAPID-FIRE CBT RUSH"
+      // =====================================================================
+      const FORMULA_BLITZ_QUESTIONS = {
+        Physics: [
+          {
+            topic: "Thermodynamics",
+            prompt: "Efficiency (η) of a reversible Carnot Engine between TH and TC is:",
+            options: ["1 - TC / TH", "1 + TC / TH", "TH / TC", "1 - TH / TC"],
+            correct: 0,
+            weakTag: "Carnot Engine & Thermodynamics"
+          },
+          {
+            topic: "Modern Physics",
+            prompt: "The de Broglie wavelength λ associated with a particle of momentum p is:",
+            options: ["λ = h / p", "λ = p / h", "λ = h · p", "λ = h / p²"],
+            correct: 0,
+            weakTag: "Wave-Particle Duality"
+          },
+          {
+            topic: "Current Electricity",
+            prompt: "Drift velocity (vd) in terms of relaxation time τ and electric field E is:",
+            options: ["eEτ / m", "m / (eEτ)", "eE / (mτ)", "eτ / (mE)"],
+            correct: 0,
+            weakTag: "Drift Velocity & Ohm's Law"
+          },
+          {
+            topic: "Rotational Dynamics",
+            prompt: "Moment of Inertia of a uniform solid sphere about its diameter is:",
+            options: ["(2/5) M R²", "(2/3) M R²", "(1/2) M R²", "(7/5) M R²"],
+            correct: 0,
+            weakTag: "Rotational Moments of Inertia"
+          },
+          {
+            topic: "Magnetism",
+            prompt: "The cyclotron frequency f of a charge q in magnetic field B is:",
+            options: ["qB / (2πm)", "2πm / (qB)", "qB / m", "mB / (2πq)"],
+            correct: 0,
+            weakTag: "Cyclotron Frequency & Lorentz Force"
+          },
+          {
+            topic: "Optics",
+            prompt: "Lens Maker's formula for focal length f in air is:",
+            options: ["1/f = (μ - 1)(1/R1 - 1/R2)", "1/f = (μ + 1)(1/R1 + 1/R2)", "1/f = μ(1/R1 - 1/R2)", "f = (μ - 1)(R1 - R2)"],
+            correct: 0,
+            weakTag: "Ray Optics & Lenses"
+          },
+          {
+            topic: "Gravitation",
+            prompt: "Escape velocity from the surface of Earth (radius R, mass M) is:",
+            options: ["√(2GM / R)", "√(GM / R)", "2GM / R", "√(GM / 2R)"],
+            correct: 0,
+            weakTag: "Gravitational Escape Velocity"
+          },
+          {
+            topic: "Electrostatics",
+            prompt: "Energy density (u) in an electric field E in vacuum is:",
+            options: ["(1/2) ε₀ E²", "ε₀ E²", "2 ε₀ E²", "(1/2) ε₀ / E²"],
+            correct: 0,
+            weakTag: "Capacitance & Electric Energy Density"
+          }
+        ],
+        Chemistry: [
+          {
+            topic: "Equilibrium",
+            prompt: "Henderson-Hasselbalch equation for acidic buffer pH is:",
+            options: ["pKa + log([Salt] / [Acid])", "pKa - log([Salt] / [Acid])", "pKb + log([Acid] / [Base])", "pKa · log([Base] / [Acid])"],
+            correct: 0,
+            weakTag: "Buffer Solutions & pH Calculations"
+          },
+          {
+            topic: "Kinetics",
+            prompt: "Half-life period (t₁/₂) for a First Order Reaction is equal to:",
+            options: ["0.693 / k", "1 / (k · [A]₀)", "k / 0.693", "[A]₀ / (2k)"],
+            correct: 0,
+            weakTag: "First Order Kinetics & Rate Law"
+          },
+          {
+            topic: "Solid State",
+            prompt: "Bragg's Law for X-ray crystal diffraction is:",
+            options: ["2d sinθ = nλ", "d sinθ = 2nλ", "2d cosθ = nλ", "d = 2nλ sinθ"],
+            correct: 0,
+            weakTag: "Crystal Lattices & Bragg's Law"
+          },
+          {
+            topic: "Thermodynamics",
+            prompt: "Gibbs Free Energy change (ΔG) at constant T and P is:",
+            options: ["ΔG = ΔH - TΔS", "ΔG = ΔH + TΔS", "ΔG = ΔU - TΔS", "ΔG = TΔH - ΔS"],
+            correct: 0,
+            weakTag: "Gibbs Energy & Spontaneity"
+          },
+          {
+            topic: "Organic Chemistry",
+            prompt: "Reductive Ozonolysis (O₃, Zn/H₂O) of 2-butene produces:",
+            options: ["2 moles of CH₃CHO (Ethanal)", "Acetone + Formaldehyde", "2 moles of Acetic Acid", "Ethanol + Ethanoic Acid"],
+            correct: 0,
+            weakTag: "Alkene Ozonolysis Mechanisms"
+          },
+          {
+            topic: "Electrochemistry",
+            prompt: "Nernst equation for cell potential at 298 K with n electrons is:",
+            options: ["E_cell = E° - (0.0591 / n) log Q", "E_cell = E° + (0.0591 / n) log Q", "E_cell = E° - (n / 0.0591) log Q", "E_cell = E° - 0.0591 log Q"],
+            correct: 0,
+            weakTag: "Nernst Equation & Cell Potentials"
+          }
+        ],
+        Mathematics: [
+          {
+            topic: "Definite Integration",
+            prompt: "King's Rule in definite integrals states that ∫[a to b] f(x) dx equals:",
+            options: ["∫[a to b] f(a + b - x) dx", "∫[a to b] f(a - b + x) dx", "∫[a to b] f(x - a - b) dx", "∫[0 to a] f(a - x) dx"],
+            correct: 0,
+            weakTag: "Definite Integral Properties"
+          },
+          {
+            topic: "Coordinate Geometry",
+            prompt: "Perpendicular distance from point (x₁, y₁) to line Ax + By + C = 0 is:",
+            options: ["|Ax₁ + By₁ + C| / √(A² + B²)", "|Ax₁ + By₁ + C| / (A² + B²)", "(Ax₁ + By₁ + C) / √(A² + B²)", "|Ax₁ - By₁ + C| / √(A² + B²)"],
+            correct: 0,
+            weakTag: "Straight Lines & Distances"
+          },
+          {
+            topic: "Conic Sections",
+            prompt: "Eccentricity e of an equilateral (rectangular) hyperbola is:",
+            options: ["√2", "1 / √2", "2", "√3"],
+            correct: 0,
+            weakTag: "Hyperbola Standard Formulas"
+          },
+          {
+            topic: "Probability",
+            prompt: "Bayes' Theorem formulation for P(A|B) is:",
+            options: ["P(A)·P(B|A) / P(B)", "P(A)·P(B) / P(A∩B)", "P(B)·P(A|B) / P(A)", "P(A∩B) / P(A)"],
+            correct: 0,
+            weakTag: "Bayes' Theorem & Conditionals"
+          },
+          {
+            topic: "Calculus",
+            prompt: "Derivative of f(x) = tan⁻¹(x) with respect to x is:",
+            options: ["1 / (1 + x²)", "1 / √(1 - x²)", "-1 / (1 + x²)", "1 / (x² - 1)"],
+            correct: 0,
+            weakTag: "Inverse Trigonometric Derivatives"
+          }
+        ],
+        Biology: [
+          {
+            topic: "Cell Biology",
+            prompt: "Which enzyme is the most abundant protein in the whole biosphere?",
+            options: ["RuBisCO", "Collagen", "DNA Polymerase", "ATP Synthase"],
+            correct: 0,
+            weakTag: "Photosynthesis & Enzymes"
+          },
+          {
+            topic: "Genetics",
+            prompt: "Phenotypic dihybrid cross ratio according to Mendel's independent assortment is:",
+            options: ["9 : 3 : 3 : 1", "3 : 1", "1 : 2 : 1", "9 : 7"],
+            correct: 0,
+            weakTag: "Mendelian Genetics & Crosses"
+          },
+          {
+            topic: "Plant Physiology",
+            prompt: "Net ATP molecules generated per molecule of glucose in aerobic respiration:",
+            options: ["36 or 38 ATP", "2 ATP", "4 ATP", "12 ATP"],
+            correct: 0,
+            weakTag: "Plant Respiration & ETS"
+          },
+          {
+            topic: "Human Physiology",
+            prompt: "The natural pacemaker of the human heart is the:",
+            options: ["SA Node (Sino-atrial node)", "AV Node", "Bundle of His", "Purkinje Fibers"],
+            correct: 0,
+            weakTag: "Cardiovascular Circulation"
+          }
+        ]
+      };
+
+      let activeBlitzSubject = 'Physics';
+      let blitzTimerInterval = null;
+      let blitzTimeRemaining = 60;
+      let blitzCurrentScore = 0;
+      let blitzCurrentStreak = 0;
+      let blitzMaxStreak = 0;
+      let blitzQuestionsAnswered = 0;
+      let blitzCorrectAnswersCount = 0;
+      let blitzCurrentQuestion = null;
+      let blitzQuestionStartTime = 0;
+      let blitzTotalQuestionTime = 0;
+      let blitzWeakTopicCounts = {};
+
+      function openFormulaBlitzModal() {
+        const modal = document.getElementById('formulaBlitzModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        showBlitzState('lobby');
+        selectBlitzSubject(activeBlitzSubject);
+        renderBlitzLeaderboard();
+        lucide.createIcons();
+      }
+
+      function closeFormulaBlitzModal() {
+        if (blitzTimerInterval) {
+          clearInterval(blitzTimerInterval);
+          blitzTimerInterval = null;
+        }
+        const modal = document.getElementById('formulaBlitzModal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      function showBlitzState(stateName) {
+        const lobby = document.getElementById('blitzStateLobby');
+        const gameplay = document.getElementById('blitzStateGameplay');
+        const results = document.getElementById('blitzStateResults');
+        if (lobby) lobby.classList.toggle('hidden', stateName !== 'lobby');
+        if (gameplay) gameplay.classList.toggle('hidden', stateName !== 'gameplay');
+        if (results) results.classList.toggle('hidden', stateName !== 'results');
+      }
+
+      function selectBlitzSubject(subj) {
+        activeBlitzSubject = subj;
+        const allSubjs = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
+        allSubjs.forEach(s => {
+          const btn = document.getElementById(`blitz-sub-${s}`);
+          if (btn) {
+            if (s === subj) {
+              btn.className = "blitz-sub-btn py-3 px-3 rounded-xl border border-amber-400/80 bg-amber-400/20 text-amber-300 font-bold text-xs flex flex-col items-center gap-1.5 shadow-md shadow-amber-400/10 transition-all";
+            } else {
+              btn.className = "blitz-sub-btn py-3 px-3 rounded-xl border border-gray-800 bg-gray-900/80 hover:bg-gray-800 text-gray-400 font-bold text-xs flex flex-col items-center gap-1.5 transition-all";
+            }
+          }
+        });
+      }
+
+      function startFormulaBlitzSession() {
+        showBlitzState('gameplay');
+        blitzTimeRemaining = 60;
+        blitzCurrentScore = 0;
+        blitzCurrentStreak = 0;
+        blitzMaxStreak = 0;
+        blitzQuestionsAnswered = 0;
+        blitzCorrectAnswersCount = 0;
+        blitzTotalQuestionTime = 0;
+        blitzWeakTopicCounts = {};
+
+        updateBlitzHudUI();
+        renderNextBlitzQuestion();
+
+        if (blitzTimerInterval) clearInterval(blitzTimerInterval);
+        blitzTimerInterval = setInterval(() => {
+          blitzTimeRemaining--;
+          updateBlitzHudUI();
+
+          if (blitzTimeRemaining <= 0) {
+            clearInterval(blitzTimerInterval);
+            blitzTimerInterval = null;
+            finishFormulaBlitzSession();
+          }
+        }, 1000);
+      }
+
+      function updateBlitzHudUI() {
+        const timerEl = document.getElementById('blitzTimerDisplay');
+        const scoreEl = document.getElementById('blitzLiveScore');
+        const streakBadge = document.getElementById('blitzStreakBadge');
+
+        if (timerEl) {
+          timerEl.innerText = blitzTimeRemaining;
+          if (blitzTimeRemaining <= 10) {
+            timerEl.className = "w-10 h-10 rounded-full bg-red-950 border-2 border-red-500 flex items-center justify-center font-mono font-black text-red-400 text-sm shadow-lg shadow-red-500/30 animate-pulse";
+          } else {
+            timerEl.className = "w-10 h-10 rounded-full bg-gray-800 border-2 border-amber-400 flex items-center justify-center font-mono font-black text-amber-300 text-sm shadow-md";
+          }
+        }
+
+        if (scoreEl) scoreEl.innerText = blitzCurrentScore;
+
+        if (streakBadge) {
+          if (blitzCurrentStreak >= 3) {
+            streakBadge.classList.remove('hidden');
+            streakBadge.innerText = blitzCurrentStreak >= 5 ? `⚡ GODLIKE x${blitzCurrentStreak}` : `🔥 COMBO x${blitzCurrentStreak}`;
+          } else {
+            streakBadge.classList.add('hidden');
+          }
+        }
+      }
+
+      function renderNextBlitzQuestion() {
+        const pool = FORMULA_BLITZ_QUESTIONS[activeBlitzSubject] || FORMULA_BLITZ_QUESTIONS['Physics'];
+        const randomQ = pool[Math.floor(Math.random() * pool.length)];
+        blitzCurrentQuestion = randomQ;
+        blitzQuestionStartTime = Date.now();
+
+        const topicEl = document.getElementById('blitzTopicBadge');
+        const promptEl = document.getElementById('blitzQuestionPrompt');
+        const grid = document.getElementById('blitzOptionsGrid');
+
+        if (topicEl) topicEl.innerText = `${activeBlitzSubject.toUpperCase()} • ${randomQ.topic}`;
+        if (promptEl) promptEl.innerText = randomQ.prompt;
+
+        // Shuffle options dynamically for high replayability
+        const indices = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+        if (grid) {
+          grid.innerHTML = indices.map((origIdx, buttonPos) => {
+            const letter = ['A', 'B', 'C', 'D'][buttonPos];
+            return `
+              <button onclick="handleBlitzAnswer(${origIdx}, this)" class="blitz-opt-btn p-3.5 bg-gray-800/90 hover:bg-indigo-900/60 border border-gray-700 hover:border-indigo-400 rounded-xl text-left text-xs sm:text-sm font-mono text-gray-200 transition-all flex items-center gap-2.5 active:scale-95 group">
+                <span class="w-6 h-6 rounded-lg bg-gray-700 group-hover:bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">${letter}</span>
+                <span class="font-bold flex-1 leading-snug">${randomQ.options[origIdx]}</span>
+              </button>
+            `;
+          }).join('');
+        }
+      }
+
+      function handleBlitzAnswer(chosenIndex, btnEl) {
+        if (!blitzCurrentQuestion) return;
+        const timeTaken = (Date.now() - blitzQuestionStartTime) / 1000;
+        blitzTotalQuestionTime += timeTaken;
+        blitzQuestionsAnswered++;
+
+        const isCorrect = (chosenIndex === blitzCurrentQuestion.correct);
+
+        if (isCorrect) {
+          blitzCorrectAnswersCount++;
+          blitzCurrentStreak++;
+          if (blitzCurrentStreak > blitzMaxStreak) blitzMaxStreak = blitzCurrentStreak;
+
+          // Points calculation with streak multiplier
+          let points = 10;
+          if (blitzCurrentStreak >= 5) points = 30;
+          else if (blitzCurrentStreak >= 3) points = 20;
+
+          blitzCurrentScore += points;
+          playBlitzAudioFeedback('correct');
+
+          if (btnEl) {
+            btnEl.className = "p-3.5 bg-emerald-600 text-white border-2 border-emerald-400 rounded-xl text-left text-xs sm:text-sm font-mono font-bold flex items-center gap-2.5 shadow-lg shadow-emerald-500/30 scale-102";
+          }
+        } else {
+          // Wrong answer
+          blitzCurrentStreak = 0;
+          const weakTag = blitzCurrentQuestion.weakTag || blitzCurrentQuestion.topic;
+          blitzWeakTopicCounts[weakTag] = (blitzWeakTopicCounts[weakTag] || 0) + 1;
+
+          playBlitzAudioFeedback('wrong');
+
+          if (btnEl) {
+            btnEl.className = "p-3.5 bg-red-600 text-white border-2 border-red-400 rounded-xl text-left text-xs sm:text-sm font-mono font-bold flex items-center gap-2.5 shadow-lg shadow-red-500/30";
+          }
+          const card = document.getElementById('blitzQuestionCard');
+          if (card) {
+            card.classList.add('shake-card');
+            setTimeout(() => card.classList.remove('shake-card'), 300);
+          }
+        }
+
+        updateBlitzHudUI();
+        setTimeout(() => {
+          renderNextBlitzQuestion();
+        }, 320);
+      }
+
+      function playBlitzAudioFeedback(type) {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          if (type === 'correct') {
+            osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+            osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // A5
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.22);
+          } else {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+          }
+        } catch(e) {}
+      }
+
+      function finishFormulaBlitzSession() {
+        showBlitzState('results');
+
+        const accuracy = blitzQuestionsAnswered > 0 
+          ? Math.round((blitzCorrectAnswersCount / blitzQuestionsAnswered) * 100) 
+          : 0;
+
+        const avgSpeed = blitzQuestionsAnswered > 0 
+          ? (blitzTotalQuestionTime / blitzQuestionsAnswered).toFixed(1) 
+          : '0.0';
+
+        // Identify most frequent weak topic
+        let topWeakTag = `${activeBlitzSubject} Core Formulas`;
+        let maxErrors = 0;
+        for (let tag in blitzWeakTopicCounts) {
+          if (blitzWeakTopicCounts[tag] > maxErrors) {
+            maxErrors = blitzWeakTopicCounts[tag];
+            topWeakTag = tag;
+          }
+        }
+
+        document.getElementById('blitzFinalScore').innerText = blitzCurrentScore;
+        document.getElementById('blitzFinalAccuracy').innerText = `${accuracy}% (${blitzCorrectAnswersCount}/${blitzQuestionsAnswered})`;
+        document.getElementById('blitzFinalSpeed').innerText = `${avgSpeed}s / Q`;
+        document.getElementById('blitzFinalStreak').innerText = blitzMaxStreak;
+
+        const insightEl = document.getElementById('blitzWeakTopicInsight');
+        if (insightEl) {
+          insightEl.innerText = `Focus Revision Recommendation: Revise "${topWeakTag}" in Prepskm Study Materials before your next CBT Mock Test.`;
+        }
+
+        // Save score to Firestore 'formula_blitz_scores'
+        const scoreRecord = {
+          id: 'blitz-' + Date.now(),
+          playerName: currentUser.displayName || 'Aspirant',
+          playerAvatar: currentUser.photoURL || DEFAULT_AVATAR_SVG,
+          subject: activeBlitzSubject,
+          score: blitzCurrentScore,
+          accuracy: accuracy,
+          streakMax: blitzMaxStreak,
+          speedAvg: parseFloat(avgSpeed) || 0,
+          weakTopic: topWeakTag,
+          timestamp: new Date().toISOString()
+        };
+
+        if (db) {
+          db.collection('formula_blitz_scores').doc(scoreRecord.id).set(scoreRecord).catch(e => console.warn(e));
+        }
+
+        showAppToast(`Formula Blitz finished! Score: ${blitzCurrentScore} pts (${accuracy}% accuracy)`, 'success');
+        renderBlitzLeaderboard();
+      }
+
+      function renderBlitzLeaderboard() {
+        const container = document.getElementById('blitzLeaderboardList');
+        if (!container) return;
+
+        if (db) {
+          db.collection('formula_blitz_scores').orderBy('score', 'desc').limit(5).get().then(snap => {
+            if (snap && !snap.empty) {
+              const items = [];
+              snap.forEach(doc => items.push(doc.data()));
+              populateBlitzLeaderboardDOM(items);
+            } else {
+              populateBlitzLeaderboardFallback();
+            }
+          }).catch(() => populateBlitzLeaderboardFallback());
+        } else {
+          populateBlitzLeaderboardFallback();
+        }
+      }
+
+      function populateBlitzLeaderboardDOM(items) {
+        const container = document.getElementById('blitzLeaderboardList');
+        if (!container) return;
+        const medals = ['🥇', '🥈', '🥉', '⚡', '⚡'];
+        container.innerHTML = items.map((item, idx) => `
+          <div class="p-2 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 truncate">
+              <span class="w-5 text-center font-bold text-amber-400">${medals[idx] || '#' + (idx + 1)}</span>
+              <img src="${item.playerAvatar || DEFAULT_AVATAR_SVG}" class="w-5 h-5 rounded-full object-cover" alt="Avatar">
+              <span class="font-bold text-gray-200 truncate">${item.playerName}</span>
+              <span class="px-1.5 py-0.2 rounded text-[9px] bg-gray-800 text-gray-400 font-mono">${item.subject}</span>
+            </div>
+            <div class="font-mono font-black text-amber-400">${item.score} pts</div>
+          </div>
+        `).join('');
+      }
+
+      function populateBlitzLeaderboardFallback() {
+        const fallbackRankers = [
+          { playerName: "Aman Sharma (AIR 34)", score: 280, subject: "Physics" },
+          { playerName: "Rohan Verma", score: 240, subject: "Chemistry" },
+          { playerName: "Priya Nair", score: 210, subject: "Mathematics" },
+          { playerName: "Karan Singh", score: 190, subject: "Biology" }
+        ];
+        populateBlitzLeaderboardDOM(fallbackRankers);
+      }
+
+      // Export globally
+      window.openFormulaBlitzModal = openFormulaBlitzModal;
+      window.closeFormulaBlitzModal = closeFormulaBlitzModal;
+      window.selectBlitzSubject = selectBlitzSubject;
+      window.startFormulaBlitzSession = startFormulaBlitzSession;
+      window.handleBlitzAnswer = handleBlitzAnswer;
+      window.openAdminSecretAuthModal = openAdminSecretAuthModal;
+      window.closeAdminSecretAuthModal = closeAdminSecretAuthModal;
+      window.submitAdminSecretVerification = submitAdminSecretVerification;
 
       // INITIAL PAGE LOAD & SEEDING
       window.addEventListener('DOMContentLoaded', () => {

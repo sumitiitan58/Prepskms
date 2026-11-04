@@ -1,0 +1,22 @@
+[build]
+  publish = "dist"
+  functions = "netlify/functions"
+  command = "npm run build"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Proxy API calls to Netlify Serverless Function
+[[redirects]]
+  from = "/api/gemini"
+  to = "/.netlify/functions/gemini"
+  status = 200
+
+# Single Page Application (SPA) rewrite rule
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "20"
