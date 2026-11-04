@@ -1,5 +1,14 @@
-import {createRoot} from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
+import './firebase';
 import App from './App.tsx';
 import './index.css';
 
-createRoot(document.getElementById('root')!).render(<App />);
+let rootEl = document.getElementById('root');
+if (!rootEl) {
+  rootEl = document.createElement('div');
+  rootEl.id = 'root';
+  rootEl.style.display = 'none';
+  document.body.appendChild(rootEl);
+}
+
+createRoot(rootEl).render(<App />);

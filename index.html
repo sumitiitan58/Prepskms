@@ -62,6 +62,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
 
+    <!-- Jitsi Meet External API & Prepskm Cloud/Jitsi React SDK Bridge -->
+    <script src="https://meet.jit.si/external_api.js" async></script>
+    <script type="module" src="/src/main.tsx"></script>
+
     <style>
       /* Custom subtle scrollbars & styles */
       ::-webkit-scrollbar {
@@ -319,17 +323,47 @@
               <i data-lucide="bell" class="w-5 h-5 text-blue-600"></i>
             </div>
             <div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-bold text-gray-900">JEE Main 2027 All India CBT Mock Test Series #4</span>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span id="homeLiveMockTitle" class="text-sm font-bold text-gray-900">JEE Main 2027 All India CBT Mock Test Series #4</span>
                 <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">Live Today</span>
               </div>
-              <p class="text-xs text-gray-500 mt-0.5">Syllabus: Kinematics, Mole Concept, Quadratic Equations & Thermodynamics. 75 Questions (80% MCQ, 20% NAT).</p>
+              <p id="homeLiveMockSyllabus" class="text-xs text-gray-500 mt-0.5">Syllabus: Kinematics, Mole Concept, Quadratic Equations & Thermodynamics. 75 Questions (80% MCQ, 20% NAT).</p>
             </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <button onclick="startSpecificMock('all_india_4')" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1.5">
+            <button id="homeLiveMockBtn" onclick="startSpecificMock('all_india_4')" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1.5">
               <span>Attempt Test Now</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Group Mentorship Session Indicator Banner (Synced via Firestore live_sessions) -->
+        <div id="homeLiveMentorshipBanner" class="bg-gray-900 bg-gradient-to-r from-indigo-900 via-blue-900 to-gray-900 border border-indigo-500/40 rounded-2xl p-4 sm:p-5 shadow-md text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start sm:items-center gap-3.5">
+            <div class="relative shrink-0">
+              <img id="homeLiveMentorshipThumb" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=240&auto=format&fit=crop&q=80" alt="Live Mentorship" class="w-16 h-12 sm:w-20 sm:h-14 rounded-xl object-cover border border-indigo-400/50 shadow-sm" />
+              <span class="absolute -top-1.5 -left-1.5 px-1.5 py-0.5 rounded bg-red-600 text-white text-[9px] font-black uppercase tracking-wider flex items-center gap-1 shadow">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                <span>LIVE</span>
+              </span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span id="homeLiveMentorshipStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-red-500/20 text-red-300 border border-red-400/30 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
+                  <span>Live Group Mentorship Active</span>
+                </span>
+                <span id="homeLiveMentorshipHost" class="text-[11px] text-indigo-200 font-semibold">By @unfiltereddsumit</span>
+              </div>
+              <h3 id="homeLiveMentorshipTitle" class="text-sm sm:text-base font-extrabold text-white mt-0.5">JEE & NEET Rank Booster: Rotational Mechanics & Backlog Clearance</h3>
+              <p id="homeLiveMentorshipMeta" class="text-xs text-blue-200/80">Students join muted by default • Use "Raise Hand ✋" inside the room to ask doubts live</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="joinGroupLiveMentorshipSession()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all">
+              <i data-lucide="video" class="w-4 h-4"></i>
+              <span>Join Live Session</span>
             </button>
           </div>
         </div>
@@ -669,9 +703,62 @@
       </section>
 
       <!-- =================================================================== -->
-      <!-- VIEW 3: NTA-STYLE CBT MOCK TEST ENGINE -->
+      <!-- VIEW 3: NTA-STYLE CBT MOCK TEST ENGINE & FORMULA BLITZ RUSH -->
       <!-- =================================================================== -->
       <section id="view-mock-test" class="hidden space-y-6">
+
+        <!-- Aspirant Gamification Option inside Test / Practice Section: Formula Blitz / 60s CBT Rush -->
+        <div class="max-w-4xl mx-auto bg-gray-900 bg-gradient-to-r from-indigo-900 via-blue-900 to-gray-900 border border-indigo-700/60 rounded-2xl p-5 sm:p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden">
+          <div class="space-y-2 max-w-2xl relative z-10">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-gray-950 flex items-center gap-1 shadow-xs">
+                <i data-lucide="zap" class="w-3 h-3 fill-current"></i>
+                <span>Formula Blitz / 60s CBT Rush</span>
+              </span>
+              <span id="mockViewBlitzStreakBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-red-500/30 text-amber-200 border border-amber-400/30">
+                🔥 5x Streak Multiplier
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-blue-200 border border-white/15 font-mono">
+                Best Score: <strong id="mockViewBlitzHighScore" class="text-amber-300">280 PTS</strong>
+              </span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-black text-white">60-Second Rapid-Fire Formula & Concept Rush</h2>
+            <p class="text-xs text-blue-200/90 leading-relaxed">
+              Test your instant recall on Physics, Chemistry, Mathematics & NEET Biology formulas under a 60-second clock. Build combo streaks (+10 / +25 pts) and sync your high score to the live cloud leaderboard!
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0 relative z-10">
+            <button onclick="openFormulaBlitzModal()" class="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-gray-950 text-xs font-black rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95">
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+              <span>Launch 60s CBT Rush</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cloud Published Mock Test Series (Synced from Firestore mock_tests) -->
+        <div id="publishedMockTestsSection" class="max-w-4xl mx-auto bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+              </span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h2 class="text-base font-extrabold text-gray-900">Official Cloud CBT Mock Test Series</h2>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Firestore Synced</span>
+                </div>
+                <p class="text-xs text-gray-500">Attempt live NTA-pattern tests published by @unfiltereddsumit with auto-evaluated score submission.</p>
+              </div>
+            </div>
+            <button onclick="navigateView('admin')" class="admin-only hidden px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs font-bold items-center gap-1.5">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+              <span>+ Add Mock Test</span>
+            </button>
+          </div>
+          <div id="cloudMockTestsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <!-- Dynamically populated from Firestore mock_tests -->
+          </div>
+        </div>
         
         <!-- Mock Test Setup Card -->
         <div id="mockTestSetupView" class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6 max-w-4xl mx-auto">
@@ -1345,13 +1432,17 @@
 
           <!-- Admin Quick Action Tabs -->
           <div class="flex items-center gap-1.5 flex-wrap text-xs">
+            <button onclick="openCurriculumManagerModal()" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="folder-plus" class="w-3.5 h-3.5 text-amber-300"></i>
+              <span>Add Subject / Chapter</span>
+            </button>
             <button onclick="switchAdminTab('livehub')" id="admin-tab-livehub" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center gap-1.5 shadow-sm">
               <i data-lucide="phone-call" class="w-3.5 h-3.5 text-emerald-200"></i>
-              <span>Calls & Messages</span>
+              <span>Go Live & 1:1 Calls</span>
               <span id="adminLiveCallsCountBadge" class="hidden px-1.5 py-0.2 bg-red-500 text-white rounded-full text-[9px] font-black animate-pulse">LIVE</span>
             </button>
-            <button onclick="switchAdminTab('cropper')" id="admin-tab-cropper" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">6-Step Cropper</button>
-            <button onclick="switchAdminTab('sections')" id="admin-tab-sections" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Sections & PDFs</button>
+            <button onclick="switchAdminTab('cropper')" id="admin-tab-cropper" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Add Test & 6-Step Cropper</button>
+            <button onclick="switchAdminTab('sections')" id="admin-tab-sections" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Upload PDF & Sections</button>
             <button onclick="switchAdminTab('videos')" id="admin-tab-videos" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Video Upload</button>
             <button onclick="switchAdminTab('mentors')" id="admin-tab-mentors" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Manage Mentors</button>
             <button onclick="switchAdminTab('authenticator')" id="admin-tab-authenticator" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 font-medium">Token Authenticator</button>
@@ -1575,6 +1666,62 @@
             </div>
           </div>
 
+          <!-- Cloud CBT Mock Test Series Publisher (Firestore mock_tests) -->
+          <div class="bg-indigo-50/60 p-5 rounded-2xl border border-indigo-200 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-extrabold text-indigo-950 flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i>
+                  <span>Publish New Cloud CBT Mock Test Series (Firestore `mock_tests`)</span>
+                </h3>
+                <p class="text-xs text-indigo-700">Create a live mock test series from the question repository and sync it to all students.</p>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Cloud Synced</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div class="sm:col-span-2">
+                <label class="block font-semibold text-gray-700 mb-1">Mock Test Title *</label>
+                <input id="newMockSeriesTitle" type="text" placeholder="e.g. JEE Main 2027 All India CBT Mock Test Series #5" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
+              </div>
+              <div>
+                <label class="block font-semibold text-gray-700 mb-1">Target Exam *</label>
+                <select id="newMockSeriesExam" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl">
+                  <option value="JEE">JEE Main & Advanced</option>
+                  <option value="NEET">NEET UG</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-gray-700 mb-1">Duration (Minutes) *</label>
+                <input id="newMockSeriesDuration" type="number" value="180" min="15" max="240" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
+              </div>
+              <div class="sm:col-span-3">
+                <label class="block font-semibold text-gray-700 mb-1">Syllabus / Chapters Covered *</label>
+                <input id="newMockSeriesSyllabus" type="text" placeholder="e.g. Rotational Motion, Chemical Bonding, Definite Integration & Electrostatics" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
+              </div>
+              <div>
+                <label class="block font-semibold text-gray-700 mb-1">Total Questions *</label>
+                <select id="newMockSeriesCount" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl">
+                  <option value="10">10 Questions (Mini)</option>
+                  <option value="25">25 Questions (Sectional)</option>
+                  <option value="45">45 Questions (Subject)</option>
+                  <option value="75" selected>75 Questions (Full JEE)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <label class="flex items-center gap-2 text-xs font-semibold text-indigo-950 cursor-pointer">
+                <input id="newMockSeriesSetLive" type="checkbox" checked class="w-4 h-4 rounded text-indigo-600" />
+                <span>Feature as "Live Today" Mock Test on Student Homepage</span>
+              </label>
+              <button onclick="submitNewCloudMockTestSeries()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-extrabold shadow-sm flex items-center gap-1.5">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>Publish Mock Test to Cloud</span>
+              </button>
+            </div>
+          </div>
+
         </div>
 
         <!-- ------------------------------------------------------------- -->
@@ -1630,6 +1777,10 @@
                   <option value="Mathematics">Mathematics</option>
                   <option value="Biology">Biology</option>
                 </select>
+              </div>
+              <div>
+                <label class="block font-medium text-gray-700 mb-1">Chapter Name *</label>
+                <input id="newPdfChapter" type="text" placeholder="e.g. Rotational Motion / GOC" value="High-Yield Revision" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
               </div>
               <div class="sm:col-span-2 space-y-1.5">
                 <label class="block font-medium text-gray-700">PDF Document File (.pdf) *</label>
@@ -1699,6 +1850,19 @@
                 <select id="videoUploadMentorSelect" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl">
                   <!-- Loaded from mentors -->
                 </select>
+              </div>
+              <div>
+                <label class="block font-medium text-gray-700 mb-1">Subject *</label>
+                <select id="videoUploadSubject" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl">
+                  <option value="Physics">Physics</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Biology">Biology</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-medium text-gray-700 mb-1">Chapter Name *</label>
+                <input id="videoUploadChapter" type="text" placeholder="e.g. Kinematics & Vectors" value="Kinematics & Vectors" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl" />
               </div>
               <div class="sm:col-span-2 space-y-1.5">
                 <label class="block font-medium text-gray-700">Video Lecture File (.mp4 / .webm) *</label>
@@ -1938,16 +2102,82 @@
                   </div>
                 </div>
 
-                <!-- Call Test Simulator (For Faculty) -->
-                <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-                  <span class="text-gray-400 text-[11px]">Simulate Test Call:</span>
-                  <div class="flex gap-1.5">
-                    <button onclick="simulateIncomingTestCall('audio')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[10px] font-semibold text-emerald-300 transition-colors">
-                      Test Audio Call
+                <!-- Call Test Simulator & Direct 1-on-1 Student Call Launcher -->
+                <div class="pt-3 border-t border-white/10 space-y-2.5 text-xs">
+                  <div class="font-bold text-emerald-300 flex items-center justify-between">
+                    <span>Initiate 1-on-1 Private Jitsi Call to Student:</span>
+                    <span class="text-[10px] text-gray-400 font-mono">Zero-Card Jitsi</span>
+                  </div>
+                  <div class="flex flex-col sm:flex-row gap-2">
+                    <input id="adminDirectCallStudentInput" type="text" placeholder="Student Name (e.g. Arjun Sharma)" value="Arjun Sharma" class="flex-1 px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 text-xs focus:outline-none" />
+                    <button onclick="adminStartDirectStudentCall('audio')" class="px-2.5 py-1.5 bg-white/15 hover:bg-white/25 rounded-lg text-[11px] font-bold text-emerald-300 flex items-center justify-center gap-1">
+                      <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+                      <span>1:1 Audio</span>
                     </button>
-                    <button onclick="simulateIncomingTestCall('video')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[10px] font-semibold text-blue-300 transition-colors">
-                      Test Video Call
+                    <button onclick="adminStartDirectStudentCall('video')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-[11px] font-extrabold text-white flex items-center justify-center gap-1 shadow-xs">
+                      <i data-lucide="video" class="w-3.5 h-3.5"></i>
+                      <span>1:1 Video</span>
                     </button>
+                  </div>
+                  <div class="flex items-center justify-between pt-1 text-[11px] text-gray-400">
+                    <span>Simulate Incoming Call:</span>
+                    <div class="flex gap-1.5">
+                      <button onclick="simulateIncomingTestCall('audio')" class="px-2 py-0.5 bg-white/10 hover:bg-white/20 rounded text-[10px] font-semibold text-emerald-300">Test Audio</button>
+                      <button onclick="simulateIncomingTestCall('video')" class="px-2 py-0.5 bg-white/10 hover:bg-white/20 rounded text-[10px] font-semibold text-blue-300">Test Video</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Jitsi Group Mentorship ("Go Live") Broadcast Studio Card -->
+              <div class="bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-900 rounded-2xl p-5 text-white space-y-3.5 shadow-sm border border-indigo-700/50">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                    <i data-lucide="radio" class="w-4 h-4 text-red-400 animate-pulse"></i>
+                    <span>Group Mentorship Studio ("Go Live")</span>
+                  </span>
+                  <span id="adminGroupLiveStatusPill" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                    Ready to Broadcast
+                  </span>
+                </div>
+
+                <div class="space-y-2.5 text-xs">
+                  <div>
+                    <label class="block text-[11px] font-semibold text-indigo-200 mb-1">Live Session Title *</label>
+                    <input id="adminLiveSessionTitleInput" type="text" value="JEE & NEET Rank Booster: Rotational Mechanics & Backlog Clearance" placeholder="Enter Live Session Title..." class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-xs font-medium focus:outline-none" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-indigo-200 mb-1">Session Thumbnail (Upload or URL)</label>
+                    <div class="flex items-center gap-2">
+                      <label class="cursor-pointer px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-indigo-200 text-[11px] font-bold flex items-center gap-1.5 shrink-0">
+                        <i data-lucide="image" class="w-3.5 h-3.5 text-amber-300"></i>
+                        <span>Upload Thumb</span>
+                        <input type="file" accept="image/*" class="hidden" onchange="handleAdminLiveThumbUpload(event)" />
+                      </label>
+                      <input id="adminLiveSessionThumbInput" type="url" value="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&auto=format&fit=crop&q=80" placeholder="Or paste thumbnail URL" class="flex-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs focus:outline-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                  <button onclick="adminStartGroupLiveMentorship()" class="py-2.5 px-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl text-xs font-black shadow-md flex items-center justify-center gap-1.5 transition-all">
+                    <i data-lucide="video" class="w-4 h-4"></i>
+                    <span>Go Live Now</span>
+                  </button>
+                  <button onclick="adminStopGroupLiveMentorship()" class="py-2.5 px-3 bg-white/10 hover:bg-white/20 text-gray-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
+                    <i data-lucide="square" class="w-3.5 h-3.5 text-red-400"></i>
+                    <span>End Live</span>
+                  </button>
+                </div>
+
+                <!-- Raised Hands Queue from Students -->
+                <div class="pt-2 border-t border-white/10 space-y-1.5">
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="text-indigo-200 font-bold">✋ Raised Hands in Live Room:</span>
+                    <span id="adminRaisedHandsCount" class="text-amber-300 font-mono font-bold">0</span>
+                  </div>
+                  <div id="adminRaisedHandsList" class="text-[11px] text-gray-300 space-y-1 max-h-24 overflow-y-auto">
+                    <div class="text-gray-400 italic">Students who click "Raise Hand ✋" appear here in real time.</div>
                   </div>
                 </div>
               </div>
@@ -3000,6 +3230,9 @@
         <!-- Call Center Screen Stage -->
         <div class="relative bg-gradient-to-b from-gray-950 to-gray-900 aspect-video flex items-center justify-center overflow-hidden">
           
+          <!-- Jitsi Meet SDK Interactive Stage (@jitsi/react-sdk & Jitsi External API) -->
+          <div id="jitsiMeetStageContainer" class="hidden absolute inset-0 z-30 w-full h-full bg-gray-950"></div>
+
           <!-- Remote Display: Animated Caller Stage -->
           <div id="callRemoteVideoStage" class="flex flex-col items-center justify-center space-y-4 p-6 text-center">
             
@@ -3013,7 +3246,7 @@
 
             <div class="space-y-1 relative z-10">
               <h4 id="callRemoteNameSubtitle" class="font-extrabold text-base sm:text-lg text-white">Saurav Kumar (@unfiltereddsumit)</h4>
-              <p class="text-xs text-gray-400">1:1 Direct Consultation • High Fidelity WebRTC Stream</p>
+              <p class="text-xs text-gray-400">1:1 Direct Consultation • High Fidelity Jitsi WebRTC Stream</p>
               
               <!-- Frequency Bars Visualizer Simulation -->
               <div class="flex items-center justify-center gap-1 pt-2 h-6">
@@ -3037,7 +3270,7 @@
         </div>
 
         <!-- Call Action Controls Toolbar -->
-        <div class="p-4 bg-gray-950 border-t border-gray-800 flex items-center justify-center gap-3 sm:gap-4">
+        <div class="p-4 bg-gray-950 border-t border-gray-800 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
           
           <!-- Mute Microphone -->
           <button id="callToggleMicBtn" onclick="toggleCallMicrophone()" class="p-3.5 rounded-2xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-md" title="Mute/Unmute Mic">
@@ -3047,6 +3280,12 @@
           <!-- Toggle Camera -->
           <button id="callToggleCameraBtn" onclick="toggleCallCamera()" class="p-3.5 rounded-2xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-md" title="Camera On/Off">
             <i id="callCameraIcon" data-lucide="video" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Raise Hand ✋ (For Students in Live Mentorship & 1-on-1 Sessions) -->
+          <button id="callRaiseHandBtn" onclick="toggleStudentRaiseHand()" class="px-4 py-3 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-xs font-extrabold flex items-center gap-1.5 transition-all" title="Raise Hand to Ask Doubt Live">
+            <span>✋</span>
+            <span id="callRaiseHandLabel">Raise Hand</span>
           </button>
 
           <!-- Switch Mode (Audio <-> Video) -->
@@ -3760,14 +3999,12 @@
     <script>
       // 1. LIVE FIREBASE INITIALIZATION WITH SEAMLESS GRACEFUL FALLBACK
       const firebaseConfig = {
-        apiKey: "AIzaSyDBP0nnOKLP3dk4or8xblLjZmIUKwRosjM",
-        authDomain: "prepskm-ad1ce.firebaseapp.com",
-        databaseURL: "https://prepskm-ad1ce-default-rtdb.firebaseio.com",
-        projectId: "prepskm-ad1ce",
-        storageBucket: "prepskm-ad1ce.firebasestorage.app",
-        messagingSenderId: "1033326786252",
-        appId: "1:1033326786252:web:199494f2628703d07ff469",
-        measurementId: "G-HYL8GGSTZ2"
+        apiKey: "AIzaSyDLZnsINgpn5LfswWxsHhL14RM4_UEh1jc",
+        authDomain: "effortless-interface-bl37k.firebaseapp.com",
+        projectId: "effortless-interface-bl37k",
+        storageBucket: "effortless-interface-bl37k.firebasestorage.app",
+        messagingSenderId: "674077440649",
+        appId: "1:674077440649:web:84429b55c174d0a4c2a458"
       };
 
       let firebaseApp = null;
@@ -3775,20 +4012,34 @@
       let db = null;
       let isFirebaseOnline = false;
 
+      function bindPrepskmModularCloud() {
+        if (window.prepskmCloud && window.prepskmCloud.db) {
+          db = window.prepskmCloud.db;
+          auth = window.prepskmCloud.auth || auth;
+          isFirebaseOnline = true;
+          return true;
+        }
+        return false;
+      }
+
       try {
-        if (window.firebase) {
+        if (!bindPrepskmModularCloud() && window.firebase) {
           firebaseApp = firebase.initializeApp(firebaseConfig);
           auth = firebase.auth();
           db = firebase.firestore();
-          if (firebase.analytics) {
-            try { firebase.analytics(); } catch (e) {}
-          }
           isFirebaseOnline = true;
-          console.log("Firebase connected successfully to live Prepskm project");
         }
       } catch (err) {
         console.warn("Live Firebase initialized with local cache fallback:", err);
       }
+
+      window.addEventListener('prepskm-firebase-ready', () => {
+        if (bindPrepskmModularCloud()) {
+          initCloudRealtimeSync();
+          initChatRealtimeListeners();
+          renderBlitzLeaderboard();
+        }
+      });
 
       // Universal Non-blocking Toast Notification System (replaces window.alert)
       function showAppToast(message, type = 'info') {
@@ -3828,14 +4079,23 @@
 
       // 2. STATE MANAGEMENT & ROLE PERMISSIONS
       const SUPER_ADMIN_EMAILS = [
+        "sumitgaming9570@gmail.com",
         "sumitiitair01@gmail.com",
         "saurav586kumar@gmail.com",
         "unfiltereddsumit@gmail.com"
       ];
+      const SUPER_ADMIN_EMAIL = "sumitgaming9570@gmail.com";
       function isSuperAdminEmail(email) {
         if (!email) return false;
         const normalized = email.toLowerCase().trim();
         return SUPER_ADMIN_EMAILS.some(e => e.toLowerCase() === normalized);
+      }
+      function isCurrentUserSuperAdmin() {
+        return (
+          currentUser.role === 'superadmin' ||
+          isSuperAdminEmail(currentUser.email) ||
+          (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('prepskm_admin_auth') === 'true')
+        );
       }
 
       // Load saved guest aspirant profile if exists
@@ -4033,8 +4293,10 @@
             title: 'Rotational Dynamics in 90 Minutes: All JEE Advanced PYQs',
             mentorId: 'mentor-sumit',
             mentorName: 'Sumit Kumar (@unfiltereddsumit)',
-            videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            videoUrl: 'https://www.youtube.com/embed/b1t41Q3xRM8',
+            video_url: 'https://www.youtube.com/embed/b1t41Q3xRM8',
             subject: 'Physics',
+            chapter: 'Rotational Dynamics',
             exam: 'JEE',
             companionPdfs: [
               { title: 'Rotational Motion Class Handwritten Notes.pdf', url: 'https://ncert.nic.in/pdf/publication/exemplarproblem/classXI/physics/keep207.pdf' },
@@ -4046,14 +4308,47 @@
             title: 'Complete Organic Chemistry Reaction Mechanisms: One Shot',
             mentorId: 'mentor-sumit',
             mentorName: 'Sumit Kumar (@unfiltereddsumit)',
-            videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            videoUrl: 'https://www.youtube.com/embed/UloIw7dhnlQ',
+            video_url: 'https://www.youtube.com/embed/UloIw7dhnlQ',
             subject: 'Chemistry',
+            chapter: 'General Organic Chemistry (GOC)',
             exam: 'JEE',
             companionPdfs: [
               { title: 'Organic Reagents Mind Map.pdf', url: 'https://ncert.nic.in/pdf/publication/exemplarproblem/classXI/chemistry/keep308.pdf' }
             ]
           }
         ],
+        mockTests: [
+          {
+            id: 'mock-jee-full-1',
+            title: 'All India JEE Main Full Syllabus Mock Test #1 (NTA CBT)',
+            exam: 'JEE',
+            syllabus: 'Full Syllabus • Physics (Rotational, Electrostatics) • Chemistry (GOC, Thermodynamics) • Maths (Calculus)',
+            duration_minutes: 180,
+            total_questions: 30,
+            is_live: true,
+            createdAt: '2026-11-03T06:00:00Z'
+          },
+          {
+            id: 'mock-neet-bio-1',
+            title: 'NEET UG High-Yield 360/360 Part Test #1 (NCERT Line-by-Line)',
+            exam: 'NEET',
+            syllabus: 'Genetics & Evolution • Cell Cycle • Chemical Bonding • Ray Optics',
+            duration_minutes: 120,
+            total_questions: 20,
+            is_live: false,
+            createdAt: '2026-11-02T12:00:00Z'
+          }
+        ],
+        liveSession: {
+          isLive: true,
+          title: 'JEE & NEET Rank Booster: Rotational Mechanics & 60-Day Backlog Strategy',
+          mentorName: 'Sumit Kumar (@unfiltereddsumit)',
+          roomName: 'PrepskmLiveMentorship_RankBooster2027',
+          thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&auto=format&fit=crop&q=80',
+          raisedHands: [],
+          startedAt: '2026-11-03T07:00:00Z'
+        },
         todos: [
           {
             id: 'todo-1',
@@ -4162,11 +4457,20 @@
         ]
       };
 
-      // Load persisted state from localStorage if available
+      // Load non-dummy user preferences from localStorage while keeping cloud collections authoritative
       try {
         const localSaved = localStorage.getItem('prepskm_state');
         if (localSaved) {
           const parsed = JSON.parse(localSaved);
+          if (parsed.videos && Array.isArray(parsed.videos)) {
+            parsed.videos = parsed.videos.map(v => {
+              if (v.videoUrl && v.videoUrl.includes('dQw4w9WgXcQ')) {
+                v.videoUrl = v.subject === 'Chemistry' ? 'https://www.youtube.com/embed/UloIw7dhnlQ' : 'https://www.youtube.com/embed/b1t41Q3xRM8';
+                v.video_url = v.videoUrl;
+              }
+              return v;
+            });
+          }
           state = { ...state, ...parsed };
         }
       } catch (e) {}
@@ -4699,6 +5003,10 @@
       // CURRICULUM MANAGER (ADD SUBJECTS & CHAPTERS WITH FIRESTORE SYNC)
       // =====================================================================
       function openCurriculumManagerModal() {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
         const modal = document.getElementById('curriculumManagerModal');
         if (!modal) return;
         modal.classList.remove('hidden');
@@ -4876,12 +5184,18 @@
           if (curVal) matSub.value = curVal;
         }
 
-        // 5. Refresh Cropper Subject Select
+        // 5. Refresh Cropper Subject Select & Video Upload Subject Select
         const cropSub = document.getElementById('cropperSubject');
         if (cropSub) {
           const curVal = cropSub.value;
           cropSub.innerHTML = state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
           if (state.curriculum.subjects.includes(curVal)) cropSub.value = curVal;
+        }
+        const vidSub = document.getElementById('videoUploadSubject');
+        if (vidSub) {
+          const curVal = vidSub.value;
+          vidSub.innerHTML = state.curriculum.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+          if (state.curriculum.subjects.includes(curVal)) vidSub.value = curVal;
         }
       }
 
@@ -4900,7 +5214,6 @@
                 renderCurriculumManagerUI();
               }
             } else {
-              // Seed default if document doesn't exist
               if (state.curriculum) {
                 db.collection('curriculum').doc('hierarchy').set(state.curriculum).catch(e => {});
               }
@@ -4908,10 +5221,36 @@
           }, err => console.warn("Curriculum sync listener warning:", err));
         } catch(e) {}
 
-        // 2. Real-time Materials (PDFs)
+        // 2. Real-time Study Materials (PDFs) - 'study_materials' & 'materials'
         try {
-          db.collection('materials').onSnapshot(snapshot => {
+          db.collection('study_materials').onSnapshot(snapshot => {
             if (snapshot && !snapshot.empty) {
+              const cloudMaterials = [];
+              snapshot.forEach(doc => {
+                const d = doc.data();
+                cloudMaterials.push({
+                  id: doc.id,
+                  ...d,
+                  downloadUrl: d.pdf_url || d.downloadUrl,
+                  pdf_url: d.pdf_url || d.downloadUrl
+                });
+              });
+              if (cloudMaterials.length > 0) {
+                state.materials = cloudMaterials;
+                persistState();
+                renderMaterialsList();
+                renderAdminPdfsTable();
+              }
+            } else if (snapshot && snapshot.empty && state.materials && state.materials.length > 0) {
+              state.materials.forEach(m => {
+                const payload = { ...m, pdf_url: m.pdf_url || m.downloadUrl, chapter: m.chapter || 'Complete Syllabus' };
+                db.collection('study_materials').doc(m.id).set(payload).catch(() => {});
+              });
+            }
+          }, err => console.warn(err));
+
+          db.collection('materials').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty && (!state.materials || state.materials.length === 0)) {
               const cloudMaterials = [];
               snapshot.forEach(doc => cloudMaterials.push({ id: doc.id, ...doc.data() }));
               if (cloudMaterials.length > 0) {
@@ -4920,18 +5259,27 @@
                 renderMaterialsList();
                 renderAdminPdfsTable();
               }
-            } else if (snapshot && snapshot.empty && state.materials && state.materials.length > 0) {
-              state.materials.forEach(m => db.collection('materials').doc(m.id).set(m).catch(() => {}));
             }
           }, err => console.warn(err));
         } catch(e) {}
 
-        // 3. Real-time Videos
+        // 3. Real-time Video Lectures - 'video_lectures' & 'videos'
         try {
-          db.collection('videos').onSnapshot(snapshot => {
+          db.collection('video_lectures').onSnapshot(snapshot => {
             if (snapshot && !snapshot.empty) {
               const cloudVideos = [];
-              snapshot.forEach(doc => cloudVideos.push({ id: doc.id, ...doc.data() }));
+              snapshot.forEach(doc => {
+                const d = doc.data();
+                const cleanUrl = (d.video_url || d.videoUrl || '').includes('dQw4w9WgXcQ')
+                  ? 'https://www.youtube.com/embed/b1t41Q3xRM8'
+                  : (d.video_url || d.videoUrl);
+                cloudVideos.push({
+                  id: doc.id,
+                  ...d,
+                  videoUrl: cleanUrl,
+                  video_url: cleanUrl
+                });
+              });
               if (cloudVideos.length > 0) {
                 state.videos = cloudVideos;
                 persistState();
@@ -4939,13 +5287,33 @@
                 renderMentorStudioView();
               }
             } else if (snapshot && snapshot.empty && state.videos && state.videos.length > 0) {
-              state.videos.forEach(v => db.collection('videos').doc(v.id).set(v).catch(() => {}));
+              state.videos.forEach(v => {
+                db.collection('video_lectures').doc(v.id).set({
+                  ...v,
+                  video_url: v.video_url || v.videoUrl,
+                  chapter: v.chapter || 'Core Concepts'
+                }).catch(() => {});
+              });
             }
           }, err => console.warn(err));
         } catch(e) {}
 
-        // 4. Real-time Questions (from 6-step multi-crop builder)
+        // 4. Real-time Mock Tests ('mock_tests') & Questions ('questions')
         try {
+          db.collection('mock_tests').onSnapshot(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const cloudTests = [];
+              snapshot.forEach(doc => cloudTests.push({ id: doc.id, ...doc.data() }));
+              if (cloudTests.length > 0) {
+                state.mockTests = cloudTests;
+                persistState();
+                renderCloudMockTestsGrid();
+              }
+            } else if (snapshot && snapshot.empty && state.mockTests && state.mockTests.length > 0) {
+              state.mockTests.forEach(t => db.collection('mock_tests').doc(t.id).set(t).catch(() => {}));
+            }
+          }, err => console.warn(err));
+
           db.collection('questions').onSnapshot(snapshot => {
             if (snapshot && !snapshot.empty) {
               const cloudQuestions = [];
@@ -4996,8 +5364,19 @@
           }, err => console.warn(err));
         } catch(e) {}
 
-        // 7. Real-time Active Calls Signaling (For instant call ringing and Admin pickup)
+        // 7. Real-time Live Group Mentorship Session ('live_sessions/current') & Active Calls Signaling
         try {
+          db.collection('live_sessions').doc('current').onSnapshot(doc => {
+            if (doc.exists) {
+              state.liveSession = doc.data();
+              persistState();
+              renderLiveMentorshipBannerUI();
+            } else if (state.liveSession) {
+              db.collection('live_sessions').doc('current').set(state.liveSession).catch(() => {});
+              renderLiveMentorshipBannerUI();
+            }
+          }, err => console.warn("Live session sync notice:", err));
+
           db.collection('activeCalls').doc('liveCall').onSnapshot(doc => {
             if (doc.exists) {
               const callData = doc.data();
@@ -5996,6 +6375,10 @@
       // 6. DYNAMIC PERMANENT SECTION CREATOR FOR PDFS
       // =====================================================================
       function openCreateSectionModal() {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
         document.getElementById('customSectionName').value = '';
         document.getElementById('createSectionModal').classList.remove('hidden');
       }
@@ -6085,10 +6468,15 @@
       }
 
       function submitNewPdfMaterial() {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
         const title = document.getElementById('newPdfTitle').value.trim();
         const sectionId = document.getElementById('newPdfSectionSelect').value;
         const exam = document.getElementById('newPdfExam').value;
         const subject = document.getElementById('newPdfSubject').value;
+        const chapter = (document.getElementById('newPdfChapter')?.value || '').trim() || 'Complete Syllabus';
         let link = document.getElementById('newPdfLink').value.trim();
 
         if (!title) {
@@ -6106,6 +6494,8 @@
             sectionName: secObj ? secObj.name : 'Notes',
             exam,
             subject,
+            chapter,
+            pdf_url: finalUrl,
             downloadUrl: finalUrl,
             isFileUpload: isFile,
             fileName: selectedPdfFile ? selectedPdfFile.name : (title + '.pdf'),
@@ -6114,18 +6504,22 @@
 
           state.materials.unshift(newPdf);
           persistState();
-          if (db) db.collection('materials').doc(newPdf.id).set(newPdf).catch(e => console.warn(e));
+          if (db) {
+            db.collection('study_materials').doc(newPdf.id).set(newPdf).catch(e => console.warn(e));
+            db.collection('materials').doc(newPdf.id).set(newPdf).catch(e => console.warn(e));
+          }
 
           document.getElementById('newPdfTitle').value = '';
+          if (document.getElementById('newPdfChapter')) document.getElementById('newPdfChapter').value = '';
           document.getElementById('newPdfLink').value = '';
           clearSelectedPdfFile();
           renderMaterialsList();
           renderAdminPdfsTable();
-          showAppToast(`PDF "${title}" published and synced to all devices!`, 'success');
+          showAppToast(`PDF "${title}" published to Cloud DB (study_materials)!`, 'success');
         };
 
         if (selectedPdfFile) {
-          showAppToast("Processing PDF for cross-device sync...", "info");
+          showAppToast("Uploading PDF to Cloud Storage & syncing metadata...", "info");
           const reader = new FileReader();
           reader.onload = (e) => {
             savePdfRecord(e.target.result, true);
@@ -6241,10 +6635,17 @@
       }
 
       function deletePdf(id) {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
         if (!confirm("Are you sure you want to delete this PDF?")) return;
         state.materials = state.materials.filter(m => m.id !== id);
         persistState();
-        if (db) db.collection('materials').doc(id).delete().catch(e => {});
+        if (db) {
+          db.collection('study_materials').doc(id).delete().catch(e => {});
+          db.collection('materials').doc(id).delete().catch(e => {});
+        }
         renderAdminPdfsTable();
         renderMaterialsList();
       }
@@ -6476,7 +6877,32 @@
 
       function startSpecificMock(seriesId) {
         navigateView('mock-test');
-        document.getElementById('mockQuestionCount').value = '75';
+        const matchedSeries = (state.mockTests || []).find(t => t.id === seriesId) || (seriesId === 'live-1' && state.mockTests && state.mockTests[0]);
+        if (matchedSeries) {
+          const examType = matchedSeries.exam || 'JEE';
+          selectMockExam(examType);
+          const qCountEl = document.getElementById('mockQuestionCount');
+          if (qCountEl) {
+            const countVal = String(matchedSeries.total_questions || 30);
+            if (!Array.from(qCountEl.options).some(o => o.value === countVal)) {
+              const opt = document.createElement('option');
+              opt.value = countVal;
+              opt.innerText = `${countVal} Questions (${matchedSeries.title})`;
+              qCountEl.appendChild(opt);
+            }
+            qCountEl.value = countVal;
+          }
+          launchMockTestEngine();
+          if (activeMockTestSession && matchedSeries.duration_minutes) {
+            activeMockTestSession.seriesId = matchedSeries.id;
+            activeMockTestSession.seriesTitle = matchedSeries.title;
+            activeMockTestSession.durationMinutes = matchedSeries.duration_minutes;
+            activeMockTestSession.remainingSeconds = matchedSeries.duration_minutes * 60;
+          }
+          showAppToast(`Started CBT Test: ${matchedSeries.title}`, 'success');
+          return;
+        }
+        document.getElementById('mockQuestionCount').value = '30';
         selectMockExam('JEE');
         launchMockTestEngine();
       }
@@ -6763,6 +7189,30 @@
         const maxScore = activeMockTestSession.questions.length * 4;
         const accuracy = attemptedCount > 0 ? Math.round((correctCount / attemptedCount) * 100) : 0;
         const avgTimeMin = (totalTimeSec / (activeMockTestSession.questions.length * 60)).toFixed(1);
+
+        // Save evaluated score submission to Cloud DB ('mock_results')
+        const mockSubmissionRecord = {
+          id: 'res-' + Date.now(),
+          uid: currentUser.uid || 'guest',
+          studentName: currentUser.displayName || 'Aspirant',
+          seriesId: activeMockTestSession.seriesId || 'custom-cbt',
+          seriesTitle: activeMockTestSession.seriesTitle || `${activeMockTestSession.exam} Custom CBT Mock`,
+          exam: activeMockTestSession.exam,
+          totalScore,
+          maxScore,
+          accuracy,
+          correctCount,
+          incorrectCount,
+          attemptedCount,
+          totalTimeSec,
+          submittedAt: new Date().toISOString()
+        };
+        state.mockResults = state.mockResults || [];
+        state.mockResults.unshift(mockSubmissionRecord);
+        persistState();
+        if (db) {
+          db.collection('mock_results').doc(mockSubmissionRecord.id).set(mockSubmissionRecord).catch(e => console.warn(e));
+        }
 
         // Render Results UI
         document.getElementById('mockLiveInterface').classList.add('hidden');
@@ -7230,8 +7680,14 @@
       }
 
       function submitNewVideoLecture() {
+        if (!isCurrentUserSuperAdmin() && currentUser.role !== 'mentor') {
+          openAdminSecretAuthModal();
+          return;
+        }
         const title = document.getElementById('videoUploadTitle').value.trim();
         const mentorId = document.getElementById('videoUploadMentorSelect').value;
+        const subject = document.getElementById('videoUploadSubject')?.value || 'Physics';
+        const chapter = (document.getElementById('videoUploadChapter')?.value || '').trim() || 'Core Concepts';
         let videoUrl = document.getElementById('videoUploadUrl').value.trim();
 
         if (selectedVideoFile) {
@@ -7241,6 +7697,15 @@
         if (!title || !videoUrl) {
           showAppToast("Please fill in Video Title and select a Video file or URL.", "error");
           return;
+        }
+
+        // Convert standard YouTube watch/youtu.be links to embed URL automatically
+        if (videoUrl.includes('youtube.com/watch?v=')) {
+          const vidId = videoUrl.split('v=')[1]?.split('&')[0];
+          if (vidId) videoUrl = `https://www.youtube.com/embed/${vidId}`;
+        } else if (videoUrl.includes('youtu.be/')) {
+          const vidId = videoUrl.split('youtu.be/')[1]?.split('?')[0];
+          if (vidId) videoUrl = `https://www.youtube.com/embed/${vidId}`;
         }
 
         const mentor = state.mentors.find(m => m.id === mentorId);
@@ -7269,8 +7734,10 @@
           mentorId,
           mentorName: mentor ? mentor.fullName : 'Sumit Kumar (@unfiltereddsumit)',
           videoUrl,
-          subject: 'Physics',
-          exam: 'JEE',
+          video_url: videoUrl,
+          subject,
+          chapter,
+          exam: subject === 'Biology' ? 'NEET' : 'JEE',
           isFileUpload: !!selectedVideoFile,
           fileName: selectedVideoFile ? selectedVideoFile.name : null,
           companionPdfs: companions,
@@ -7279,13 +7746,17 @@
 
         state.videos.unshift(newVid);
         persistState();
-        if (db) db.collection('videos').doc(newVid.id).set(newVid).catch(e => {});
+        if (db) {
+          db.collection('video_lectures').doc(newVid.id).set(newVid).catch(e => {});
+          db.collection('videos').doc(newVid.id).set(newVid).catch(e => {});
+        }
 
         document.getElementById('videoUploadTitle').value = '';
+        if (document.getElementById('videoUploadChapter')) document.getElementById('videoUploadChapter').value = '';
         document.getElementById('videoUploadUrl').value = '';
         clearSelectedVideoFile();
         renderFeaturedVideos();
-        showAppToast(`Video Lecture "${title}" published and accessible to everyone!`, 'success');
+        showAppToast(`Video Lecture "${title}" saved to Cloud DB (video_lectures)!`, 'success');
       }
 
       let activeVideoForModal = null;
@@ -8851,13 +9322,14 @@
         showAppToast("Faculty response dispatched to student across all devices in real time!", "success");
       }
 
-      async function startCall(callType = 'video', targetName = 'Academic Directorate (@unfiltereddsumit)', isDirectAnswer = false) {
+      async function startCall(callType = 'video', targetName = 'Academic Directorate (@unfiltereddsumit)', isDirectAnswer = false, customRoomName = null, isGroupMentorship = false) {
         activeCallData.active = true;
         activeCallData.callType = callType;
         activeCallData.targetName = targetName;
         activeCallData.secondsElapsed = 0;
-        activeCallData.micMuted = false;
+        activeCallData.micMuted = isGroupMentorship && !isCurrentUserSuperAdmin();
         activeCallData.cameraOff = (callType === 'audio');
+        activeCallData.isGroupMentorship = isGroupMentorship;
 
         const modal = document.getElementById('callInterfaceModal');
         const nameDisplay = document.getElementById('callParticipantNameDisplay');
@@ -8866,21 +9338,37 @@
         const statusLabel = document.getElementById('callStatusLabel');
         const switchLabel = document.getElementById('callSwitchModeLabel');
         const typeIcon = document.getElementById('callHeaderTypeIcon');
-        const selfFeedContainer = document.getElementById('callSelfVideoContainer');
-        const selfFeed = document.getElementById('callSelfVideoFeed');
+        const jitsiContainer = document.getElementById('jitsiMeetStageContainer');
 
         if (nameDisplay) nameDisplay.innerText = targetName;
         if (subtitleName) subtitleName.innerText = targetName;
         if (timerDisplay) timerDisplay.innerText = '00:00';
-        if (statusLabel) statusLabel.innerText = callType === 'video' ? 'Connecting HD Video Call...' : 'Connecting Encrypted Audio Call...';
+        if (statusLabel) statusLabel.innerText = isGroupMentorship ? 'Jitsi Live Group Mentorship Connected' : (callType === 'video' ? 'Connecting Jitsi HD Video Call...' : 'Connecting Jitsi Audio Call...');
         if (switchLabel) switchLabel.innerText = callType === 'video' ? 'Audio Mode' : 'Video Mode';
         if (typeIcon) typeIcon.setAttribute('data-lucide', callType === 'video' ? 'video' : 'phone');
 
         modal.classList.remove('hidden');
         playCallSound('ring');
 
+        const roomName = customRoomName || `Prepskm_1on1_${(targetName || 'Mentorship').replace(/[^a-zA-Z0-9]/g, '').substring(0, 18)}`;
+        activeCallData.roomName = roomName;
+
+        // Mount real @jitsi/react-sdk inside #jitsiMeetStageContainer
+        if (jitsiContainer && window.mountJitsiSession) {
+          jitsiContainer.classList.remove('hidden');
+          window.mountJitsiSession({
+            roomName: roomName,
+            displayName: currentUser.displayName || 'Prepskm Aspirant',
+            email: currentUser.email || 'aspirant@prepskm.in',
+            startWithAudioMuted: isGroupMentorship && !isCurrentUserSuperAdmin(),
+            startWithVideoMuted: callType === 'audio',
+            isModerator: isCurrentUserSuperAdmin(),
+            onClose: () => endActiveCall(true)
+          });
+        }
+
         // Signaling write to Firestore
-        if (db && !isDirectAnswer) {
+        if (db && !isDirectAnswer && !isGroupMentorship) {
           const callPayload = {
             id: 'call-' + Date.now(),
             callerId: currentUser.uid,
@@ -8888,6 +9376,7 @@
             callerEmail: currentUser.email || 'guest@prepskm.edu',
             callerAvatar: currentUser.photoURL || DEFAULT_AVATAR_SVG,
             targetName: targetName,
+            roomName: roomName,
             callType: callType,
             status: 'ringing',
             timestamp: Date.now()
@@ -8895,28 +9384,10 @@
           db.collection('activeCalls').doc('liveCall').set(callPayload).catch(e => console.warn(e));
         }
 
-        // Request camera feed if video call
-        if (callType === 'video' && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            activeCallData.localStream = stream;
-            if (selfFeed) {
-              selfFeed.srcObject = stream;
-              selfFeed.play().catch(() => {});
-            }
-            if (selfFeedContainer) selfFeedContainer.classList.remove('hidden');
-          } catch (err) {
-            console.warn("Camera permission note:", err);
-            if (selfFeedContainer) selfFeedContainer.classList.add('hidden');
-          }
-        } else {
-          if (selfFeedContainer) selfFeedContainer.classList.add('hidden');
-        }
-
         setTimeout(() => {
           playCallSound('connect');
-          if (statusLabel) statusLabel.innerText = callType === 'video' ? 'HD Video & Audio Connected' : 'Encrypted Audio Call Active';
-        }, 1200);
+          if (statusLabel) statusLabel.innerText = isGroupMentorship ? 'Live Mentorship Stream Active (Jitsi Meet)' : (callType === 'video' ? 'HD Video & Audio Connected (Jitsi Meet)' : 'Encrypted Audio Call Active (Jitsi Meet)');
+        }, 1000);
 
         if (activeCallData.timerInterval) clearInterval(activeCallData.timerInterval);
         activeCallData.timerInterval = setInterval(() => {
@@ -8928,7 +9399,7 @@
 
         updateCallControlButtonsUI();
         lucide.createIcons();
-        showAppToast(`Started ${callType.toUpperCase()} Call with ${targetName}`, 'success');
+        showAppToast(`Joined Jitsi ${callType.toUpperCase()} Session: ${targetName}`, 'success');
       }
 
       function updateCallControlButtonsUI() {
@@ -9017,19 +9488,250 @@
           activeCallData.localStream.getTracks().forEach(t => t.stop());
           activeCallData.localStream = null;
         }
+        if (window.unmountJitsiSession) {
+          window.unmountJitsiSession();
+        }
+        const jitsiContainer = document.getElementById('jitsiMeetStageContainer');
+        if (jitsiContainer) jitsiContainer.classList.add('hidden');
+
         playCallSound('end');
         activeCallData.active = false;
         const modal = document.getElementById('callInterfaceModal');
         if (modal) modal.classList.add('hidden');
 
-        if (notifyFirestore && db) {
+        if (notifyFirestore && db && !activeCallData.isGroupMentorship) {
           db.collection('activeCalls').doc('liveCall').set({
             status: 'ended',
             endedAt: Date.now()
           }, { merge: true }).catch(e => console.warn(e));
         }
 
-        showAppToast(`Call with ${activeCallData.targetName} ended (${document.getElementById('callTimerDisplay')?.innerText || '00:00'})`, 'info');
+        showAppToast(`Session with ${activeCallData.targetName} ended (${document.getElementById('callTimerDisplay')?.innerText || '00:00'})`, 'info');
+      }
+
+      // =====================================================================
+      // JITSI LIVE MENTORSHIP & 1-ON-1 PRIVATE CALLING + CLOUD MOCK SERIES
+      // =====================================================================
+      let uploadedLiveThumbDataUrl = null;
+
+      function handleAdminLiveThumbUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedLiveThumbDataUrl = e.target.result;
+          const label = document.getElementById('adminLiveThumbLabel');
+          if (label) label.innerText = `Thumbnail Ready: ${file.name.substring(0, 16)}...`;
+          showAppToast("Session Thumbnail attached!", "success");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function adminStartGroupLiveMentorship() {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
+        const title = (document.getElementById('adminLiveSessionTitle')?.value || '').trim() || 'Live JEE/NEET Mentorship & Doubt Clearing Session';
+        const thumbUrl = uploadedLiveThumbDataUrl || (document.getElementById('adminLiveSessionThumbUrl')?.value || '').trim() || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&auto=format&fit=crop&q=80';
+        const roomName = `PrepskmLiveMentorship_${Date.now()}`;
+
+        const sessionObj = {
+          isLive: true,
+          title,
+          mentorName: currentUser.displayName || 'Sumit Kumar (@unfiltereddsumit)',
+          roomName,
+          thumbnail: thumbUrl,
+          raisedHands: [],
+          startedAt: new Date().toISOString()
+        };
+
+        state.liveSession = sessionObj;
+        persistState();
+        if (db) {
+          db.collection('live_sessions').doc('current').set(sessionObj).catch(e => console.warn(e));
+        }
+        renderLiveMentorshipBannerUI();
+        startCall('video', title, false, roomName, true);
+      }
+
+      function adminStopGroupLiveMentorship() {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
+        if (state.liveSession) {
+          state.liveSession.isLive = false;
+        }
+        persistState();
+        if (db) {
+          db.collection('live_sessions').doc('current').set({ isLive: false, endedAt: new Date().toISOString() }, { merge: true }).catch(e => console.warn(e));
+        }
+        renderLiveMentorshipBannerUI();
+        showAppToast("Live Group Mentorship broadcast ended.", "info");
+      }
+
+      function joinGroupLiveMentorshipSession() {
+        const live = state.liveSession || {
+          isLive: true,
+          title: 'JEE & NEET Rank Booster: Rotational Mechanics & Strategy',
+          roomName: 'PrepskmLiveMentorship_RankBooster2027'
+        };
+        startCall('video', live.title, true, live.roomName, true);
+      }
+
+      function toggleStudentRaiseHand() {
+        if (window.triggerJitsiRaiseHand) {
+          window.triggerJitsiRaiseHand();
+        }
+        const entry = {
+          uid: currentUser.uid || 'guest',
+          name: currentUser.displayName || 'Aspirant',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        if (!state.liveSession) {
+          state.liveSession = { isLive: true, title: 'Live Mentorship', roomName: 'PrepskmLiveMentorship_RankBooster2027', raisedHands: [] };
+        }
+        state.liveSession.raisedHands = state.liveSession.raisedHands || [];
+        state.liveSession.raisedHands.unshift(entry);
+        persistState();
+        if (db) {
+          db.collection('live_sessions').doc('current').set({ raisedHands: state.liveSession.raisedHands }, { merge: true }).catch(e => console.warn(e));
+        }
+        renderLiveMentorshipBannerUI();
+        showAppToast("✋ Hand Raised! Host @unfiltereddsumit has been notified in Jitsi Meet.", "success");
+      }
+
+      function adminStartDirectStudentCall(callType = 'video') {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
+        const studentName = (document.getElementById('adminDirectCallStudentInput')?.value || '').trim() || 'Selected Aspirant';
+        const roomName = `Prepskm1on1_${studentName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15)}_${Date.now().toString().slice(-4)}`;
+        startCall(callType, `1-on-1 Call: ${studentName}`, false, roomName, false);
+      }
+
+      function renderLiveMentorshipBannerUI() {
+        const banner = document.getElementById('homeLiveMentorshipBanner');
+        const titleEl = document.getElementById('homeLiveMentorshipTitle');
+        const mentorEl = document.getElementById('homeLiveMentorshipMentor');
+        const thumbEl = document.getElementById('homeLiveMentorshipThumb');
+        const stopBtn = document.getElementById('adminStopLiveBtn');
+        const raisedBox = document.getElementById('adminRaisedHandsList');
+        const raisedItems = document.getElementById('adminRaisedHandsItems');
+
+        const live = state.liveSession;
+        if (banner) {
+          if (live && live.isLive) {
+            banner.classList.remove('hidden');
+            if (titleEl) titleEl.innerText = live.title || 'Live JEE/NEET Group Mentorship';
+            if (mentorEl) mentorEl.innerText = `Host: ${live.mentorName || 'Sumit Kumar (@unfiltereddsumit)'} • Students join muted • Raise Hand ✋ enabled`;
+            if (thumbEl && live.thumbnail) thumbEl.src = live.thumbnail;
+            if (stopBtn) stopBtn.classList.remove('hidden');
+          } else {
+            banner.classList.add('hidden');
+            if (stopBtn) stopBtn.classList.add('hidden');
+          }
+        }
+
+        if (raisedBox && raisedItems && live && Array.isArray(live.raisedHands) && live.raisedHands.length > 0) {
+          raisedBox.classList.remove('hidden');
+          raisedItems.innerHTML = live.raisedHands.slice(0, 6).map(h => `
+            <span class="px-2.5 py-1 rounded-lg bg-white border border-amber-300 font-bold text-amber-900">✋ ${h.name} (${h.time})</span>
+          `).join('');
+        }
+      }
+
+      function submitNewCloudMockTestSeries() {
+        if (!isCurrentUserSuperAdmin()) {
+          openAdminSecretAuthModal();
+          return;
+        }
+        const title = (document.getElementById('newMockSeriesTitle')?.value || '').trim();
+        const exam = document.getElementById('newMockSeriesExam')?.value || 'JEE';
+        const duration = parseInt(document.getElementById('newMockSeriesDuration')?.value) || 180;
+        const qCount = parseInt(document.getElementById('newMockSeriesQCount')?.value) || 30;
+        const syllabus = (document.getElementById('newMockSeriesSyllabus')?.value || '').trim() || 'Full Syllabus Physics, Chemistry & Mathematics';
+        const isLive = !!document.getElementById('newMockSeriesIsLive')?.checked;
+
+        if (!title) {
+          showAppToast("Please enter a Mock Test Series Title.", "error");
+          return;
+        }
+
+        const newSeries = {
+          id: 'mock-' + Date.now(),
+          title,
+          exam,
+          syllabus,
+          duration_minutes: duration,
+          total_questions: qCount,
+          is_live: isLive,
+          createdAt: new Date().toISOString()
+        };
+
+        state.mockTests = state.mockTests || [];
+        if (isLive) {
+          state.mockTests.forEach(t => t.is_live = false);
+        }
+        state.mockTests.unshift(newSeries);
+        persistState();
+
+        if (db) {
+          db.collection('mock_tests').doc(newSeries.id).set(newSeries).catch(e => console.warn(e));
+        }
+
+        if (document.getElementById('newMockSeriesTitle')) document.getElementById('newMockSeriesTitle').value = '';
+        if (document.getElementById('newMockSeriesSyllabus')) document.getElementById('newMockSeriesSyllabus').value = '';
+        renderCloudMockTestsGrid();
+        showAppToast(`CBT Mock Test "${title}" published to Cloud DB (mock_tests)!`, 'success');
+      }
+
+      function renderCloudMockTestsGrid() {
+        const grid = document.getElementById('cloudMockTestsGrid');
+        const countBadge = document.getElementById('cloudMockTestsCountBadge');
+        const tests = state.mockTests || [];
+
+        if (countBadge) {
+          countBadge.innerText = `${tests.length} Active Tests`;
+        }
+
+        // Sync Homepage Live Mock Banner with the primary live test
+        const liveTest = tests.find(t => t.is_live) || tests[0];
+        if (liveTest) {
+          const homeTitle = document.getElementById('homeLiveMockTitle');
+          const homeSyl = document.getElementById('homeLiveMockSyllabus');
+          const homeBtn = document.getElementById('homeLiveMockBtn');
+          if (homeTitle) homeTitle.innerText = liveTest.title;
+          if (homeSyl) homeSyl.innerText = `Syllabus: ${liveTest.syllabus} (${liveTest.duration_minutes} Mins • ${liveTest.total_questions} Qs)`;
+          if (homeBtn) homeBtn.setAttribute('onclick', `startSpecificMock('${liveTest.id}')`);
+        }
+
+        if (!grid) return;
+        if (tests.length === 0) {
+          grid.innerHTML = `<div class="col-span-full p-6 text-center text-xs text-gray-400 bg-gray-50 rounded-xl border border-gray-200">No cloud mock tests published yet.</div>`;
+          return;
+        }
+
+        grid.innerHTML = tests.map(t => `
+          <div class="p-4 rounded-2xl border ${t.is_live ? 'border-emerald-300 bg-emerald-50/40' : 'border-gray-200 bg-gray-50/60'} flex flex-col justify-between gap-3 shadow-xs hover:shadow-md transition-all">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${t.exam === 'NEET' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">${t.exam || 'JEE'} CBT</span>
+                ${t.is_live ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-600 text-white flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>LIVE NOW</span>` : `<span class="text-[11px] font-mono text-gray-500">${t.duration_minutes} mins</span>`}
+              </div>
+              <h4 class="font-bold text-sm text-gray-900 leading-snug">${t.title}</h4>
+              <p class="text-xs text-gray-600 line-clamp-2">${t.syllabus}</p>
+            </div>
+            <div class="pt-2 border-t border-gray-200/70 flex items-center justify-between text-xs">
+              <span class="font-mono font-semibold text-gray-600">${t.total_questions} Questions • ${t.duration_minutes} Min</span>
+              <button onclick="startSpecificMock('${t.id}')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-xs transition-colors">
+                Attempt CBT →
+              </button>
+            </div>
+          </div>
+        `).join('');
       }
 
       // =====================================================================
@@ -9776,17 +10478,19 @@
             body: JSON.stringify({
               prompt: userText,
               image: doubtImg,
+              imageBase64: doubtImg,
               chatHistory: state.aiChatHistory.filter(m => !m.isThinking)
             })
           });
 
           const data = await res.json();
           state.aiChatHistory = state.aiChatHistory.filter(m => m.id !== thinkingId);
+          const aiReply = data && (data.reply || data.text);
 
-          if (data && data.text) {
+          if (aiReply) {
             state.aiChatHistory.push({
               role: "ai",
-              text: data.text,
+              text: aiReply,
               imageUrl: null,
               timestamp: new Date().toISOString()
             });
@@ -10276,6 +10980,16 @@
           db.collection('formula_blitz_scores').doc(scoreRecord.id).set(scoreRecord).catch(e => console.warn(e));
         }
 
+        const mockHiScore = document.getElementById('mockViewBlitzHighScore');
+        if (mockHiScore) {
+          const curBest = parseInt(mockHiScore.innerText) || 280;
+          if (blitzCurrentScore > curBest) mockHiScore.innerText = `${blitzCurrentScore} PTS`;
+        }
+        const mockStreak = document.getElementById('mockViewBlitzStreakBadge');
+        if (mockStreak && blitzMaxStreak >= 2) {
+          mockStreak.innerText = `🔥 ${blitzMaxStreak}x Streak!`;
+        }
+
         showAppToast(`Formula Blitz finished! Score: ${blitzCurrentScore} pts (${accuracy}% accuracy)`, 'success');
         renderBlitzLeaderboard();
       }
@@ -10302,6 +11016,10 @@
       function populateBlitzLeaderboardDOM(items) {
         const container = document.getElementById('blitzLeaderboardList');
         if (!container) return;
+        if (items.length > 0 && items[0].score) {
+          const mockHiScore = document.getElementById('mockViewBlitzHighScore');
+          if (mockHiScore) mockHiScore.innerText = `${items[0].score} PTS`;
+        }
         const medals = ['🥇', '🥈', '🥉', '⚡', '⚡'];
         container.innerHTML = items.map((item, idx) => `
           <div class="p-2 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-between text-xs">
@@ -10335,13 +11053,23 @@
       window.openAdminSecretAuthModal = openAdminSecretAuthModal;
       window.closeAdminSecretAuthModal = closeAdminSecretAuthModal;
       window.submitAdminSecretVerification = submitAdminSecretVerification;
+      window.adminStartGroupLiveMentorship = adminStartGroupLiveMentorship;
+      window.adminStopGroupLiveMentorship = adminStopGroupLiveMentorship;
+      window.joinGroupLiveMentorshipSession = joinGroupLiveMentorshipSession;
+      window.toggleStudentRaiseHand = toggleStudentRaiseHand;
+      window.adminStartDirectStudentCall = adminStartDirectStudentCall;
+      window.handleAdminLiveThumbUpload = handleAdminLiveThumbUpload;
+      window.submitNewCloudMockTestSeries = submitNewCloudMockTestSeries;
 
       // INITIAL PAGE LOAD & SEEDING
       window.addEventListener('DOMContentLoaded', () => {
+        bindPrepskmModularCloud();
         initWeeklySchedule();
         renderDynamicSectionsUI();
         renderMaterialsList();
         renderMockChaptersList();
+        renderCloudMockTestsGrid();
+        renderLiveMentorshipBannerUI();
         renderMentorsDirectory();
         renderFeaturedVideos();
         renderHomeChatPreviews();

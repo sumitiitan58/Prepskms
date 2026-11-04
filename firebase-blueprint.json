@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "StudyMaterial": {
+      "title": "Study Material",
+      "description": "Admin-uploaded PDFs and study notes metadata stored in Firestore",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "chapter": { "type": "string" },
+        "pdf_url": { "type": "string" },
+        "downloadUrl": { "type": "string" },
+        "sectionId": { "type": "string" },
+        "sectionName": { "type": "string" },
+        "exam": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "subject"]
+    },
+    "MockTest": {
+      "title": "Mock Test Series",
+      "description": "CBT Mock Test configuration and questions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "exam": { "type": "string" },
+        "syllabus": { "type": "string" },
+        "duration_minutes": { "type": "number" },
+        "total_questions": { "type": "number" },
+        "is_live": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title"]
+    },
+    "VideoLecture": {
+      "title": "Video Lecture",
+      "description": "Recorded or YouTube embedded video lectures for JEE and NEET",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "chapter": { "type": "string" },
+        "video_url": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "mentorName": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "subject"]
+    },
+    "LiveSession": {
+      "title": "Live Mentorship Session",
+      "description": "Jitsi Meet Group Mentorship session status and raised hands queue",
+      "type": "object",
+      "properties": {
+        "isLive": { "type": "boolean" },
+        "title": { "type": "string" },
+        "mentorName": { "type": "string" },
+        "roomName": { "type": "string" },
+        "thumbnail": { "type": "string" },
+        "startedAt": { "type": "string" }
+      },
+      "required": ["isLive", "title", "roomName"]
+    },
+    "FormulaBlitzScore": {
+      "title": "Formula Blitz Score",
+      "description": "60s Rapid-Fire CBT Rush leaderboard score entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "playerName": { "type": "string" },
+        "subject": { "type": "string" },
+        "score": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "streakMax": { "type": "number" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "playerName", "score"]
+    }
+  },
+  "firestore": {
+    "/study_materials/{materialId}": {
+      "schema": { "$ref": "#/entities/StudyMaterial" },
+      "description": "Study materials and PDFs"
+    },
+    "/mock_tests/{testId}": {
+      "schema": { "$ref": "#/entities/MockTest" },
+      "description": "Official CBT Mock Test series"
+    },
+    "/video_lectures/{videoId}": {
+      "schema": { "$ref": "#/entities/VideoLecture" },
+      "description": "Video lectures and companion DPPs"
+    },
+    "/live_sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/LiveSession" },
+      "description": "Active Jitsi Meet group mentorship sessions"
+    },
+    "/formula_blitz_scores/{scoreId}": {
+      "schema": { "$ref": "#/entities/FormulaBlitzScore" },
+      "description": "High scores from the 60s Formula Blitz mini-game"
+    }
+  }
+}

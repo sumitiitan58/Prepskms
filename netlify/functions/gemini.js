@@ -1,90 +1,113 @@
-/**
- * Netlify Function: Google Gemini AI Doubt Solver for Prepskm
- * Uses Netlify AI Gateway credentials, which are injected automatically at runtime.
- */
-
 import { GoogleGenAI } from '@google/genai';
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+/**
+ * Netlify Serverless Function: Prepskm AI Study Copilot & Doubt Solver
+ * Endpoint: /.netlify/functions/gemini (Redirected from /api/gemini via netlify.toml)
+ *
+ * Uses GEMINI_API_KEY configured in Netlify Environment Variables.
+ */
+export const handler = async (event) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Content-Type': 'application/json',
+  };
 
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
-  });
-
-const SYSTEM_INSTRUCTION = `You are the Prepskm AI Study Copilot and expert JEE/NEET top-ranker mentor (@unfiltereddsumit).
-You provide step-by-step problem-solving methods, clear formulas in clean Markdown/LaTeX, and conceptual clarity rather than just final answers.
-Maintain an encouraging, rigorous, and motivating tone for JEE Main, JEE Advanced, and NEET UG aspirants.
-Always emphasize:
-1. Core Concepts & Definitions
-2. Step-by-Step Derivation / Calculation
-3. High-Yield Exam Traps & Pro-Tips to avoid negative marking (-1 mark).`;
-
-export default async (req) => {
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response('', { status: 200, headers: CORS_HEADERS });
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
   }
 
-  // Only accept POST requests
-  if (req.method !== 'POST') {
-    return json({ error: 'Method Not Allowed' }, 405);
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: 'Method Not Allowed. Use POST.' }),
+    };
   }
 
-  let prompt;
   try {
-    const body = await req.json().catch(() => ({}));
-    prompt = body.prompt;
-    const { image, chatHistory } = body;
-
-    if (!prompt && !image) {
-      return json({ error: 'Prompt or image is required' }, 400);
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return {
+        statusCode: 503,
+        headers,
+        body: JSON.stringify({
+          error: 'GEMINI_API_KEY is not configured in environment variables.',
+          fallback: true,
+        }),
+      };
     }
 
-    const ai = new GoogleGenAI({});
+    const body = JSON.parse(event.body || '{}');
+    const promptText = body.prompt || '';
+    const imageBase64 = body.imageBase64 || null;
+    const studentName = body.studentName || 'Aspirant';
+    const targetExam = body.targetExam || 'JEE Main & Advanced / NEET UG';
 
-    const contents = [];
+    if (!promptText && !imageBase64) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Please provide a question prompt or doubt image.' }),
+      };
+    }
 
-    // Optional conversation history
-    if (chatHistory && Array.isArray(chatHistory)) {
-      chatHistory.slice(-6).forEach((msg) => {
-        contents.push({
-          role: msg.role === 'ai' ? 'model' : 'user',
-          parts: [{ text: msg.text || '' }],
-        });
+    const ai = new GoogleGenAI({
+      apiKey,
+      httpOptions: { headers: { 'User-Agent': 'aistudio-build' } },
+    });
+
+    const parts = [];
+    if (imageBase64 && typeof imageBase64 === 'string' && imageBase64.includes('base64,')) {
+      const [meta, base64Data] = imageBase64.split('base64,');
+      const mimeMatch = meta.match(/data:(.*?);/);
+      const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
+      parts.push({
+        inlineData: {
+          mimeType,
+          data: base64Data,
+        },
       });
     }
 
-    const currentParts = [];
-    if (image) {
-      const match = image.match(/^data:(image\/[a-z]+);base64,(.+)$/i);
-      if (match) {
-        currentParts.push({ inlineData: { mimeType: match[1], data: match[2] } });
-      }
-    }
-
-    if (prompt) {
-      currentParts.push({ text: prompt });
-    }
-
-    contents.push({ role: 'user', parts: currentParts });
+    parts.push({
+      text: promptText || 'Solve the question shown in this image step-by-step with key formulas and shortcuts.',
+    });
 
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
-      contents,
-      config: { systemInstruction: SYSTEM_INSTRUCTION },
+      model: 'gemini-3.8-flash',
+      contents: [{ role: 'user', parts }],
+      config: {
+        systemInstruction: `You are the official Prepskm AI Study Copilot created by @unfiltereddsumit (Sumit / Saurav) for elite JEE Main, JEE Advanced, and NEET UG aspirants.
+Student Name: ${studentName}
+Target Exam: ${targetExam}
+
+Guidelines:
+1. Give crystal-clear, step-by-step solutions for Physics, Chemistry, Mathematics, and Biology with Markdown/LaTeX formulas.
+2. Always highlight the core formula, dimensional check, or NCERT concept first.
+3. Include an "AIR Ranker Shortcut / Exam Trap" tip at the end of every solution and encouraging mentorship.
+4. Keep formatting clean and structured with bold headings and bullet points.`,
+        temperature: 0.4,
+      },
     });
 
-    return json({ text: response.text || 'No response generated from Gemini.' });
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        reply: response.text || 'Could not generate a response. Please try rephrasing your question.',
+      }),
+    };
   } catch (error) {
-    console.error('Gemini Netlify Function Error:', error);
-    return json({
-      text: `### 💡 Prepskm AI Study Copilot Breakdown\n\n*Note: Google Gemini API is experiencing peak traffic. Here is your high-yield mentor breakdown:*\n\n1. **Core Concept:** For queries on: *"${prompt || 'your doubt'}"*, identify the foundational principle (Conservation of Energy/Momentum, Equilibrium, or Reaction Mechanism).\n2. **Methodology:** Break the question down into 3 stages: Given data in SI units, governing formula, and algebraic solution before plugging in numbers.\n3. **CBT Strategy:** In JEE/NEET, questions on this topic often feature tricky distractor options differing by a factor of 2 or negative sign. Re-check your signs!\n\n*Please submit your prompt again in a few moments.*`,
-    });
+    console.error('Prepskm Gemini Serverless Error:', error);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        error: error.message || 'Internal Server Error while contacting Gemini AI.',
+        fallback: true,
+      }),
+    };
   }
 };

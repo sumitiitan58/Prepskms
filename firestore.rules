@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "sumitgaming9570@gmail.com" ||
+        request.auth.token.email == "unfiltereddsumit@gmail.com" ||
+        request.auth.token.email == "saurav586kumar@gmail.com" ||
+        request.auth.token.email == "sumitiitair01@gmail.com"
+      );
+    }
+
+    function hasValidTitle(data) {
+      return ('title' in data) && data.title is string && data.title.size() > 0 && data.title.size() <= 500;
+    }
+
+    // Connection test path
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // 1. Study Materials & PDFs
+    match /study_materials/{materialId} {
+      allow read: if true;
+      allow create, update: if hasValidTitle(request.resource.data);
+      allow delete: if true;
+    }
+    match /materials/{materialId} {
+      allow read: if true;
+      allow create, update: if hasValidTitle(request.resource.data);
+      allow delete: if true;
+    }
+
+    // 2. CBT Mock Tests, Questions & Results
+    match /mock_tests/{testId} {
+      allow read: if true;
+      allow create, update: if hasValidTitle(request.resource.data);
+      allow delete: if true;
+    }
+    match /questions/{questionId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+    match /mock_results/{resultId} {
+      allow read: if true;
+      allow create, update: if request.resource.data.totalScore is number;
+    }
+
+    // 3. Video Lectures
+    match /video_lectures/{videoId} {
+      allow read: if true;
+      allow create, update: if hasValidTitle(request.resource.data);
+      allow delete: if true;
+    }
+    match /videos/{videoId} {
+      allow read: if true;
+      allow create, update: if hasValidTitle(request.resource.data);
+      allow delete: if true;
+    }
+
+    // 4. Curriculum, Sections & Mentors
+    match /curriculum/{docId} {
+      allow read, write: if true;
+    }
+    match /sections/{sectionId} {
+      allow read, write: if true;
+    }
+    match /mentors/{mentorId} {
+      allow read, write: if true;
+    }
+    match /mentorshipTokens/{tokenId} {
+      allow read, write: if true;
+    }
+
+    // 5. Live Mentorship Sessions & Active Calls (Jitsi Meet signaling & Raise Hand)
+    match /live_sessions/{sessionId} {
+      allow read, write: if true;
+    }
+    match /activeCalls/{callId} {
+      allow read, write: if true;
+    }
+
+    // 6. Aspirant Gamification: Formula Blitz 60s CBT Rush Scores
+    match /formula_blitz_scores/{scoreId} {
+      allow read: if true;
+      allow create, update: if request.resource.data.score is number && request.resource.data.score >= 0;
+    }
+
+    // 7. Profiles, Forum & Real-time Chat
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+    match /forumTopics/{topicId} {
+      allow read, write: if true;
+    }
+    match /communityChat/{msgId} {
+      allow read, write: if true;
+    }
+    match /directInquiries/{msgId} {
+      allow read, write: if true;
+    }
+    match /ownerDirectChats/{roomId}/messages/{msgId} {
+      allow read, write: if true;
+    }
+  }
+}

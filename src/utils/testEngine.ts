@@ -487,3 +487,75 @@ export function calculateStudyStreak(
   };
 }
 
+/**
+ * 9. Formula Blitz (60s CBT Rush) Score & Streak Multiplier Engine
+ */
+export interface BlitzScoreState {
+  score: number;
+  streak: number;
+  maxStreak: number;
+  pointsEarned: number;
+  streakBadgeText: string;
+}
+
+export function calculateBlitzScoreUpdate(
+  currentScore: number,
+  currentStreak: number,
+  currentMaxStreak: number,
+  isCorrect: boolean
+): BlitzScoreState {
+  if (!isCorrect) {
+    return {
+      score: currentScore,
+      streak: 0,
+      maxStreak: currentMaxStreak,
+      pointsEarned: 0,
+      streakBadgeText: '',
+    };
+  }
+
+  const nextStreak = currentStreak + 1;
+  const pointsEarned = nextStreak >= 3 ? 25 : 10;
+  const nextScore = currentScore + pointsEarned;
+  const nextMaxStreak = Math.max(currentMaxStreak, nextStreak);
+  const streakBadgeText = nextStreak >= 2 ? `🔥 ${nextStreak}x Streak!` : '';
+
+  return {
+    score: nextScore,
+    streak: nextStreak,
+    maxStreak: nextMaxStreak,
+    pointsEarned,
+    streakBadgeText,
+  };
+}
+
+/**
+ * 10. Role-Based Access Control (Admin vs Student) Verification
+ */
+export function isAuthorizedAdmin(
+  email: string | null | undefined,
+  isPinUnlocked: boolean,
+  superAdminEmails: string[]
+): boolean {
+  if (isPinUnlocked) return true;
+  if (!email) return false;
+  const normalized = email.trim().toLowerCase();
+  return superAdminEmails.some((adminEmail) => adminEmail.trim().toLowerCase() === normalized);
+}
+
+/**
+ * 11. Jitsi Meet Room Name Sanitizer for Group Mentorship & 1-on-1 Calling
+ */
+export function buildJitsiRoomName(
+  mode: 'group' | 'direct',
+  identifier: string
+): string {
+  const cleanId = (identifier || 'Session')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .slice(0, 32) || 'DefaultRoom';
+  return mode === 'group'
+    ? `PrepskmLiveMentorship_${cleanId}`
+    : `Prepskm1on1Call_${cleanId}`;
+}
+
+

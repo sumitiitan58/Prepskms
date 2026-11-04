@@ -299,4 +299,54 @@ test('Daily Study Streak: tracks consecutive days and upgrades motivational tier
   assert.equal(sOngoing.isTodayCompleted, false);
 });
 
+import {
+  calculateBlitzScoreUpdate,
+  isAuthorizedAdmin,
+  buildJitsiRoomName,
+} from './testEngine';
+
+test('Formula Blitz 60s CBT Rush: streak multiplier and high-score calculation', () => {
+  // 1st correct -> +10, streak 1
+  const r1 = calculateBlitzScoreUpdate(0, 0, 0, true);
+  assert.equal(r1.score, 10);
+  assert.equal(r1.streak, 1);
+  assert.equal(r1.streakBadgeText, '');
+
+  // 2nd correct -> +10, streak 2 ("🔥 2x Streak!")
+  const r2 = calculateBlitzScoreUpdate(r1.score, r1.streak, r1.maxStreak, true);
+  assert.equal(r2.score, 20);
+  assert.equal(r2.streak, 2);
+  assert.equal(r2.streakBadgeText, '🔥 2x Streak!');
+
+  // 3rd correct -> +25 (3+ streak bonus), streak 3 ("🔥 3x Streak!")
+  const r3 = calculateBlitzScoreUpdate(r2.score, r2.streak, r2.maxStreak, true);
+  assert.equal(r3.score, 45);
+  assert.equal(r3.streak, 3);
+  assert.equal(r3.streakBadgeText, '🔥 3x Streak!');
+
+  // Wrong answer -> resets streak to 0, preserves score and maxStreak
+  const r4 = calculateBlitzScoreUpdate(r3.score, r3.streak, r3.maxStreak, false);
+  assert.equal(r4.score, 45);
+  assert.equal(r4.streak, 0);
+  assert.equal(r4.maxStreak, 3);
+  assert.equal(r4.streakBadgeText, '');
+});
+
+test('Role-Based Access Control (Admin vs Student) and Jitsi room naming', () => {
+  const admins = ['sumitgaming9570@gmail.com', 'unfiltereddsumit@gmail.com'];
+  assert.equal(isAuthorizedAdmin('student@gmail.com', false, admins), false);
+  assert.equal(isAuthorizedAdmin('student@gmail.com', true, admins), true);
+  assert.equal(isAuthorizedAdmin('SUMITGAMING9570@GMAIL.COM', false, admins), true);
+
+  assert.equal(
+    buildJitsiRoomName('group', 'Rotational Motion Live'),
+    'PrepskmLiveMentorship_RotationalMotionLive'
+  );
+  assert.equal(
+    buildJitsiRoomName('direct', 'Arjun Sharma'),
+    'Prepskm1on1Call_ArjunSharma'
+  );
+});
+
+
 
